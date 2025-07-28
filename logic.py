@@ -39,7 +39,6 @@ class Metavar:
 
 
 class Formula:
-    constants = set('abcdefghijklmnopqr')
 
     def __str__(self):
         s = self._str()
@@ -101,25 +100,42 @@ class Iff(Formula):
         return f'({self.left._str()} ↔ {self.right._str()})'
 
 # FOL
+class Term:
+    pass
+
+@dataclass
+class Const(Term):
+    name: str
+
+    def __str__(self):
+        return self.name
+
+@dataclass
+class Var(Term):
+    name: str
+
+    def __str__(self):
+        return self.name
+
 @dataclass
 class Pred(Formula):
     name: str
-    args: str
+    args: list[Term]
 
     def _str(self):
-        return f'{self.name}{self.args}'
+        return self.name + ''.join(str(t) for t in self.args)
 
 @dataclass
 class Eq(Formula):
-    left: str
-    right: str
+    left: Term
+    right: Term
 
     def _str(self):
         return f'{self.left} = {self.right}'
 
 @dataclass
 class Forall(Formula):
-    var: str
+    var: Var
     inner: Formula
 
     def _str(self):
@@ -127,7 +143,7 @@ class Forall(Formula):
 
 @dataclass
 class Exists(Formula):
-    var: str
+    var: Var
     inner: Formula
 
     def _str(self):

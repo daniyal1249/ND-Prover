@@ -44,8 +44,8 @@ class Symbols:
 
     keys = sorted(symbols, key=len, reverse=True)
     patterns = [re.escape(k) for k in keys]
-    patterns.append(r'A(?=[s-z])')  # Forall
-    patterns.append(r'E(?=[s-z])')  # Exists
+    patterns.append(r'A(?=[a-z])')  # Forall
+    patterns.append(r'E(?=[a-z])')  # Exists
     pattern = '|'.join(patterns)
     regex = re.compile(pattern)
 
@@ -59,7 +59,7 @@ class Symbols:
                 return '∃'
             return cls.symbols[match]
         return cls.regex.sub(repl, s)
-
+    
 
 def split_line(line):
     parts = [s.strip() for s in re.split(r'[;|]', line)]
@@ -68,7 +68,6 @@ def split_line(line):
     return parts
 
 
-# Helper functions
 def strip_parens(s):
     while s and s[0] == '(' and s[-1] == ')':
         depth = 0
@@ -95,6 +94,10 @@ def find_main_connective(s, symbol):
     return -1
 
 
+def parse_term(t):
+    return Const(t) if 'a' <= t <= 'r' else Var(t)
+
+
 def _parse_formula(f):
     f = strip_parens(f)
     
@@ -108,14 +111,17 @@ def _parse_formula(f):
         return PropVar(f)
     
     # Predicates
-    m = re.fullmatch(r'([B-DF-Z])([a-z]+)', f)
+    m = re.fullmatch(r'([A-Z])([a-z]+)', f)
     if m:
-        return Pred(m.group(1), m.group(2))
+        args = [parse_term(t) for t in m.group(2)]
+        return Pred(m.group(1), args)
 
     # Equality
     m = re.fullmatch(r'([a-z])=([a-z])', f)
     if m:
-        return Eq(m.group(1), m.group(2))
+        left = parse_term(m.group(1))
+        right = parse_term(m.group(2))
+        return Eq(left, right)
 
     # Negation
     if f.startswith('¬'):
@@ -124,12 +130,11 @@ def _parse_formula(f):
     # Quantifiers
     m = re.match(r'(∀|∃)([s-z])', f)
     if m:
-        var = m.group(2)
+        var = Var(m.group(2))
         inner = _parse_formula(f[2:])
         if m.group(1) == '∀':
             return Forall(var, inner)
-        else:
-            return Exists(var, inner)
+        return Exists(var, inner)
 
     # Modal operators
     if f.startswith('□'):
@@ -144,9 +149,9 @@ def _parse_formula(f):
         idx = find_main_connective(f, sym)
         if idx == -1:
             continue
-        left = strip_parens(f[:idx])
-        right = strip_parens(f[idx + 1:])
-        return cls(_parse_formula(left), _parse_formula(right))
+        left = _parse_formula(f[:idx])
+        right = _parse_formula(f[idx + 1:])
+        return cls(left, right)
 
     raise ParsingError(f'Could not parse formula: "{f}".')
 
@@ -172,10 +177,10 @@ def parse_rule(rule):
 
 
 def parse_citations(citations):
-    citations = ''.join(citations.split()).split(',')
+    citations = ''.join(citations.split())
 
     c_list = []
-    for c in citations:
+    for c in citations.split(','):
         m = re.fullmatch(r'(\d+)-(\d+)', c)
         if m:
             pair = (int(m.group(1)), int(m.group(2)))
