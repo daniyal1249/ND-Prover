@@ -60,7 +60,7 @@ def select_action():
         raw = input(f'{'\n'.join(actions)}\n\nSelect action: ')
         if raw.strip().isdecimal() and 1 <= int(raw) <= 5:
             return int(raw)
-        print('Invalid action. Please try again.')
+        print('Invalid action. Please try again.\n')
 
 
 def input_line():

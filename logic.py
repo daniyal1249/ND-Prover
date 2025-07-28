@@ -41,58 +41,64 @@ class Metavar:
 class Formula:
     constants = set('abcdefghijklmnopqr')
 
+    def __str__(self):
+        s = self._str()
+        if s[0] == '(' and s[-1] == ')':
+            return s[1:-1]
+        return s
+
 # TFL
 @dataclass
 class Falsum(Formula):
 
-    def __str__(self):
+    def _str(self):
         return '⊥'
 
 @dataclass
 class PropVar(Formula):
     name: str
 
-    def __str__(self):
+    def _str(self):
         return self.name
 
 @dataclass
 class Not(Formula):
     inner: Formula
 
-    def __str__(self):
-        return f'¬{self.inner}'
+    def _str(self):
+        return f'¬{self.inner._str()}'
 
 @dataclass
 class And(Formula):
     left: Formula
     right: Formula
 
-    def __str__(self):
-        return f'({self.left} ∧ {self.right})'
+    def _str(self):
+        return f'({self.left._str()} ∧ {self.right._str()})'
 
 @dataclass
 class Or(Formula):
     left: Formula
     right: Formula
 
-    def __str__(self):
-        return f'({self.left} ∨ {self.right})'
+    def _str(self):
+        return f'({self.left._str()} ∨ {self.right._str()})'
 
 @dataclass
 class Imp(Formula):
     left: Formula
     right: Formula
 
-    def __str__(self):
-        return f'({self.left} → {self.right})'
+    def _str(self):
+        return f'({self.left._str()} → {self.right._str()})'
 
 @dataclass
 class Iff(Formula):
     left: Formula
     right: Formula
 
-    def __str__(self):
-        return f'({self.left} ↔ {self.right})'
+    def _str(self):
+        return f'({self.left._str()} ↔ {self.right._str()})'
 
 # FOL
 @dataclass
@@ -100,7 +106,7 @@ class Pred(Formula):
     name: str
     args: str
 
-    def __str__(self):
+    def _str(self):
         return f'{self.name}{self.args}'
 
 @dataclass
@@ -108,7 +114,7 @@ class Eq(Formula):
     left: str
     right: str
 
-    def __str__(self):
+    def _str(self):
         return f'{self.left} = {self.right}'
 
 @dataclass
@@ -116,31 +122,31 @@ class Forall(Formula):
     var: str
     inner: Formula
 
-    def __str__(self):
-        return f'∀{self.var}{self.inner}'
+    def _str(self):
+        return f'∀{self.var}{self.inner._str()}'
 
 @dataclass
 class Exists(Formula):
     var: str
     inner: Formula
 
-    def __str__(self):
-        return f'∃{self.var}{self.inner}'
+    def _str(self):
+        return f'∃{self.var}{self.inner._str()}'
 
 # ML
 @dataclass
 class Box(Formula):
     inner: Formula
 
-    def __str__(self):
-        return f'□{self.inner}'
+    def _str(self):
+        return f'□{self.inner._str()}'
 
 @dataclass
 class Dia(Formula):
     inner: Formula
 
-    def __str__(self):
-        return f'♢{self.inner}'
+    def _str(self):
+        return f'♢{self.inner._str()}'
 
 @dataclass
 class BoxMarker:
@@ -648,7 +654,7 @@ class Subproof(ProofObject):
     def delete_line(self):
         seq = self.seq
         if not seq:
-            raise ProofActionError('No line to delete.')
+            raise ProofActionError('No lines to delete.')
         if (end := seq[-1]).is_subproof() and len(end.seq) != 1:
             return end.delete_line()
         seq.pop()
@@ -660,7 +666,7 @@ class Subproof(ProofObject):
         for idx in citations:
             obj = idx_map.get(idx)
             if obj is None:
-                raise JustificationError(f'Citation "{idx}" not in scope.')
+                raise JustificationError(f'Citation {idx} not in scope.')
             premises.append(obj)
         return premises
     
