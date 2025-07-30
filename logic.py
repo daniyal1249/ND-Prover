@@ -252,8 +252,8 @@ class TFL(Logic):
     @Rules.add('¬E')
     def NotE(premises):
         a, b = Logic.verify_arity(premises, 2)
-        if not all([a.is_line(), isinstance(a := a.formula, Not), 
-                    b.is_line(), b.formula == a.inner]):
+        if not (a.is_line() and isinstance(a := a.formula, Not) 
+                and b.is_line() and b.formula == a.inner):
             raise JustificationError('Invalid application of "¬E".')
         return [Falsum()]
     
@@ -282,13 +282,13 @@ class TFL(Logic):
     @Rules.add('∨E')
     def OrE(premises):
         a, b, c = Logic.verify_arity(premises, 3)
-        if not all([a.is_line(), isinstance(a := a.formula, Or), 
-                    b.is_subproof(), c.is_subproof()]):
+        if not (a.is_line() and isinstance(a := a.formula, Or) 
+                and b.is_subproof() and c.is_subproof()):
             raise JustificationError('Invalid application of "∨E".')
         
         ba, bc = b.assumption, b.conclusion
         ca, cc = c.assumption, c.conclusion
-        if not all([(a.left, a.right) in [(ba, ca), (ca, ba)], bc == cc, bc]):
+        if not ((a.left, a.right) in [(ba, ca), (ca, ba)] and bc == cc and bc):
             raise JustificationError('Invalid application of "∨E".')
         return [bc]
     
@@ -302,8 +302,8 @@ class TFL(Logic):
     @Rules.add('→E')
     def ImpE(premises):
         a, b = Logic.verify_arity(premises, 2)
-        if not all([a.is_line(), isinstance(a := a.formula, Imp), 
-                    b.is_line(), b.formula == a.left]):
+        if not (a.is_line() and isinstance(a := a.formula, Imp) 
+                and b.is_line() and b.formula == a.left):
             raise JustificationError('Invalid application of "→E".')
         return [a.right]
     
@@ -322,7 +322,7 @@ class TFL(Logic):
     @Rules.add('↔E')
     def IffE(premises):
         a, b = Logic.verify_arity(premises, 2)
-        if not all([a.is_line(), isinstance(a := a.formula, Iff), b.is_line()]):
+        if not (a.is_line() and isinstance(a := a.formula, Iff) and b.is_line()):
             raise JustificationError('Invalid application of "↔E".')
         
         if b.formula == a.left:
@@ -341,16 +341,16 @@ class TFL(Logic):
     @Rules.add('IP')
     def IP(premises):
         a = Logic.verify_arity(premises, 1)
-        if not all([a.is_subproof(), isinstance(a.assumption, Not), 
-                    isinstance(a.conclusion, Falsum)]):
+        if not (a.is_subproof() and isinstance(a.assumption, Not) 
+                and isinstance(a.conclusion, Falsum)):
             raise JustificationError('Invalid application of "IP".')
         return [a.assumption.inner]
     
     @Rules.add('DS')
     def DS(premises):
         a, b = Logic.verify_arity(premises, 2)
-        if not all([a.is_line(), isinstance(a := a.formula, Or), 
-                    b.is_line(), isinstance(b := b.formula, Not)]):
+        if not (a.is_line() and isinstance(a := a.formula, Or) 
+                and b.is_line() and isinstance(b := b.formula, Not)):
             raise JustificationError('Invalid application of "DS".')
         
         if b.inner == a.left:
@@ -362,17 +362,17 @@ class TFL(Logic):
     @Rules.add('MT')
     def MT(premises):
         a, b = Logic.verify_arity(premises, 2)
-        if not all([a.is_line(), isinstance(a := a.formula, Imp), 
-                    b.is_line(), isinstance(b := b.formula, Not), 
-                    b.inner == a.right]):
+        if not (a.is_line() and isinstance(a := a.formula, Imp) 
+                and b.is_line() and isinstance(b := b.formula, Not) 
+                and b.inner == a.right):
             raise JustificationError('Invalid application of "MT".')
         return [Not(a.left)]
 
     @Rules.add('DNE')
     def DNE(premises):
         a = Logic.verify_arity(premises, 1)
-        if not all([a.is_line(), isinstance(a := a.formula, Not), 
-                    isinstance(a.inner, Not)]):
+        if not (a.is_line() and isinstance(a := a.formula, Not) 
+                and isinstance(a.inner, Not)):
             raise JustificationError('Invalid application of "DNE".')
         return [a.inner.inner]
 
@@ -384,8 +384,9 @@ class TFL(Logic):
         
         aa, ac = a.assumption, a.conclusion
         ba, bc = b.assumption, b.conclusion
-        if not all([(isinstance(aa, Not) and aa.inner == ba) or 
-                    (isinstance(ba, Not) and ba.inner == aa), ac == bc, ac]):
+        if not (((isinstance(aa, Not) and aa.inner == ba) 
+                 or (isinstance(ba, Not) and ba.inner == aa)) 
+                and ac == bc and ac):
             raise JustificationError('Invalid application of "LEM".')
         return [ac]
 
@@ -762,7 +763,7 @@ class Proof:
             str_line = f'{idx:>2} {text:<{width + 5}} {j}'
             str_lines.append(str_line)
         return '\n'.join(str_lines)
- 
+
     def add_line(self, formula, justification):
         self.verify_formula(formula)
         self.verify_rule(justification.rule)
