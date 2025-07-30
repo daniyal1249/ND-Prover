@@ -123,6 +123,17 @@ def _parse_formula(f):
         right = parse_term(m.group(2))
         return Eq(left, right)
 
+    # Binary connectives
+    connectives = [('↔', Iff), ('→', Imp), ('∨', Or), ('∧', And)]
+
+    for sym, cls in connectives:
+        idx = find_main_connective(f, sym)
+        if idx == -1:
+            continue
+        left = _parse_formula(f[:idx])
+        right = _parse_formula(f[idx + 1:])
+        return cls(left, right)
+    
     # Negation
     if f.startswith('¬'):
         return Not(_parse_formula(f[1:]))
@@ -141,17 +152,6 @@ def _parse_formula(f):
         return Box(_parse_formula(f[1:]))
     if f.startswith('♢'):
         return Dia(_parse_formula(f[1:]))
-
-    # Binary connectives
-    connectives = [('↔', Iff), ('→', Imp), ('∨', Or), ('∧', And)]
-
-    for sym, cls in connectives:
-        idx = find_main_connective(f, sym)
-        if idx == -1:
-            continue
-        left = _parse_formula(f[:idx])
-        right = _parse_formula(f[idx + 1:])
-        return cls(left, right)
 
     raise ParsingError(f'Could not parse formula: "{f}".')
 
