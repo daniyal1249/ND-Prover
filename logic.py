@@ -790,12 +790,13 @@ class Proof:
             return
         if self.logic is FOL and is_fol_sentence(formula):
             return
-        if not is_ml_sentence(formula):
-            raise Exception()
+        if issubclass(self.logic, MLK) and is_ml_sentence(formula):
+            return
+        raise Exception('Invalid formula.')
 
     def verify_rule(self, rule):
         if not hasattr(self.logic, rule.func.__name__):
-            raise Exception()
+            raise Exception(f'"{rule}" is not valid in {self.logic.__name__}.')
 
     def verify_assumption(self, assumption):
         if issubclass(self.logic, MLK) and isinstance(assumption, BoxMarker):
