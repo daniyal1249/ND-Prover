@@ -2,8 +2,7 @@ import asyncio
 
 import discord
 
-from logic import *
-from parser import *
+from nd_prover import *
 
 
 class SessionExit(Exception):

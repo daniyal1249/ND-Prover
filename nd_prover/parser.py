@@ -1,6 +1,6 @@
 import re
 
-from logic import *
+from .logic import *
 
 
 class ParsingError(Exception):

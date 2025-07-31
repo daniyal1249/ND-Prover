@@ -1,6 +1,6 @@
 import unittest
 
-from parser import *
+from nd_prover import *
 
 
 class TestParseFormula(unittest.TestCase):

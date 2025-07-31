@@ -18,7 +18,7 @@ Supports propositional, first-order, and modal logics (K, T, S4, S5) via a comma
 ## Example Usage
 
 ```
-$ python cli.py
+$ python -m nd_prover
 Select logic (TFL, FOL, MLK, MLT, MLS4, MLS5): TFL
 Enter premises (separated by "," or ";"): P -> Q, P
 Enter conclusion: Q

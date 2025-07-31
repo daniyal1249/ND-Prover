@@ -1,5 +1,4 @@
-from logic import *
-from parser import *
+from .parser import *
 
 
 logics = {
@@ -105,7 +104,3 @@ def main():
     
     print(f'\n{p}\n')
     print('Proof complete! 🎉')
-
-
-if __name__ == '__main__':
-    main()
