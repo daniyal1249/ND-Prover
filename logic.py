@@ -189,18 +189,17 @@ class Justification:
     citations: list
 
     def __str__(self):
-        rule = str(self.rule)
         if not self.citations:
-            return rule
+            return str(self.rule)
 
-        j_list = [rule]
+        j_list = []
         for idx in self.citations:
             if isinstance(idx, int):
                 j_list.append(str(idx))
             else:
                 i, j = idx
                 j_list.append(f'{i}-{j}')
-        return ', '.join(j_list)
+        return f'{self.rule}, {','.join(j_list)}'
 
 
 class Rules:

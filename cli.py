@@ -104,7 +104,7 @@ def main():
         perform_action(p, action)
     
     print(f'\n{p}\n')
-    print('Proof complete!')
+    print('Proof complete! 🎉')
 
 
 if __name__ == '__main__':
