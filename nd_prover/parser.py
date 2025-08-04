@@ -44,8 +44,8 @@ class Symbols:
 
     keys = sorted(symbols, key=len, reverse=True)
     patterns = [re.escape(k) for k in keys]
-    patterns.append(r'A(?=[a-z])')  # Forall
-    patterns.append(r'E(?=[a-z])')  # Exists
+    patterns.append(r'A(?=[a-zA-Z])')  # Forall
+    patterns.append(r'E(?=[a-zA-Z])')  # Exists
     pattern = '|'.join(patterns)
     regex = re.compile(pattern)
 
@@ -59,7 +59,7 @@ class Symbols:
                 return '∃'
             return cls.symbols[match]
         return cls.regex.sub(repl, s)
-    
+
 
 def split_line(line):
     parts = [s.strip() for s in re.split(r'[;|]', line)]
@@ -113,7 +113,7 @@ def _parse_formula(f):
     # Predicates
     m = re.fullmatch(r'([A-Z])([a-z]+)', f)
     if m:
-        args = [parse_term(t) for t in m.group(2)]
+        args = tuple(parse_term(t) for t in m.group(2))
         return Pred(m.group(1), args)
 
     # Equality
@@ -191,14 +191,14 @@ def parse_citations(citations):
             c_list.append(int(c))
         except ValueError:
             raise ParsingError(f'Could not parse citations: "{citations}".')
-    return c_list
+    return tuple(c_list)
 
 
 def parse_justification(j):
     parts = j.split(',', maxsplit=1)
     r = parse_rule(parts[0])
     if len(parts) == 1:
-        return Justification(r, [])
+        return Justification(r, ())
     c = parse_citations(parts[1])
     return Justification(r, c)
 

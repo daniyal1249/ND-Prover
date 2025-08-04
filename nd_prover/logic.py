@@ -46,27 +46,27 @@ class Formula:
         return s
 
 # TFL
-@dataclass
+@dataclass(frozen=True)
 class Falsum(Formula):
 
     def _str(self):
         return '⊥'
 
-@dataclass
+@dataclass(frozen=True)
 class PropVar(Formula):
     name: str
 
     def _str(self):
         return self.name
 
-@dataclass
+@dataclass(frozen=True)
 class Not(Formula):
     inner: Formula
 
     def _str(self):
         return f'¬{self.inner._str()}'
 
-@dataclass
+@dataclass(frozen=True)
 class And(Formula):
     left: Formula
     right: Formula
@@ -74,7 +74,7 @@ class And(Formula):
     def _str(self):
         return f'({self.left._str()} ∧ {self.right._str()})'
 
-@dataclass
+@dataclass(frozen=True)
 class Or(Formula):
     left: Formula
     right: Formula
@@ -82,7 +82,7 @@ class Or(Formula):
     def _str(self):
         return f'({self.left._str()} ∨ {self.right._str()})'
 
-@dataclass
+@dataclass(frozen=True)
 class Imp(Formula):
     left: Formula
     right: Formula
@@ -90,7 +90,7 @@ class Imp(Formula):
     def _str(self):
         return f'({self.left._str()} → {self.right._str()})'
 
-@dataclass
+@dataclass(frozen=True)
 class Iff(Formula):
     left: Formula
     right: Formula
@@ -99,7 +99,7 @@ class Iff(Formula):
         return f'({self.left._str()} ↔ {self.right._str()})'
 
 # FOL
-@dataclass
+@dataclass(frozen=True)
 class Term:
     name: str
 
@@ -114,15 +114,15 @@ class Const(Term):
 class Var(Term):
     names = [t for t in Term.names if 's' <= t <= 'z']
 
-@dataclass
+@dataclass(frozen=True)
 class Pred(Formula):
     name: str
-    args: list[Term]
+    args: tuple[Term]
 
     def _str(self):
         return self.name + ''.join(str(t) for t in self.args)
 
-@dataclass
+@dataclass(frozen=True)
 class Eq(Formula):
     left: Term
     right: Term
@@ -130,7 +130,7 @@ class Eq(Formula):
     def _str(self):
         return f'{self.left} = {self.right}'
 
-@dataclass
+@dataclass(frozen=True)
 class Forall(Formula):
     var: Var
     inner: Formula
@@ -138,7 +138,7 @@ class Forall(Formula):
     def _str(self):
         return f'∀{self.var}{self.inner._str()}'
 
-@dataclass
+@dataclass(frozen=True)
 class Exists(Formula):
     var: Var
     inner: Formula
@@ -147,28 +147,28 @@ class Exists(Formula):
         return f'∃{self.var}{self.inner._str()}'
 
 # ML
-@dataclass
+@dataclass(frozen=True)
 class Box(Formula):
     inner: Formula
 
     def _str(self):
         return f'□{self.inner._str()}'
 
-@dataclass
+@dataclass(frozen=True)
 class Dia(Formula):
     inner: Formula
 
     def _str(self):
         return f'♢{self.inner._str()}'
 
-@dataclass
+@dataclass(frozen=True)
 class BoxMarker:
 
     def __str__(self):
         return '□'
 
 
-@dataclass
+@dataclass(frozen=True)
 class Rule:
     name: str
     func: object
@@ -176,14 +176,14 @@ class Rule:
     def __str__(self):
         return self.name
     
-    def __call__(self, premises):
-        return self.func(premises)
+    def __call__(self, *args, **kwargs):
+        return self.func(*args, **kwargs)
 
 
-@dataclass
+@dataclass(frozen=True)
 class Justification:
     rule: Rule
-    citations: list
+    citations: tuple
 
     def __str__(self):
         if not self.citations:
@@ -635,7 +635,7 @@ def sub_terms(formula, terms, gen, ignore=lambda v: False):
             a = a if ignore(v) else sub_terms(a, terms - {v}, gen, ignore)
             return type(formula)(v, a)
         case Pred(s, args):
-            args = [gen() if arg in terms else arg for arg in args]
+            args = tuple(gen() if arg in terms else arg for arg in args)
             return Pred(s, args)
         case Eq(a, b):
             a = gen() if a in terms else a
@@ -654,7 +654,7 @@ class ProofObject:
         return self.is_subproof() and isinstance(self.assumption, BoxMarker)
 
 
-@dataclass
+@dataclass(frozen=True)
 class Line(ProofObject):
     idx: int
     formula: Formula
@@ -668,7 +668,7 @@ class Subproof(ProofObject):
 
         seq = []
         if assumption:
-            j = Justification(Rule('AS', Logic.AS), [])
+            j = Justification(Rule('AS', Logic.AS), ())
             line = Line(start_idx, assumption, j)
             seq.append(line)
 
@@ -802,7 +802,7 @@ class Proof:
         context, idx = [], 1
         for p in premises:
             self.verify_formula(p)
-            j = Justification(Rule('PR', Logic.PR), [])
+            j = Justification(Rule('PR', Logic.PR), ())
             context.append(Line(idx, p, j))
             idx += 1
         

@@ -9,15 +9,15 @@ class TestParseFormula(unittest.TestCase):
         self.assertEqual(parse_formula('X'), PropVar('X'))
 
     def test_pred(self):
-        self.assertEqual(parse_formula('Pb'), Pred('P', [Const('b')]))
-        self.assertEqual(parse_formula('Fcdc'), Pred('F', [Const('c'), Const('d'), Const('c')]))
-        self.assertEqual(parse_formula('Kxy'), Pred('K', [Var('x'), Var('y')]))
+        self.assertEqual(parse_formula('Pb'), Pred('P', (Const('b'),)))
+        self.assertEqual(parse_formula('Fcdc'), Pred('F', (Const('c'), Const('d'), Const('c'))))
+        self.assertEqual(parse_formula('Kxy'), Pred('K', (Var('x'), Var('y'))))
 
     def test_forall_exists(self):
-        self.assertEqual(parse_formula('forallzPz'), Forall(Var('z'), Pred('P', [Var('z')])))
-        self.assertEqual(parse_formula('∀sPs'), Forall(Var('s'), Pred('P', [Var('s')])))
-        self.assertEqual(parse_formula('existszLz'), Exists(Var('z'), Pred('L', [Var('z')])))
-        self.assertEqual(parse_formula('∃yPy'), Exists(Var('y'), Pred('P', [Var('y')])))
+        self.assertEqual(parse_formula('forallzPz'), Forall(Var('z'), Pred('P', (Var('z'),))))
+        self.assertEqual(parse_formula('∀sPs'), Forall(Var('s'), Pred('P', (Var('s'),))))
+        self.assertEqual(parse_formula('existszLz'), Exists(Var('z'), Pred('L', (Var('z'),))))
+        self.assertEqual(parse_formula('∃yPy'), Exists(Var('y'), Pred('P', (Var('y'),))))
 
     def test_equality(self):
         self.assertEqual(parse_formula('a=b'), Eq(Const('a'), Const('b')))
@@ -39,7 +39,7 @@ class TestParseFormula(unittest.TestCase):
         self.assertEqual(parse_formula('~A'), Not(PropVar('A')))
         self.assertEqual(parse_formula('¬A'), Not(PropVar('A')))
         self.assertEqual(parse_formula('-B'), Not(PropVar('B')))
-        self.assertEqual(parse_formula('¬Pb'), Not(Pred('P', [Const('b')])))
+        self.assertEqual(parse_formula('¬Pb'), Not(Pred('P', (Const('b'),))))
 
     def test_and(self):
         self.assertEqual(parse_formula('A and B'), And(PropVar('A'), PropVar('B')))
@@ -86,7 +86,7 @@ class TestParseFormula(unittest.TestCase):
         )
         self.assertEqual(
             parse_formula('∀x(Px→Qx)'),
-            Forall(Var('x'), Imp(Pred('P', [Var('x')]), Pred('Q', [Var('x')])))
+            Forall(Var('x'), Imp(Pred('P', (Var('x'),)), Pred('Q', (Var('x'),))))
         )
         self.assertEqual(
             parse_formula('□(A↔¬B)'),

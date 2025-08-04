@@ -11,6 +11,25 @@ logics = {
 }
 
 
+def parse_and_verify_premises(s, logic):
+    s = s.strip()
+    if s == 'NA':
+        return []
+    parts = [p for p in re.split(r'[,;]', s) if p.strip()]
+    return [parse_and_verify_formula(p, logic) for p in parts]
+
+
+def parse_and_verify_formula(f, logic):
+    f = parse_formula(f)
+    if logic is TFL and is_tfl_sentence(f):
+        return f
+    if logic is FOL and is_fol_sentence(f):
+        return f
+    if issubclass(logic, MLK) and is_ml_sentence(f):
+        return f
+    raise ParsingError('Invalid formula.')
+
+
 def select_logic():
     while True:
         raw = input(f'Select logic ({', '.join(logics)}): ')
@@ -20,29 +39,28 @@ def select_logic():
         print('Invalid logic. Please try again.')
 
 
-def input_premises():
+def input_premises(logic):
     while True:
         raw = input('Enter premises (separated by "," or ";"): ')
-        parts = [p for p in re.split(r'[,;]', raw) if p.strip()]
         try:
-            return [parse_formula(p) for p in parts]
+            return parse_and_verify_premises(raw, logic)
         except ParsingError as e:
             print(f'{e} Please try again.')
 
 
-def input_conclusion():
+def input_conclusion(logic):
     while True:
         raw = input('Enter conclusion: ')
         try:
-            return parse_formula(raw)
+            return parse_and_verify_formula(raw, logic)
         except ParsingError as e:
             print(f'{e} Please try again.')
 
 
 def create_problem():
     logic = select_logic()
-    premises = input_premises()
-    conclusion = input_conclusion()
+    premises = input_premises(logic)
+    conclusion = input_conclusion(logic)
     return Proof(logic, premises, conclusion)
 
 

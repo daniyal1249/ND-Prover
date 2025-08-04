@@ -106,7 +106,7 @@ async def get_user_input(ctx, bot, session, check=None):
             continue
         if cmd == 'pause':
             await user_msg.add_reaction('✅')
-            await ctx.send(cb('Paused. Enter "continue" to resume.'))
+            await ctx.send(cb('Paused. Type "continue" to resume.'))
             def is_continue(msg):
                 return (msg.author.id == session.user_id 
                         and msg.channel == session.channel 
@@ -183,9 +183,9 @@ async def select_logic(ctx, bot, session):
     await bot_msg.delete()
     session.logic = LOGIC_KEY[str(reaction.emoji)][0]
     
-    # FIX: As of now, only support TFL
-    if session.logic != TFL:
-        await ctx.send(cb('Only TFL is currently supported.'))
+    # FIX: As of now, only support TFL and FOL
+    if session.logic not in [TFL, FOL]:
+        await ctx.send(cb('Only TFL and FOL are currently supported.'))
         del ACTIVE_PROOF_SESSIONS[session.user_id]
         return
 
