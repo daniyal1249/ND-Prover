@@ -8,11 +8,11 @@ Supports propositional, first-order, and modal logics (K, T, S4, S5) via a comma
 ## Logic Checklist
 
 - [x] Propositional logic (TFL)
-- [ ] First-order logic (FOL)
-- [ ] Modal logic K (MLK)
-- [ ] Modal logic T (MLT)
-- [ ] Modal logic S4 (MLS4)
-- [ ] Modal logic S5 (MLS5)
+- [x] First-order logic (FOL)
+- [x] Modal logic K (MLK)
+- [x] Modal logic T (MLT)
+- [x] Modal logic S4 (MLS4)
+- [x] Modal logic S5 (MLS5)
 
 
 ## Example Usage
@@ -60,6 +60,44 @@ Proof of  ∴ P ∨ ¬P
  6 | | P ∨ ¬P          ∨I, 5
  7 | | ⊥               ¬E, 1,6
  8 | P ∨ ¬P            IP, 1-7
+
+Proof complete! 🎉
+```
+
+A proof that identity is symmetric: 
+
+```
+Proof of  ∴ ∀x∀y(x = y → y = x)
+-------------------------------
+
+ 1 | | a = b                  AS
+   | |-------
+ 2 | | a = a                  =I
+ 3 | | b = a                  =E, 1,2
+ 4 | a = b → b = a            →I, 1-3
+ 5 | ∀y(a = y → y = a)        ∀I, 4
+ 6 | ∀x∀y(x = y → y = x)      ∀I, 5
+
+Proof complete! 🎉
+```
+
+A proof in modal logic S5: 
+
+```
+Proof of ♢□A ∴ □A
+-----------------
+
+ 1 | ♢□A          PR
+   |-----         
+ 2 | ¬□¬□A        Def♢, 1
+ 3 | | ¬□A        AS
+   | |-----       
+ 4 | | | □        AS
+   | | |---       
+ 5 | | | ¬□A      R5, 3
+ 6 | | □¬□A       □I, 4-5
+ 7 | | ⊥          ¬E, 2,6
+ 8 | □A           IP, 3-7
 
 Proof complete! 🎉
 ```
