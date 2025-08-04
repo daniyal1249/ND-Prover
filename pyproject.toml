@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nd-prover"
+version = "0.1.0"
+description = "An interactive Fitch-style proof checker"
+authors = [{ name = "Daniyal Akif", email = "daniyalakif@gmail.com" }]
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+keywords = [
+    "python",
+    "math",
+    "logic",
+    "proof checker",
+    "natural deduction",
+    "fitch",
+    "fitch proofs",
+    "modal logic"
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Operating System :: OS Independent"
+]
+
+[project.urls]
+Homepage = "https://github.com/daniyal1249/nd-prover"
+Repository = "https://github.com/daniyal1249/nd-prover"
+
+[project.scripts]
+nd-prover = "nd_prover.cli:main"
+
+[tool.setuptools]
+packages = ["nd_prover"]
