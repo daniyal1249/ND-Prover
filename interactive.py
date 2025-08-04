@@ -182,13 +182,6 @@ async def select_logic(ctx, bot, session):
     # Delete prompt and set logic
     await bot_msg.delete()
     session.logic = LOGIC_KEY[str(reaction.emoji)][0]
-    
-    # FIX: As of now, only support TFL and FOL
-    if session.logic not in [TFL, FOL]:
-        await ctx.send(cb('Only TFL and FOL are currently supported.'))
-        del ACTIVE_PROOF_SESSIONS[session.user_id]
-        return
-
     await input_premises(ctx, bot, session)
 
 
