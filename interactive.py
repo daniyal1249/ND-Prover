@@ -40,7 +40,7 @@ def parse_and_verify_formula(f, logic):
         return f
     if issubclass(logic, MLK) and is_ml_sentence(f):
         return f
-    raise ParsingError('Invalid formula.')
+    raise ParsingError(f'"{f}" is not a valid {logic.__name__} sentence.')
 
 
 def parse_and_verify_premises(s, logic):
