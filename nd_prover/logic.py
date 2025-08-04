@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from string import ascii_lowercase
 
 
 class ProofActionError(Exception):
@@ -11,18 +12,16 @@ class JustificationError(InferenceError):
     pass
 
 
+@dataclass
 class Metavar:
+    domain_pred: object = None
+
     count = 0
 
-    def __init__(self, domain_pred=None):
+    def __post_init__(self):
         type(self).count += 1
-
-        self.domain_pred = domain_pred
         self.id = type(self).count
         self.value = None
-
-    def __repr__(self):
-        return f'{type(self).__name__}(domain_pred={self.domain_pred!r})'
 
     def __str__(self):
         return f'?m{self.id}'
@@ -100,22 +99,20 @@ class Iff(Formula):
         return f'({self.left._str()} ↔ {self.right._str()})'
 
 # FOL
+@dataclass
 class Term:
-    pass
+    name: str
 
-@dataclass
+    names = list(ascii_lowercase)
+
+    def __str__(self):
+        return self.name
+
 class Const(Term):
-    name: str
+    names = [t for t in Term.names if 'a' <= t <= 'r']
 
-    def __str__(self):
-        return self.name
-
-@dataclass
 class Var(Term):
-    name: str
-
-    def __str__(self):
-        return self.name
+    names = [t for t in Term.names if 's' <= t <= 'z']
 
 @dataclass
 class Pred(Formula):
@@ -216,12 +213,12 @@ class Rules:
 class Logic:
 
     @staticmethod
-    def PR(premises):
+    def PR(premises, **kwargs):
         Logic.verify_arity(premises, 0)
         return []
 
     @staticmethod
-    def AS(premises):
+    def AS(premises, **kwargs):
         Logic.verify_arity(premises, 0)
         return []
 
@@ -235,21 +232,21 @@ class Logic:
 class TFL(Logic):
     
     @Rules.add('X')
-    def X(premises):
+    def X(premises, **kwargs):
         a = Logic.verify_arity(premises, 1)
         if not (a.is_line() and isinstance(a.formula, Falsum)):
             raise JustificationError('Invalid application of "X".')
         return [Metavar()]
     
     @Rules.add('¬I')
-    def NotI(premises):
+    def NotI(premises, **kwargs):
         a = Logic.verify_arity(premises, 1)
         if not (a.is_subproof() and isinstance(a.conclusion, Falsum)):
             raise JustificationError('Invalid application of "¬I".')
         return [Not(a.assumption)]
     
     @Rules.add('¬E')
-    def NotE(premises):
+    def NotE(premises, **kwargs):
         a, b = Logic.verify_arity(premises, 2)
         if not (a.is_line() and isinstance(a := a.formula, Not) 
                 and b.is_line() and b.formula == a.inner):
@@ -257,21 +254,21 @@ class TFL(Logic):
         return [Falsum()]
     
     @Rules.add('∧I')
-    def AndI(premises):
+    def AndI(premises, **kwargs):
         a, b = Logic.verify_arity(premises, 2)
         if not (a.is_line() and b.is_line()):
             raise JustificationError('Invalid application of "∧I".')
         return [And(a.formula, b.formula)]
     
     @Rules.add('∧E')
-    def AndE(premises):
+    def AndE(premises, **kwargs):
         a = Logic.verify_arity(premises, 1)
         if not (a.is_line() and isinstance(a := a.formula, And)):
             raise JustificationError('Invalid application of "∧E".')
         return [a.left, a.right]
     
     @Rules.add('∨I')
-    def OrI(premises):
+    def OrI(premises, **kwargs):
         a = Logic.verify_arity(premises, 1)
         if not a.is_line():
             raise JustificationError('Invalid application of "∨I".')
@@ -279,7 +276,7 @@ class TFL(Logic):
         return [Or(a.formula, m1), Or(m2, a.formula)]
 
     @Rules.add('∨E')
-    def OrE(premises):
+    def OrE(premises, **kwargs):
         a, b, c = Logic.verify_arity(premises, 3)
         if not (a.is_line() and isinstance(a := a.formula, Or) 
                 and b.is_subproof() and c.is_subproof()):
@@ -292,14 +289,14 @@ class TFL(Logic):
         return [bc]
     
     @Rules.add('→I')
-    def ImpI(premises):
+    def ImpI(premises, **kwargs):
         a = Logic.verify_arity(premises, 1)
         if not (a.is_subproof() and a.conclusion):
             raise JustificationError('Invalid application of "→I".')
         return [Imp(a.assumption, a.conclusion)]
     
     @Rules.add('→E')
-    def ImpE(premises):
+    def ImpE(premises, **kwargs):
         a, b = Logic.verify_arity(premises, 2)
         if not (a.is_line() and isinstance(a := a.formula, Imp) 
                 and b.is_line() and b.formula == a.left):
@@ -307,7 +304,7 @@ class TFL(Logic):
         return [a.right]
     
     @Rules.add('↔I')
-    def IffI(premises):
+    def IffI(premises, **kwargs):
         a, b = Logic.verify_arity(premises, 2)
         if not (a.is_subproof() and b.is_subproof()):
             raise JustificationError('Invalid application of "↔I".')
@@ -319,7 +316,7 @@ class TFL(Logic):
         return [Iff(aa, ac), Iff(ba, bc)]
     
     @Rules.add('↔E')
-    def IffE(premises):
+    def IffE(premises, **kwargs):
         a, b = Logic.verify_arity(premises, 2)
         if not (a.is_line() and isinstance(a := a.formula, Iff) and b.is_line()):
             raise JustificationError('Invalid application of "↔E".')
@@ -331,14 +328,14 @@ class TFL(Logic):
         raise JustificationError('Invalid application of "↔E".')
     
     @Rules.add('R')
-    def R(premises):
+    def R(premises, **kwargs):
         a = Logic.verify_arity(premises, 1)
         if not a.is_line():
             raise JustificationError('Invalid application of "R".')
         return [a.formula]
     
     @Rules.add('IP')
-    def IP(premises):
+    def IP(premises, **kwargs):
         a = Logic.verify_arity(premises, 1)
         if not (a.is_subproof() and isinstance(a.assumption, Not) 
                 and isinstance(a.conclusion, Falsum)):
@@ -346,7 +343,7 @@ class TFL(Logic):
         return [a.assumption.inner]
     
     @Rules.add('DS')
-    def DS(premises):
+    def DS(premises, **kwargs):
         a, b = Logic.verify_arity(premises, 2)
         if not (a.is_line() and isinstance(a := a.formula, Or) 
                 and b.is_line() and isinstance(b := b.formula, Not)):
@@ -359,7 +356,7 @@ class TFL(Logic):
         raise JustificationError('Invalid application of "DS".')
 
     @Rules.add('MT')
-    def MT(premises):
+    def MT(premises, **kwargs):
         a, b = Logic.verify_arity(premises, 2)
         if not (a.is_line() and isinstance(a := a.formula, Imp) 
                 and b.is_line() and isinstance(b := b.formula, Not) 
@@ -368,7 +365,7 @@ class TFL(Logic):
         return [Not(a.left)]
 
     @Rules.add('DNE')
-    def DNE(premises):
+    def DNE(premises, **kwargs):
         a = Logic.verify_arity(premises, 1)
         if not (a.is_line() and isinstance(a := a.formula, Not) 
                 and isinstance(a.inner, Not)):
@@ -376,7 +373,7 @@ class TFL(Logic):
         return [a.inner.inner]
 
     @Rules.add('LEM')
-    def LEM(premises):
+    def LEM(premises, **kwargs):
         a, b = Logic.verify_arity(premises, 2)
         if not (a.is_subproof() and b.is_subproof()):
             raise JustificationError('Invalid application of "LEM".')
@@ -390,7 +387,7 @@ class TFL(Logic):
         return [ac]
 
     @Rules.add('DeM')
-    def DeM(premises):
+    def DeM(premises, **kwargs):
         c = Logic.verify_arity(premises, 1)
         if not c.is_line():
             raise JustificationError('Invalid application of "DeM".')
@@ -411,33 +408,71 @@ class TFL(Logic):
 class FOL(TFL):
 
     @Rules.add('=I')
-    def EqI(premises):
+    def EqI(premises, **kwargs):
         Logic.verify_arity(premises, 0)
         m = Metavar()
         return [Eq(m, m)]
     
     @Rules.add('=E')
-    def EqE(premises):
-        raise NotImplementedError()
+    def EqE(premises, **kwargs):
+        a, b = Logic.verify_arity(premises, 2)
+        if not (a.is_line() and isinstance(a := a.formula, Eq) and b.is_line()):
+            raise JustificationError('Invalid application of "=E".')
+        terms = {a.left, a.right}
+        def gen(): return Metavar(lambda obj: obj in terms)
+        return [sub_terms(b.formula, terms, gen)]
 
     @Rules.add('∀I')
-    def ForallI(premises):
-        raise NotImplementedError()
+    def ForallI(premises, conclusion, context, **kwargs):
+        a = Logic.verify_arity(premises, 1)
+        if not (a.is_line() and isinstance(conclusion, Forall)):
+            raise JustificationError('Invalid application of "∀I".')
+        var = conclusion.var
+        def ignore(v): return v == var
+
+        schemes = []
+        for c in constants(a.formula):
+            inner = sub_terms(a.formula, {c}, lambda: var, ignore)
+            schemes.append(Forall(var, inner))
+        return schemes
     
     @Rules.add('∀E')
-    def ForallE(premises):
-        raise NotImplementedError()
+    def ForallE(premises, **kwargs):
+        a = Logic.verify_arity(premises, 1)
+        if not (a.is_line() and isinstance(a := a.formula, Forall)):
+            raise JustificationError('Invalid application of "∀E".')
+        m = Metavar()  # restrict to constants
+        return [sub_terms(a.inner, {a.var}, lambda: m)]
 
     @Rules.add('∃I')
-    def ExistsI(premises):
-        raise NotImplementedError()
+    def ExistsI(premises, conclusion, **kwargs):
+        a = Logic.verify_arity(premises, 1)
+        if not (a.is_line() and isinstance(conclusion, Exists)):
+            raise JustificationError('Invalid application of "∃I".')
+        var = conclusion.var
+        def ignore(v): return v == var
+
+        schemes = []
+        for c in constants(a.formula):
+            def gen(): return Metavar(lambda obj: obj in {c, var})
+            inner = sub_terms(a.formula, {c}, gen, ignore)
+            schemes.append(Exists(var, inner))
+        return schemes
     
     @Rules.add('∃E')
-    def ExistsE(premises):
-        raise NotImplementedError()
+    def ExistsE(premises, context, **kwargs):
+        a, b = Logic.verify_arity(premises, 2)
+        if not (a.is_line() and isinstance(a := a.formula, Exists) 
+                and b.is_subproof() and b.conclusion):
+            raise JustificationError('Invalid application of "∃E".')
+        m = Metavar()  # restrict to constants
+        scheme = sub_terms(a.inner, {a.var}, lambda: m)
+        if b.assumption != scheme:
+            raise JustificationError('Invalid application of "∃E".')
+        return [b.conclusion]
 
     @Rules.add('CQ')
-    def CQ(premises):
+    def CQ(premises, **kwargs):
         a = Logic.verify_arity(premises, 1)
         if not a.is_line():
             raise JustificationError('Invalid application of "CQ".')
@@ -458,15 +493,15 @@ class FOL(TFL):
 class MLK(TFL):
 
     @Rules.add('□I')
-    def BoxI(premises):
+    def BoxI(premises, **kwargs):
         raise NotImplementedError()
     
     @Rules.add('□E')
-    def BoxE(premises):
+    def BoxE(premises, **kwargs):
         raise NotImplementedError()
 
     @Rules.add('Def♢')
-    def DefDia(premises):
+    def DefDia(premises, **kwargs):
         a = Logic.verify_arity(premises, 1)
         if not a.is_line():
             raise JustificationError('Invalid application of "Def♢".')
@@ -480,7 +515,7 @@ class MLK(TFL):
         raise JustificationError('Invalid application of "Def♢".')
 
     @Rules.add('MC')
-    def MC(premises):
+    def MC(premises, **kwargs):
         a = Logic.verify_arity(premises, 1)
         if not a.is_line():
             raise JustificationError('Invalid application of "MC".')
@@ -501,21 +536,21 @@ class MLK(TFL):
 class MLT(MLK):
 
     @Rules.add('RT')
-    def RT(premises):
+    def RT(premises, **kwargs):
         raise NotImplementedError()
 
 
 class MLS4(MLT):
 
     @Rules.add('R4')
-    def R4(premises):
+    def R4(premises, **kwargs):
         raise NotImplementedError()
 
 
 class MLS5(MLS4):
 
     @Rules.add('R5')
-    def R5(premises):
+    def R5(premises, **kwargs):
         raise NotImplementedError()
 
 
@@ -532,7 +567,7 @@ def is_tfl_sentence(formula):
 
 
 def is_fol_formula(formula):
-    # For now, not including prop variables
+    # For now, not including prop vars
     match formula:
         case Falsum() | Pred() | Eq():
             return True
@@ -577,11 +612,35 @@ def terms(formula, free):
 
 
 def constants(formula):
-    return terms(formula, free=False) & formula.constants
+    all_terms = terms(formula, free=False)
+    return {t for t in all_terms if t.name in Const.names}
 
 
 def free_vars(formula):
-    return terms(formula, free=True) - formula.constants
+    free_terms = terms(formula, free=True)
+    return {t for t in free_terms if t.name in Var.names}
+
+
+def sub_terms(formula, terms, gen, ignore=lambda v: False):
+    match formula:
+        case Falsum():
+            return Falsum()
+        case Not(a):
+            return Not(sub_terms(a, terms, gen, ignore))
+        case And(a, b) | Or(a, b) | Imp(a, b) | Iff(a, b):
+            a = sub_terms(a, terms, gen, ignore)
+            b = sub_terms(b, terms, gen, ignore)
+            return type(formula)(a, b)
+        case Forall(v, a) | Exists(v, a):
+            a = a if ignore(v) else sub_terms(a, terms - {v}, gen, ignore)
+            return type(formula)(v, a)
+        case Pred(s, args):
+            args = [gen() if arg in terms else arg for arg in args]
+            return Pred(s, args)
+        case Eq(a, b):
+            a = gen() if a in terms else a
+            b = gen() if b in terms else b
+            return Eq(a, b)
 
 
 class ProofObject:
@@ -692,8 +751,9 @@ class Subproof(ProofObject):
     def _add_line_current(self, formula, justification):
         rule, citations = justification.rule, justification.citations
         premises = self.retrieve_citations(citations)
-        schemes = rule(premises)
-        
+        context = self.context + self.seq
+        schemes = rule(premises, conclusion=formula, context=context)
+
         if not self.match_schemes(formula, schemes):
             raise InferenceError('Line not justified.')
         idx = self.idx[1] + 1
@@ -701,14 +761,13 @@ class Subproof(ProofObject):
         self.seq.append(line)
     
     def _begin_subproof_current(self, assumption):
-        seq = self.seq
-        context = self.context + seq
+        context = self.context + self.seq
         if isinstance(assumption, BoxMarker):
             context = []  # FIX
 
         idx = self.idx[1] + 1
         subproof = Subproof(idx, assumption, context)
-        seq.append(subproof)
+        self.seq.append(subproof)
 
     def _collect_lines(self, depth=0):
         indent = ' '.join('|' * (depth + 1))

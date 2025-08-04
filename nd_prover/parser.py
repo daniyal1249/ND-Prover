@@ -95,7 +95,7 @@ def find_main_connective(s, symbol):
 
 
 def parse_term(t):
-    return Const(t) if 'a' <= t <= 'r' else Var(t)
+    return Const(t) if t in Const.names else Var(t)
 
 
 def _parse_formula(f):
@@ -105,7 +105,7 @@ def _parse_formula(f):
     if f == '⊥':
         return Falsum()
     
-    # Prop variables
+    # Prop vars
     m = re.fullmatch(r'[A-Z]', f)
     if m:
         return PropVar(f)
@@ -139,7 +139,8 @@ def _parse_formula(f):
         return Not(_parse_formula(f[1:]))
     
     # Quantifiers
-    m = re.match(r'(∀|∃)([s-z])', f)
+    v1, v2 = Var.names[0], Var.names[-1]
+    m = re.match(f'(∀|∃)([{v1}-{v2}])', f)
     if m:
         var = Var(m.group(2))
         inner = _parse_formula(f[2:])
