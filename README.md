@@ -15,12 +15,27 @@ Supports propositional, first-order, and modal logics (K, T, S4, S5) via a comma
 - [x] Modal logic S5 (MLS5)
 
 
+## Installation
+
+ND-Prover can be installed using pip:
+
+    pip install nd-prover
+
+or by directly cloning the git repository:
+
+    git clone https://github.com/daniyal1249/nd-prover.git
+
+and running the following in the cloned repo:
+
+    pip install .
+
+
 ## Example Usage
 
 ```
 $ python -m nd_prover
 Select logic (TFL, FOL, MLK, MLT, MLS4, MLS5): TFL
-Enter premises (separated by "," or ";"): P -> Q, P
+Enter premises (separated by "," or ";"), or "NA" if none: P -> Q, P
 Enter conclusion: Q
 
  1 | P → Q      PR
