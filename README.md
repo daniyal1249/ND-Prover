@@ -33,7 +33,7 @@ and running the following in the cloned repo:
 ## Example Usage
 
 ```
-$ python -m nd_prover
+$ nd-prover
 Select logic (TFL, FOL, MLK, MLT, MLS4, MLS5): TFL
 Enter premises (separated by "," or ";"), or "NA" if none: P -> Q, P
 Enter conclusion: Q
