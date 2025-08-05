@@ -824,27 +824,24 @@ class Subproof(ProofObject):
         self.seq.append(subproof)
 
     def _collect_lines(self, depth=0):
-        indent = ' '.join('|' * (depth + 1))
-        assumptions = self.seq[:1] if self.assumption else self.context
+        indent = '│ ' * depth
+        seq = self.seq if self.assumption else self.context + self.seq
+        bar_idx = 0 if self.assumption else len(self.context) - 1
+
         lines = []
-
-        for a in assumptions:
-            line = (a.idx, f'{indent} {a.formula}', a.justification)
-            lines.append(line)
-
-        if assumptions:
-            bar_len = len(str(assumptions[-1].formula)) + 2
-            line = ('', f'{indent}{'-' * bar_len}', '')
-            lines.append(line)
-
-        i = 1 if self.assumption else 0
-        for obj in self.seq[i:]:
+        for idx, obj in enumerate(seq):
             if obj.is_line():
+                formula = str(obj.formula)
                 j = obj.justification
-                line = (obj.idx, f'{indent} {obj.formula}', j)
-                lines.append(line)
+                lines.append((obj.idx, f'{indent}│ {formula}', j))
             else:
                 lines.extend(obj._collect_lines(depth + 1))
+
+            if idx == bar_idx:
+                bar = f'{indent}├{'─' * (len(formula) + 2)}'
+                lines.append(('', bar, ''))
+            elif idx != len(seq) - 1:
+                lines.append(('', f'{indent}│', ''))
         return lines
 
 

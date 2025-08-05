@@ -242,7 +242,7 @@ async def send_proof_msg(ctx, session):
     """
     premises = ', '.join(str(p) for p in session.premises)
     first_line = f'Proof of {premises} ∴ {session.conclusion}'
-    content = f'{first_line}\n{'-' * len(first_line)}\n\n{session.proof}'
+    content = f'{first_line}\n{'─' * len(first_line)}\n\n{session.proof}'
 
     # Delete previous proof message, if it exists
     if session.proof_msg:

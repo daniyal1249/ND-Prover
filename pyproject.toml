@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nd-prover"
-version = "0.1.0"
+version = "1.0.0"
 description = "An interactive Fitch-style proof checker"
 authors = [{ name = "Daniyal Akif", email = "daniyalakif@gmail.com" }]
 readme = "README.md"
@@ -22,7 +22,7 @@ keywords = [
 ]
 
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
