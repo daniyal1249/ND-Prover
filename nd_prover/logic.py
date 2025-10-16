@@ -838,7 +838,7 @@ class Subproof(ProofObject):
                 lines.extend(obj._collect_lines(depth + 1))
 
             if idx == bar_idx:
-                bar = f'{indent}├{'─' * (len(formula) + 2)}'
+                bar = f"{indent}├{'─' * (len(formula) + 2)}"
                 lines.append(('', bar, ''))
             elif idx != len(seq) - 1:
                 lines.append(('', f'{indent}│', ''))
