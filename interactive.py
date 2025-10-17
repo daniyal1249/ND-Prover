@@ -29,7 +29,7 @@ ACTIVE_PROOF_SESSIONS = {}
 
 # Helper functions
 def cb(s):
-    return f'```\n{s}\n```'
+    return '```\n' + str(s) + '\n```'
 
 
 def parse_and_verify_formula(f, logic):
@@ -242,7 +242,7 @@ async def send_proof_msg(ctx, session):
     """
     premises = ', '.join(str(p) for p in session.premises)
     first_line = f'Proof of {premises} ∴ {session.conclusion}'
-    content = f'{first_line}\n{'─' * len(first_line)}\n\n{session.proof}'
+    content = first_line + '\n' + ('─' * len(first_line)) + '\n\n' + str(session.proof)
 
     # Delete previous proof message, if it exists
     if session.proof_msg:
