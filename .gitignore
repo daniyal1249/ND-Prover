@@ -4,5 +4,6 @@ __pycache__/
 dist/
 build/
 *.egg-info/
+.null-ls*
 
 test2.py
