@@ -2,7 +2,7 @@ import unittest
 import time
 
 from nd_prover import *
-from nd_prover.tfl_semantic import prop_vars, evaluate, is_valid
+from nd_prover.tfl_sat import prop_vars, evaluate, is_valid
 
 
 class TestPropVars(unittest.TestCase):
@@ -10,12 +10,12 @@ class TestPropVars(unittest.TestCase):
         self.assertEqual(prop_vars(PropVar("A")), {"A"})
         self.assertEqual(prop_vars(PropVar("P")), {"P"})
 
-    def test_falsum(self):
-        self.assertEqual(prop_vars(Falsum()), set())
+    def test_bot(self):
+        self.assertEqual(prop_vars(Bot()), set())
 
     def test_not(self):
         self.assertEqual(prop_vars(Not(PropVar("A"))), {"A"})
-        self.assertEqual(prop_vars(Not(Falsum())), set())
+        self.assertEqual(prop_vars(Not(Bot())), set())
         self.assertEqual(prop_vars(Not(Not(PropVar("B")))), {"B"})
 
     def test_binary_connectives(self):
@@ -33,14 +33,14 @@ class TestPropVars(unittest.TestCase):
         self.assertEqual(prop_vars(formula), {"A", "B", "C", "D"})
 
     def test_no_vars(self):
-        self.assertEqual(prop_vars(And(Falsum(), Falsum())), set())
-        self.assertEqual(prop_vars(Not(Not(Falsum()))), set())
+        self.assertEqual(prop_vars(And(Bot(), Bot())), set())
+        self.assertEqual(prop_vars(Not(Not(Bot()))), set())
 
 
 class TestEvaluate(unittest.TestCase):
-    def test_falsum(self):
-        self.assertFalse(evaluate(Falsum(), {}))
-        self.assertFalse(evaluate(Falsum(), {"A": True}))
+    def test_bot(self):
+        self.assertFalse(evaluate(Bot(), {}))
+        self.assertFalse(evaluate(Bot(), {"A": True}))
 
     def test_propvar(self):
         self.assertTrue(evaluate(PropVar("A"), {"A": True}))
@@ -86,10 +86,10 @@ class TestEvaluate(unittest.TestCase):
         self.assertFalse(evaluate(formula2, {"A": True, "B": True, "C": True, "D": False}))
         self.assertTrue(evaluate(formula2, {"A": True, "B": True, "C": True, "D": True}))
 
-    def test_falsum_in_formulas(self):
-        self.assertFalse(evaluate(And(Falsum(), PropVar("A")), {"A": True}))
-        self.assertTrue(evaluate(Or(Falsum(), PropVar("A")), {"A": True}))
-        self.assertTrue(evaluate(Imp(Falsum(), PropVar("A")), {"A": True}))
+    def test_bot_in_formulas(self):
+        self.assertFalse(evaluate(And(Bot(), PropVar("A")), {"A": True}))
+        self.assertTrue(evaluate(Or(Bot(), PropVar("A")), {"A": True}))
+        self.assertTrue(evaluate(Imp(Bot(), PropVar("A")), {"A": True}))
 
 
 class TestIsValid(unittest.TestCase):
@@ -166,13 +166,13 @@ class TestIsValid(unittest.TestCase):
         self.assertFalse(is_valid(premises, conclusion))
 
     def test_no_variables(self):
-        premises = [Falsum()]
-        conclusion = Falsum()
+        premises = [Bot()]
+        conclusion = Bot()
         self.assertTrue(is_valid(premises, conclusion))
 
     def test_no_variables_invalid(self):
         premises = []
-        conclusion = Falsum()
+        conclusion = Bot()
         self.assertFalse(is_valid(premises, conclusion))
 
     def test_multiple_premises(self):
