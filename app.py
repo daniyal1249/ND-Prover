@@ -1,4 +1,5 @@
 from __future__ import annotations
+import os
 
 from flask import Flask, jsonify, render_template, request
 
@@ -181,4 +182,5 @@ def validate_problem():
 
 
 if __name__ == "__main__":
-    app.run()
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
