@@ -37,6 +37,21 @@ export function initProblemUI(state, renderProof) {
   const premisesBox = document.getElementById('premises');
   const conclusionBox = document.getElementById('conclusion');
 
+  // Track last-focused problem input so we can restore it after Alt+Tab
+  premisesBox.addEventListener('focus', () => {
+    window.__ndLastFocus = {
+      kind: 'problem',
+      inputId: 'premises'
+    };
+  });
+
+  conclusionBox.addEventListener('focus', () => {
+    window.__ndLastFocus = {
+      kind: 'problem',
+      inputId: 'conclusion'
+    };
+  });
+
   // Input box blur handlers
   premisesBox.addEventListener('blur', () => {
     commitInputBox(premisesBox, 'premisesText', state);
@@ -53,33 +68,97 @@ export function initProblemUI(state, renderProof) {
 
   // Create problem button handler
   const createBtn = document.getElementById('create-problem');
-  createBtn.addEventListener('click', () => {
+  createBtn.addEventListener('click', async () => {
     commitInputBox(premisesBox, 'premisesText', state);
     commitInputBox(conclusionBox, 'conclusionText', state);
     state.problem.logic = logicSelect.value;
+
+    const logicLabel = state.problem.logic;
+    const premisesText = state.problem.premisesText || '';
+    const conclusionText = state.problem.conclusionText || '';
+
+    // Validate problem with backend before creating proof
+    const payload = {
+      logic: logicLabel,
+      premisesText,
+      conclusionText
+    };
+
+    const resultsSection = document.getElementById('results-section');
+    const resultsBox = document.getElementById('results');
+
+    try {
+      const response = await fetch('/api/validate-problem', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+      const message = data.message || '';
+
+      if (!response.ok || !data.ok) {
+        // Hide the proof pane if visible
+        const proofPane = document.getElementById('proof-section');
+        if (proofPane) {
+          proofPane.style.display = 'none';
+        }
+
+        // Show error in results pane directly under problem-setup
+        if (resultsSection && resultsBox) {
+          resultsSection.style.display = 'block';
+          resultsSection.classList.remove('results-pane--success');
+          resultsSection.classList.add('results-pane--error');
+          resultsBox.textContent = message;
+          resultsBox.classList.add('show');
+        }
+        return;
+      }
+    } catch (error) {
+      // Network or server error; treat as validation failure
+      const proofPane = document.getElementById('proof-section');
+      if (proofPane) {
+        proofPane.style.display = 'none';
+      }
+      if (resultsSection && resultsBox) {
+        resultsSection.style.display = 'block';
+        resultsSection.classList.remove('results-pane--success');
+        resultsSection.classList.add('results-pane--error');
+        resultsBox.textContent = 'An error occurred while validating the problem.';
+        resultsBox.classList.add('show');
+      }
+      return;
+    }
+
+    // At this point, validation succeeded; clear any previous results
+    if (resultsSection && resultsBox) {
+      resultsSection.style.display = 'none';
+      resultsSection.classList.remove('results-pane--success', 'results-pane--error');
+      resultsBox.textContent = '';
+      resultsBox.classList.remove('show');
+    }
 
     // Reset proof
     state.lines = [];
     state.nextId = 1;
 
     // Split premises on , or ; and add as PR lines
-    const parts = (state.problem.premisesText || '').split(/[;,]/).map((s) => s.trim()).filter(Boolean);
+    const parts = premisesText.split(/[;,]/).map((s) => s.trim()).filter(Boolean);
 
     // Build and show the summary line with mixed fonts
-    const logicLabel = state.problem.logic;
     const premStr = parts.join(', ');
-    const conclStr = state.problem.conclusionText || '';
+    const conclStr = conclusionText || '';
     const divider = ' ∴ ';
     const mathContent = premStr ? (premStr + divider + conclStr) : (divider + conclStr);
     const problemSummary = document.getElementById('problem-summary');
     if (problemSummary) {
       // Split text: regular font before colon, math font after
-      problemSummary.innerHTML = `Prove the following argument in ${logicLabel}: <span class="math-content">${mathContent}</span>`;
+      problemSummary.innerHTML = `Prove the following argument in ${logicLabel}:&nbsp;&nbsp;<span class="math-content">${mathContent}</span>`;
     }
 
     // Create premise lines
     for (const p of parts) {
-      const line = addLine(state, 0, null, false, true);
+      const line = addLine(state, 0, null, false, true, 'premise');
       line.text = p; // Already symbolized
       line.justText = 'PR'; // Show PR in justification column
     }

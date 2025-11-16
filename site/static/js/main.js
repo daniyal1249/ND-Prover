@@ -12,7 +12,7 @@ import { renderProof as renderProofFn, updateToolbarVisibility } from './proof/r
 import { deleteLineAt, addLineAfterSame, beginSubproofBelow, endSubproofAt, endAndBeginAnotherAt } from './proof/line-operations.js';
 import { focusLineAt, commitActiveEditor } from './proof/focus-management.js';
 import { filterInput, symbolize, processJustification } from './utils/input-processing.js';
-import { attachKeyboardHandlers } from './ui/keyboard-shortcuts.js';
+import { attachKeyboardHandlers, attachJustificationKeyboardHandlers } from './ui/keyboard-shortcuts.js';
 import { initProblemUI } from './ui/problem-ui.js';
 import { initProofUI } from './ui/proof-ui.js';
 
@@ -100,6 +100,7 @@ function enhanceRenderedLines(render, wrappedAddLineAfterSame, wrappedBeginSubpr
     const idx = parseInt(row.dataset.index, 10);
     const lineId = Number(row.dataset.id);
     const input = row.querySelector('.input');
+    const justInput = row.querySelector('.just-input');
     
     if (input && !input.dataset.handlersAttached) {
       input.dataset.handlersAttached = 'true';
@@ -117,6 +118,17 @@ function enhanceRenderedLines(render, wrappedAddLineAfterSame, wrappedBeginSubpr
         focusLineAt
       );
     }
+
+    if (justInput && !justInput.dataset.handlersAttached) {
+      justInput.dataset.handlersAttached = 'true';
+      attachJustificationKeyboardHandlers(
+        justInput,
+        state,
+        idx,
+        render,
+        focusLineAt
+      );
+    }
   });
 }
 
@@ -130,6 +142,29 @@ function init() {
   // Initialize UI handlers
   initProblemUI(state, render);
   initProofUI(state, render);
+
+  // Restore last-focused editor/input when the window regains focus (e.g., after Alt+Tab)
+  window.addEventListener('focus', () => {
+    // If something is already focused (e.g., user clicked elsewhere), don't override it
+    const ae = document.activeElement;
+    if (ae && ae !== document.body && ae !== document.documentElement) {
+      return;
+    }
+
+    const last = window.__ndLastFocus;
+    if (!last) {
+      return;
+    }
+
+    if (last.kind === 'proof') {
+      focusLineAt(last.index, last.field || 'input');
+    } else if (last.kind === 'problem' && last.inputId) {
+      const el = document.getElementById(last.inputId);
+      if (el) {
+        el.focus();
+      }
+    }
+  });
   
   // Initial render (if needed)
   render();

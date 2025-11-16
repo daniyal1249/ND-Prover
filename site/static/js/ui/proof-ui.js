@@ -8,6 +8,7 @@
 
 import { addLine } from '../proof/line-operations.js';
 import { focusLineAt } from '../proof/focus-management.js';
+import { serializeProofState } from '../utils/serialization.js';
 
 /**
  * Initializes proof UI handlers (toolbar buttons).
@@ -37,5 +38,64 @@ export function initProofUI(state, renderProof) {
     renderProof();
     focusLineAt(0, 'input');
   });
+
+  // Check proof button
+  const btnCheckProof = document.getElementById('check-proof');
+  const resultsSection = document.getElementById('results-section');
+  const resultsBox = document.getElementById('results');
+
+  if (btnCheckProof && resultsBox) {
+    btnCheckProof.addEventListener('click', async () => {
+      // Reveal the results section if hidden (mirror proof-section behavior)
+      if (resultsSection && resultsSection.style.display === 'none') {
+        resultsSection.style.display = 'block';
+      }
+
+      resultsBox.classList.add('show');
+      const payload = serializeProofState(state);
+
+      resultsBox.textContent = 'Checking proof...';
+
+      try {
+        const response = await fetch('/api/check-proof', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await response.json();
+        const message = data.message || '';
+
+        if (!response.ok || !data.ok) {
+          if (resultsSection) {
+            resultsSection.classList.remove('results-pane--success');
+            resultsSection.classList.add('results-pane--error');
+          }
+          resultsBox.textContent = message;
+          return;
+        }
+
+        if (data.isComplete) {
+          if (resultsSection) {
+            resultsSection.classList.remove('results-pane--error');
+            resultsSection.classList.add('results-pane--success');
+          }
+          resultsBox.textContent = message;
+        } else {
+          if (resultsSection) {
+            resultsSection.classList.remove('results-pane--success');
+            resultsSection.classList.add('results-pane--error');
+          }
+          resultsBox.textContent = message;
+        }
+      } catch (error) {
+        if (resultsSection) {
+          resultsSection.classList.remove('results-pane--success');
+          resultsSection.classList.add('results-pane--error');
+        }
+        resultsBox.textContent = 'An error occurred while checking the proof.';
+      }
+    });
+  }
 }
 

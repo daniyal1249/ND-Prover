@@ -183,6 +183,12 @@ export function renderProof(
         return;
       }
       cell.classList.add('focused');
+      // Remember last focused proof editor so we can restore it after Alt+Tab
+      window.__ndLastFocus = {
+        kind: 'proof',
+        index: idx,
+        field: 'input'
+      };
     });
 
     // Input blur handler
@@ -297,6 +303,12 @@ export function renderProof(
       }
       just.classList.add('focused');
       jPlaceholder.classList.remove('show');
+      // Remember last focused proof editor so we can restore it after Alt+Tab
+      window.__ndLastFocus = {
+        kind: 'proof',
+        index: idx,
+        field: 'just-input'
+      };
     });
 
     // Justification blur handler

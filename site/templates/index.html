@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>ND-Prover</title>
+  <title>Fitch-Style Proof Checker</title>
   <!-- maximum-scale=1 -->
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- <link rel="icon" type="image/svg+xml" href="/static/img/nd.svg" /> -->
 
   <!-- Noto Sans (site-wide font) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,9 +34,13 @@
   <header class="site-header">
     <h1>Fitch-Style Proof Checker</h1>
     <p>
-      This is a demo of a proof checker for Fitch-style natural deduction 
-      systems found in many popular introductory logic textbooks. The 
-      specific system used here is the one found in forall x: Calgary.
+      This is a proof editor and checker for the Fitch-style natural deduction system found in 
+      <a href="https://forallx.openlogicproject.org" target="_blank" rel="noreferrer" style="text-decoration: none;"><em>forall x: Calgary</em></a>. 
+      It is based on the 
+      <a href="https://github.com/OpenLogicProject/fitch-checker" target="_blank" rel="noreferrer" style="text-decoration: none;">Open Logic Project</a> 
+      proof checker. More information can be found in the 
+      <a href="https://github.com/daniyal1249/nd-prover" target="_blank" rel="noreferrer" style="text-decoration: none;">ND-Prover</a> 
+      repository.
     </p>
   </header>
 
@@ -78,12 +83,16 @@
           </div>
 
           <div id="proof" class="proof" role="list"></div>
-          <div id="results" class="results" aria-live="polite"></div>
 
           <div class="editor-actions" style="display:flex; justify-content:flex-end; gap:8px; margin-top:34px;">
             <button id="check-proof" class="ui-btn" type="button">CHECK PROOF</button>
           </div>
         </section>
+      </section>
+
+      <!-- Proof check results (hidden until a proof is checked) -->
+      <section id="results-section" class="results-pane" style="display:none;" aria-label="Proof check results">
+        <div id="results" class="results" aria-live="polite"></div>
       </section>
     </div>
 

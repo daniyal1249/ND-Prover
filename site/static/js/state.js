@@ -9,6 +9,22 @@
  * Application state object
  * @type {Object}
  * @property {Array} lines - Array of proof line objects
+ *   Each line has the shape:
+ *   {
+ *     id: number,
+ *     indent: number,
+ *     text: string,        // symbolized formula text
+ *     justText: string,    // symbolized rule + citations, e.g. "∧E, 1,2"
+ *     isAssumption: boolean,
+ *     isPremise: boolean,
+ *     // kind indicates how this line should be replayed by the backend:
+ *     // - 'premise'       -> part of the initial Proof context
+ *     // - 'assumption'    -> begin_subproof(assumption)
+ *     // - 'line'          -> add_line(formula, justification)
+ *     // - 'close_subproof'-> end_subproof(formula, justification)
+ *     // - 'end_and_begin' -> end_and_begin_subproof(assumption)
+ *     kind: 'premise' | 'assumption' | 'line' | 'close_subproof' | 'end_and_begin'
+ *   }
  * @property {number} nextId - Counter for generating unique line IDs
  * @property {Object} problem - Problem configuration
  * @property {string} problem.logic - Selected logic system (TFL, FOL, etc.)
