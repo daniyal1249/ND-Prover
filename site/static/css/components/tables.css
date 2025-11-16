@@ -1,0 +1,142 @@
+/**
+ * Tables Component
+ * 
+ * Styles for tables used in instructions and actions help sections.
+ * Dependencies: variables.css
+ */
+
+/* === Table Card Wrapper === */
+/* Shared wrapper for tables to get rounded corners + padding like create problem */
+.table-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+  /* Clip inner table corners */
+  overflow: hidden;
+}
+
+/* Avoid double borders: let the card provide the border */
+.table-card .table-like {
+  border: 0;
+}
+
+/* === Shared Table Styles === */
+/* Shared table styles (used by Instructions + Actions Help) */
+.table-like {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid var(--line);
+  table-layout: fixed;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.table-like th,
+.table-like td {
+  vertical-align: var(--table-valign, middle);
+  line-height: 1.35;
+}
+
+.table-like th {
+  padding: 0 8px 16px;
+  text-align: center;
+  font-weight: 600;
+  font-size: var(--table-header-size, 16px);
+}
+
+.table-like td {
+  padding: var(--table-cell-vpad, 12px) 8px;
+  font-size: var(--table-body-size, 14px);
+}
+
+.table-like th + th,
+.table-like td + td {
+  border-left: 1px solid var(--line);
+}
+
+.table-like tr + tr th,
+.table-like tr + tr td {
+  border-top: 1px solid var(--line);
+}
+
+/* === Instructions Table === */
+/* Instructions: section-specific sizes via vars (same look as before) */
+.instructions table {
+  --table-header-size: 16px;
+  --table-body-size: 14px;
+  --table-cell-vpad: 12px;
+  --table-valign: middle;
+}
+
+.instructions .inst-section {
+  padding: 10px 8px;
+  text-align: left;
+}
+
+/* === Actions Help Table === */
+.about,
+.actions-help {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.about p,
+.actions-help p {
+  margin: 0 0 10px;
+}
+
+.about h3,
+.actions-help h3 {
+  margin: 0 0 10px;
+  font-weight: 600;
+}
+
+/* Remove the card chrome for actions-help now that it is a table */
+.actions-help {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
+/* Actions-help table: same typography as instructions */
+.actions-help table {
+  --table-header-size: 16px;
+  --table-body-size: 14px;
+  --table-cell-vpad: 10px;
+  --table-valign: middle;
+}
+
+/* Actions-help table tweaks and inert demo buttons */
+.actions-help .btn-cell {
+  text-align: center;
+}
+
+.actions-help .action-btn--demo {
+  /* Ignore mouse */
+  pointer-events: none;
+  cursor: default;
+}
+
+.actions-help .action-btn--demo:hover {
+  /* Cancel global button:hover filter */
+  filter: none;
+  background: #f7f7f7;
+}
+
+/* === Keyboard Shortcut Tags === */
+kbd {
+  display: inline-block;
+  padding: 2px 4px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: #f7f7f7;
+  font-family: monospace;
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+

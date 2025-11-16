@@ -1,0 +1,27 @@
+/**
+ * Layout System
+ * 
+ * Defines the main grid layout and column structure for the application.
+ * Dependencies: variables.css
+ */
+
+/* === Two-Column Layout === */
+/* Two-column layout with independent vertical stacks */
+.main-grid {
+  display: grid;
+  column-gap: var(--grid-col-gap);
+  grid-template-columns:
+    minmax(0, calc(var(--left-ratio) * (100% - var(--grid-col-gap))))
+    minmax(0, calc((1 - var(--left-ratio)) * (100% - var(--grid-col-gap))));
+  align-items: start;
+  margin: 0 0 40px;
+}
+
+/* === Column Stacks === */
+.col-stack {
+  display: grid;
+  row-gap: var(--grid-row-gap);
+  grid-auto-rows: max-content;
+  align-content: start;
+}
+

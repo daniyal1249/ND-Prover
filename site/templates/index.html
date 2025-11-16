@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>ND-Prover</title>
+  <!-- maximum-scale=1 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Noto Sans (site-wide font) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+  <!-- Noto Sans Math (mathematical symbols and text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Math&display=swap" rel="stylesheet">
+
+  <!-- CSS Files -->
+  <link rel="stylesheet" href="/static/css/variables.css">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/layout.css">
+  <link rel="stylesheet" href="/static/css/components/header.css">
+  <link rel="stylesheet" href="/static/css/components/problem-setup.css">
+  <link rel="stylesheet" href="/static/css/components/proof-pane.css">
+  <link rel="stylesheet" href="/static/css/components/proof-line.css">
+  <link rel="stylesheet" href="/static/css/components/toolbar.css">
+  <link rel="stylesheet" href="/static/css/components/tables.css">
+  <link rel="stylesheet" href="/static/css/components/buttons.css">
+  <link rel="stylesheet" href="/static/css/responsive.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>Fitch-Style Proof Checker</h1>
+    <p>
+      This is a demo of a proof checker for Fitch-style natural deduction 
+      systems found in many popular introductory logic textbooks. The 
+      specific system used here is the one found in forall x: Calgary.
+    </p>
+  </header>
+
+  <div class="main-grid">
+    <!-- LEFT COLUMN: Create problem + Proof (independent vertical stack) -->
+    <div class="col-left col-stack">
+      <!-- Create problem -->
+      <section class="create">
+        <section class="problem-setup" aria-label="Create problem">
+          <label for="logic">Logic</label>
+          <select id="logic" class="logic">
+            <option value="TFL">Propositional logic (TFL)</option>
+            <option value="FOL">First-order logic (FOL)</option>
+            <option value="MLK">Modal logic K (MLK)</option>
+            <option value="MLT">Modal logic T (MLT)</option>
+            <option value="MLS4">Modal logic S4 (MLS4)</option>
+            <option value="MLS5">Modal logic S5 (MLS5)</option>
+          </select>
+
+          <label for="premises">Premises</label>
+          <input id="premises" class="text-input" type="text" placeholder="comma- or semicolon-separated" />
+
+          <label for="conclusion">Conclusion</label>
+          <input id="conclusion" class="text-input" type="text" />
+
+          <div style="grid-column:1 / -1; display:flex; justify-content:flex-end; gap:8px; margin-top:4px;">
+            <button id="create-problem" class="ui-btn" type="button">CREATE PROBLEM</button>
+          </div>
+        </section>
+      </section>
+
+      <!-- Proof editor (hidden until a problem is created) -->
+      <section id="proof-section" class="proof-pane" style="display:none;" aria-label="Proof area">
+        <div id="problem-summary" class="problem-summary" aria-live="polite"></div>
+
+        <section aria-label="Proof editor">
+          <div class="toolbar" id="toolbar">
+            <button id="btn-add-line" class="ui-btn" type="button">ADD LINE</button>
+            <button id="btn-begin-subproof" class="ui-btn" type="button">BEGIN SUBPROOF</button>
+          </div>
+
+          <div id="proof" class="proof" role="list"></div>
+          <div id="results" class="results" aria-live="polite"></div>
+
+          <div class="editor-actions" style="display:flex; justify-content:flex-end; gap:8px; margin-top:34px;">
+            <button id="check-proof" class="ui-btn" type="button">CHECK PROOF</button>
+          </div>
+        </section>
+      </section>
+    </div>
+
+    <!-- RIGHT COLUMN: Actions help + Instructions (independent vertical stack) -->
+    <div class="col-right col-stack">
+      <!-- Actions help -->
+      <aside class="actions-help" aria-label="Inline actions help">
+        <div class="table-card">
+          <table class="table-like">
+            <colgroup>
+              <col style="width: 15%;">
+              <col style="width: 85%;">
+            </colgroup>
+
+            <!-- Section header, same pattern as Instructions -->
+            <tr>
+              <th colspan="2">Edit tools</th>
+            </tr>
+
+            <!-- Five demo rows: left cell shows the inert button; right cell has your text -->
+            <tr>
+              <td class="btn-cell">
+                <button class="action-btn action-btn--demo" type="button" aria-hidden="true" tabindex="-1">x</button>
+              </td>
+              <td>Delete this line</td>
+            </tr>
+            <tr>
+              <td class="btn-cell">
+                <button class="action-btn action-btn--demo" type="button" aria-hidden="true" tabindex="-1">↓</button>
+              </td>
+              <td style="white-space: pre-wrap;">Add a line below  <kbd>Enter</kbd></td>
+            </tr>
+            <tr>
+              <td class="btn-cell">
+                <button class="action-btn action-btn--demo" type="button" aria-hidden="true" tabindex="-1">→</button>
+              </td>
+              <td style="white-space: pre-wrap;">Begin a subproof below  <kbd>Tab</kbd></td>
+            </tr>
+            <tr>
+              <td class="btn-cell">
+                <button class="action-btn action-btn--demo" type="button" aria-hidden="true" tabindex="-1">←</button>
+              </td>
+              <td style="white-space: pre-wrap;">End this subproof and add a line below  <kbd>Shift</kbd>+<kbd>Enter</kbd></td>
+            </tr>
+            <tr>
+              <td class="btn-cell">
+                <button class="action-btn action-btn--demo" type="button" aria-hidden="true" tabindex="-1">↔</button>
+              </td>
+              <td style="white-space: pre-wrap;">End this subproof and begin another below  <kbd>Shift</kbd>+<kbd>Tab</kbd></td>
+            </tr>
+          </table>
+        </div>
+      </aside>
+
+      <!-- Instructions -->
+      <section class="instructions" aria-label="Instructions">
+        <div class="table-card">
+          <table class="table-like">
+            <colgroup>
+              <col style="width: 40%;">
+              <col style="width: 60%;">
+            </colgroup>
+            <tr>
+              <th colspan="2">Syntax rules</th>
+            </tr>
+
+            <tr>
+              <th colspan="2" class="inst-section">TFL</th>
+            </tr>
+            <tr>
+              <td>Propositional variables</td>
+              <td>single uppercase letters (A-Z)</td>
+            </tr>
+            <tr>
+              <td>Not</td>
+              <td style="white-space: pre-wrap;">not  ¬  ~  ∼  -  −</td>
+            </tr>
+            <tr>
+              <td>And</td>
+              <td style="white-space: pre-wrap;">and  ∧  ^  &  .  ·  *</td>
+            </tr>
+            <tr>
+              <td>Or</td>
+              <td style="white-space: pre-wrap;">or  ∨</td>
+            </tr>
+            <tr>
+              <td>Implies</td>
+              <td style="white-space: pre-wrap;">imp  →  ⇒  ⊃  ->  ></td>
+            </tr>
+            <tr>
+              <td>Iff</td>
+              <td style="white-space: pre-wrap;">iff  ↔  ≡  <-></td>
+            </tr>
+            <tr>
+              <td>Contradiction</td>
+              <td style="white-space: pre-wrap;">bot  ⊥  XX  #</td>
+            </tr>
+
+            <tr>
+              <th colspan="2" class="inst-section">FOL</th>
+            </tr>
+            <tr>
+              <td>Atomic sentences</td>
+              <td>predicates followed by names, or identities (Pa, Fcdc, a = d, etc.)</td>
+            </tr>
+            <tr>
+              <td>Predicates</td>
+              <td>single uppercase letters except A and E</td>
+            </tr>
+            <tr>
+              <td>Names</td>
+              <td>single lowercase letters (a-r)</td>
+            </tr>
+            <tr>
+              <td>Variables</td>
+              <td>single lowercase letters (s-z)</td>
+            </tr>
+            <tr>
+              <td>Forall</td>
+              <td style="white-space: pre-wrap;">forall x  ∀x  Ax  ⋀x</td>
+            </tr>
+            <tr>
+              <td>Exists</td>
+              <td style="white-space: pre-wrap;">exists x  ∃x  Ex  ⋁x</td>
+            </tr>
+
+            <tr>
+              <th colspan="2" class="inst-section">ML</th>
+            </tr>
+            <tr>
+              <td>Box</td>
+              <td style="white-space: pre-wrap;">box  □  []</td>
+            </tr>
+            <tr>
+              <td>Diamond</td>
+              <td style="white-space: pre-wrap;">dia  ♢  <></td>
+            </tr>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Main Application Script -->
+  <script type="module" src="/static/js/main.js"></script>
+</body>
+</html>

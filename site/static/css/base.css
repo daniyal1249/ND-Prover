@@ -1,0 +1,27 @@
+/**
+ * Base Styles
+ * 
+ * Provides reset styles and base element styling for the application.
+ * Dependencies: variables.css
+ */
+
+/* === Reset === */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  height: auto;
+}
+
+/* === Body === */
+body {
+  min-height: 100vh;
+  margin: 0;
+  padding-left: var(--page-margin);
+  padding-right: var(--page-margin);
+  font-family: var(--sans);
+  background: #fff;
+  color: var(--ink);
+}
+

@@ -1,0 +1,18 @@
+/**
+ * Toolbar Component
+ * 
+ * Styles for the toolbar containing action buttons.
+ * Dependencies: variables.css
+ */
+
+.toolbar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.toolbar .flex-spacer {
+  flex: 1;
+}
+

@@ -1,0 +1,23 @@
+/**
+ * Site Header Component
+ * 
+ * Styles for the top header section with centered title and description.
+ * Dependencies: variables.css
+ */
+
+/* === Top Header === */
+/* Top header (centered title) */
+.site-header {
+  padding: 40px 16px;
+  text-align: center;
+}
+
+.site-header h1 {
+  margin: 0;
+}
+
+.site-header p {
+  margin: 8px 0 0;
+  color: #444;
+}
+

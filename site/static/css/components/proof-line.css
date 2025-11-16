@@ -1,0 +1,233 @@
+/**
+ * Proof Line Component
+ * 
+ * Styles for individual proof lines including line numbers, formula cells,
+ * justification cells, bars, and hover effects.
+ * Dependencies: variables.css
+ */
+
+/* === Proof Line Grid === */
+.proof-line {
+  display: grid;
+  /* lineno | proof | just | actions */
+  grid-template-columns: var(--lineno-w) var(--proof-w) var(--just-w) var(--actions-w);
+  column-gap: var(--just-gap);
+  align-items: stretch;
+  position: relative;
+}
+
+/* === Line Number === */
+.lineno {
+  padding: var(--lineno-vpad) 8px var(--lineno-vpad) 0;
+  text-align: right;
+  color: #000;
+  background: #fff;
+  font-family: var(--math-font);
+  font-variant-numeric: tabular-nums;
+}
+
+/* === Formula Cell === */
+.cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: var(--row-vpad) 12px;
+  min-height: var(--min-row-h);
+  background: #fff;
+  cursor: text;
+}
+
+/* Premise lines: disable hover and pointer */
+.cell.disabled {
+  cursor: default;
+}
+
+.cell.disabled:hover .hover-bg {
+  opacity: 0;
+}
+
+/* === Bars (Proof Column) === */
+.bars {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: var(--bar-w) solid var(--bar);
+}
+
+.bar.cap {
+  top: var(--bar-cap-gap);
+}
+
+.hbar {
+  position: absolute;
+  bottom: 0;
+  height: 0;
+  border-top: var(--bar-w) solid var(--bar);
+  z-index: 3;
+}
+
+/* === Hover Background === */
+/* Hover background inside the content column */
+.hover-bg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--hover);
+  opacity: 0;
+  transition: opacity 0.05s linear;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.cell:hover .hover-bg {
+  opacity: 1;
+}
+
+.cell.focused .hover-bg {
+  opacity: 0;
+}
+
+/* === Input Wrapper === */
+.input-wrap {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  /* Set per-line in JS using style attribute */
+  margin-left: 0;
+}
+
+/* === Formula Input === */
+.input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--math-font);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  padding: var(--input-vpad) 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 22px;
+}
+
+/* === Justification Column === */
+.just {
+  position: relative;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  padding: var(--just-vpad) 10px;
+  min-height: var(--min-row-h);
+  cursor: text;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.just.disabled {
+  cursor: default;
+}
+
+.just.disabled .just-input {
+  pointer-events: none;
+}
+
+.just.filled .just-input:not(:focus) {
+  background: transparent;
+}
+
+/* === Justification Hover === */
+.j-hover-bg,
+.j-placeholder {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--hover);
+  opacity: 0;
+  transition: opacity 0.05s linear;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.just:hover .j-hover-bg {
+  opacity: 1;
+}
+
+.just.focused .j-hover-bg {
+  opacity: 0;
+}
+
+.j-placeholder.show {
+  opacity: 1;
+}
+
+.just:hover .j-placeholder.show {
+  background: var(--hover-strong);
+  opacity: 1;
+}
+
+/* Disable hover on non-editable justifications */
+.just.disabled:hover .j-hover-bg {
+  opacity: 0;
+}
+
+.just.disabled:hover .j-placeholder {
+  opacity: 0;
+}
+
+/* === Justification Input === */
+.just-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--math-font);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  padding: var(--input-vpad) 4px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 22px;
+  position: relative;
+  z-index: 1;
+}
+
+.just-input:focus {
+  background: transparent;
+}
+
+/* === Line Actions === */
+/* Per-line actions */
+.line-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 8px;
+  min-height: var(--min-row-h);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.08s linear;
+}
+
+.proof-line:hover .line-actions,
+.line-actions:hover {
+  opacity: 1;
+  pointer-events: auto;
+}
+

@@ -1,0 +1,43 @@
+/**
+ * Proof Pane Component
+ * 
+ * Styles for the proof editor container and related elements.
+ * Dependencies: variables.css
+ */
+
+/* === Proof Pane Container === */
+/* Proof pane gets the same card chrome */
+.proof-pane {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.proof {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+}
+
+/* === Results Display === */
+.help {
+  color: #666;
+  font-size: 13px;
+  margin: 8px 2px;
+}
+
+.results {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #fff;
+  display: none;
+}
+
+.results.show {
+  display: block;
+}
+

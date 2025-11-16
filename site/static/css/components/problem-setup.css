@@ -1,0 +1,66 @@
+/**
+ * Problem Setup Component
+ * 
+ * Styles for the problem creation form including logic selector,
+ * premises input, and conclusion input.
+ * Dependencies: variables.css
+ */
+
+/* === Problem Setup Form === */
+/* Panels / cards (white backgrounds, grayscale) */
+.problem-setup {
+  padding: 16px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 8px 12px;
+  align-items: center;
+}
+
+.problem-setup label {
+  color: #333;
+}
+
+/* === Form Inputs === */
+/* Logic select (width 50% of its field column) */
+select.logic {
+  font-family: var(--sans);
+  font-size: 14px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  width: 50%;
+}
+
+/* Single-line inputs for Premises/Conclusion */
+.text-input {
+  font-family: var(--math-font);
+  font-size: 14px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  width: 100%;
+}
+
+/* Placeholder text in text inputs should use regular font */
+.text-input::placeholder {
+  font-family: var(--sans);
+}
+
+/* === Problem Summary === */
+/* Summary line above the editor */
+.problem-summary {
+  color: var(--ink);
+  margin: 0 0 34px;
+  font-family: var(--sans);
+}
+
+/* Mathematical content in problem summary */
+.problem-summary .math-content {
+  font-family: var(--math-font);
+}
+

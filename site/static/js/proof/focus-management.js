@@ -1,0 +1,76 @@
+/**
+ * Focus Management
+ * 
+ * Functions for managing focus and cursor position in proof line inputs.
+ * 
+ * Dependencies: None
+ */
+
+/**
+ * Commits the currently active editor's content to state.
+ * Handles both formula inputs and justification inputs.
+ * 
+ * @param {Object} state - Application state object
+ * @param {Function} filterInput - Function to filter input text
+ * @param {Function} symbolize - Function to symbolize text
+ * @param {Function} processJustification - Function to process justification text
+ */
+export function commitActiveEditor(state, filterInput, symbolize, processJustification) {
+  const ae = document.activeElement;
+  if (!ae || !ae.isContentEditable) {
+    return;
+  }
+
+  const row = ae.closest('.proof-line');
+  if (!row) {
+    return;
+  }
+
+  const lineId = Number(row.dataset.id);
+  const idx = state.lines.findIndex((l) => l.id === lineId);
+  if (idx === -1) {
+    // Row no longer corresponds to a live line
+    return;
+  }
+
+  const val = ae.textContent || '';
+  if (ae.classList.contains('input')) {
+    const processed = filterInput(val);
+    const sym = processed ? symbolize(processed) : '';
+    state.lines[idx].text = sym;
+  } else if (ae.classList.contains('just-input')) {
+    const processed = val ? processJustification(val) : '';
+    state.lines[idx].justText = processed;
+  }
+}
+
+/**
+ * Focuses a specific line at the given index and positions cursor at end.
+ * 
+ * @param {number} index - Index of the line to focus
+ * @param {string} field - Field to focus ('input' or 'just-input')
+ */
+export function focusLineAt(index, field = 'input') {
+  requestAnimationFrame(() => {
+    const el = document.querySelector(`.proof-line[data-index="${index}"] .${field}`);
+    if (!el) {
+      return;
+    }
+    el.focus({ preventScroll: true });
+    
+    // Position cursor at end of content
+    const r = document.createRange();
+    const s = window.getSelection();
+    r.selectNodeContents(el);
+    r.collapse(false);
+    s.removeAllRanges();
+    s.addRange(r);
+    
+    // Add focused class to container
+    const container = el.closest(field === 'input' ? '.cell' : '.just');
+    if (container) {
+      container.classList.add('focused');
+    }
+  });
+}
+

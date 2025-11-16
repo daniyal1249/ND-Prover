@@ -1,0 +1,48 @@
+/**
+ * Buttons Component
+ * 
+ * Styles for UI buttons and action buttons used throughout the application.
+ * Dependencies: variables.css
+ */
+
+/* === UI Buttons === */
+.ui-btn {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 12px;
+  padding: 12px 24px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  color: rgb(85, 85, 85);
+  cursor: pointer;
+  user-select: none;
+}
+
+.ui-btn:hover {
+  filter: brightness(0.95);
+}
+
+/* === Action Buttons === */
+.action-btn {
+  border: 1px solid var(--line);
+  background: #f7f7f7;
+  width: 24px;
+  height: 34px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  color: var(--ink);
+  user-select: none;
+}
+
+.action-btn:hover {
+  filter: brightness(0.98);
+  background: #eee;
+}
+
