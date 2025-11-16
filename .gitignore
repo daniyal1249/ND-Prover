@@ -6,4 +6,6 @@ build/
 *.egg-info/
 .null-ls*
 
+discord_app.py
+test.py
 test2.py
