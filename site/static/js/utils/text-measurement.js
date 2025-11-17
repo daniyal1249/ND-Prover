@@ -32,7 +32,7 @@ export function textWidth(text) {
 /**
  * Reads a CSS custom property value and converts it to a number (pixels).
  * 
- * @param {string} name - CSS custom property name (e.g., '--indent')
+ * @param {string} name - CSS custom property name (e.g., '--proof-indent')
  * @returns {number} Numeric value in pixels, or 0 if invalid
  */
 export function pxVar(name) {

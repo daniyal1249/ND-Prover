@@ -19,9 +19,9 @@ import { commitActiveEditor, focusLineAt } from './focus-management.js';
  * @returns {number} Required width in pixels
  */
 export function computeProofWidth(state) {
-  const base = pxVar('--min-line-span');
-  const theIndent = pxVar('--indent');
-  const gap = pxVar('--text-gap');
+  const base = pxVar('--proof-formula-min-width');
+  const theIndent = pxVar('--proof-indent');
+  const gap = pxVar('--proof-text-gap');
   let maxW = 0;
   
   for (const line of state.lines) {
@@ -86,7 +86,7 @@ export function addBars(container, depth, capLast = false) {
     if (capLast && i === depth) {
       bar.classList.add('cap');
     }
-    bar.style.left = `calc(${i} * var(--indent))`;
+    bar.style.left = `calc(${i} * var(--proof-indent))`;
     container.appendChild(bar);
   }
 }
@@ -176,10 +176,10 @@ function handleBlurWithConditionalRender(inputElement, processedText, updateStat
 function createHorizontalBar(line) {
   const h = document.createElement('div');
   h.className = 'hbar';
-  h.style.left = `calc(${line.indent} * var(--indent))`;
-  const base = pxVar('--hbar-len');
-  const extra = pxVar('--hbar-extra');
-  const width = line.text ? (textWidth(line.text) + pxVar('--text-gap') + extra) : base;
+  h.style.left = `calc(${line.indent} * var(--proof-indent))`;
+  const base = pxVar('--horizontal-bar-length');
+  const extra = pxVar('--horizontal-bar-extra-width');
+  const width = line.text ? (textWidth(line.text) + pxVar('--proof-text-gap') + extra) : base;
   h.style.width = Math.max(base, width) + 'px';
   return h;
 }
@@ -212,7 +212,7 @@ function createFormulaCell(line, idx, lineId, state, renderProof) {
   // Input wrapper
   const wrap = document.createElement('div');
   wrap.className = 'input-wrap';
-  wrap.style.marginLeft = `calc(${line.indent} * var(--indent) + var(--text-gap))`;
+  wrap.style.marginLeft = `calc(${line.indent} * var(--proof-indent) + var(--proof-text-gap))`;
 
   // Formula input
   const input = document.createElement('div');
@@ -606,10 +606,10 @@ function createProofLine(
  */
 function updateProofDimensions(state) {
   const justW = computeJustWidth(state);
-  document.documentElement.style.setProperty('--just-w', justW + 'px');
+  document.documentElement.style.setProperty('--justification-width', justW + 'px');
 
   const proofW = computeProofWidth(state);
-  document.documentElement.style.setProperty('--proof-w', proofW + 'px');
+  document.documentElement.style.setProperty('--proof-formula-width', proofW + 'px');
 }
 
 /**

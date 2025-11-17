@@ -8,7 +8,7 @@
 /* === Proof Pane Container === */
 .proof-pane {
   background: #fff;
-  border: 1px solid var(--line);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 16px;
   min-width: 0;
@@ -18,7 +18,7 @@
 /* === Results Pane Container === */
 .results-pane {
   background: #fff;
-  border: 1px solid var(--line);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 16px;
 }
@@ -40,6 +40,7 @@
   overflow-x: auto; /* Scroll horizontally when proof lines are wider than container */
   overflow-y: visible;
   width: 100%;
+  padding-bottom: 12px;
 }
 
 /* === Results Display === */

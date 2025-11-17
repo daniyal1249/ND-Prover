@@ -11,7 +11,7 @@
 .problem-setup {
   padding: 16px;
   background: #fff;
-  border: 1px solid var(--line);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   display: grid;
   grid-template-columns: 120px minmax(0, 1fr);
@@ -22,6 +22,7 @@
 
 .problem-setup label {
   color: #333;
+  font-size: 15px;
 }
 
 /* === Form Inputs === */
@@ -30,7 +31,7 @@ select.logic {
   font-family: var(--sans);
   font-size: 14px;
   padding: 8px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   background: #fff;
   width: 50%;
@@ -41,7 +42,7 @@ select.logic {
   font-family: var(--math-font);
   font-size: 14px;
   padding: 8px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   background: #fff;
   width: 100%;
@@ -58,6 +59,7 @@ select.logic {
   color: var(--ink);
   margin: 0 0 34px;
   font-family: var(--sans);
+  font-size: 15px;
 }
 
 /* Mathematical content in problem summary */

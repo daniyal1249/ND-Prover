@@ -10,17 +10,17 @@
 .proof-line {
   display: grid;
   /* lineno | proof | just | actions */
-  grid-template-columns: var(--lineno-w) var(--proof-w) var(--just-w) var(--actions-w);
-  column-gap: var(--just-gap);
+  grid-template-columns: var(--line-number-width) var(--proof-formula-width) var(--justification-width) var(--actions-width);
+  column-gap: var(--justification-gap);
   align-items: stretch;
   position: relative;
   /* Ensure proof lines maintain their full width for hover region to work */
-  min-width: calc(var(--lineno-w) + var(--proof-w) + var(--just-w) + var(--actions-w));
+  min-width: calc(var(--line-number-width) + var(--proof-formula-width) + var(--justification-width) + var(--actions-width));
 }
 
 /* === Line Number === */
 .lineno {
-  padding: var(--lineno-vpad) 8px var(--lineno-vpad) 0;
+  padding: var(--line-number-padding-vertical) 8px var(--line-number-padding-vertical) 0;
   text-align: right;
   color: #000;
   background: #fff;
@@ -33,8 +33,8 @@
   position: relative;
   display: flex;
   align-items: center;
-  padding: var(--row-vpad) 12px;
-  min-height: var(--min-row-h);
+  padding: var(--proof-row-padding-vertical) 12px;
+  min-height: var(--proof-row-min-height);
   background: #fff;
   cursor: text;
 }
@@ -64,7 +64,7 @@
   top: 0;
   bottom: 0;
   width: 0;
-  border-left: var(--bar-w) solid var(--bar);
+  border-left: var(--bar-width) solid var(--bar-color);
 }
 
 .bar.cap {
@@ -75,7 +75,7 @@
   position: absolute;
   bottom: 0;
   height: 0;
-  border-top: var(--bar-w) solid var(--bar);
+  border-top: var(--bar-width) solid var(--bar-color);
   z-index: 3;
 }
 
@@ -87,7 +87,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: var(--hover);
+  background: var(--hover-background);
   opacity: 0;
   transition: opacity 0.05s linear;
   z-index: 0;
@@ -120,7 +120,7 @@
   font-family: var(--math-font);
   font-size: var(--font-size);
   line-height: var(--line-height);
-  padding: var(--input-vpad) 0;
+  padding: var(--input-padding-vertical) 0;
   white-space: pre-wrap;
   word-break: break-word;
   min-height: 22px;
@@ -132,8 +132,8 @@
   background: #fff;
   display: flex;
   align-items: center;
-  padding: var(--just-vpad) 10px;
-  min-height: var(--min-row-h);
+  padding: var(--justification-padding-vertical) 10px;
+  min-height: var(--proof-row-min-height);
   cursor: text;
   padding-left: 0;
   padding-right: 0;
@@ -159,7 +159,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: var(--hover);
+  background: var(--hover-background);
   opacity: 0;
   transition: opacity 0.05s linear;
   z-index: 0;
@@ -179,7 +179,7 @@
 }
 
 .just:hover .j-placeholder.show {
-  background: var(--hover-strong);
+  background: var(--hover-background-strong);
   opacity: 1;
 }
 
@@ -201,7 +201,7 @@
   font-family: var(--math-font);
   font-size: var(--font-size);
   line-height: var(--line-height);
-  padding: var(--input-vpad) 4px;
+  padding: var(--input-padding-vertical) 4px;
   white-space: pre-wrap;
   word-break: break-word;
   min-height: 22px;
@@ -221,7 +221,7 @@
   align-items: center;
   justify-content: flex-start;
   padding: 0 8px;
-  min-height: var(--min-row-h);
+  min-height: var(--proof-row-min-height);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.08s linear;

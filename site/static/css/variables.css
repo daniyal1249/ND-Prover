@@ -9,10 +9,10 @@
 :root {
   /* === Color Scheme === */
   --ink: #111;
-  --line: #ddd;
-  --hover: #ededed;
-  --hover-strong: #dcdcdc;
-  --bar: #000;
+  --border-color: #ddd;
+  --hover-background: #ededed;
+  --hover-background-strong: #dcdcdc;
+  --bar-color: #000;
 
   /* === Typography === */
   /* Site-wide font */
@@ -30,27 +30,27 @@
   --grid-col-gap: 16px;
 
   /* === Proof Geometry === */
-  --min-line-span: 150px;
-  --proof-w: var(--min-line-span);
-  --just-gap: 0px;
+  --proof-formula-min-width: 150px;
+  --proof-formula-width: var(--proof-formula-min-width);
+  --justification-gap: 0px;
   /* Default justification width; will be updated dynamically */
-  --just-w: 100px;
+  --justification-width: 100px;
   /* Widened to fit 5 buttons */
-  --actions-w: 160px;
-  --indent: 20px;
-  --bar-w: 2px;
-  --hbar-len: 20px;
-  --hbar-extra: 20px;
-  --text-gap: 0px;
+  --actions-width: 160px;
+  --proof-indent: 20px;
+  --bar-width: 2px;
+  --horizontal-bar-length: 20px;
+  --horizontal-bar-extra-width: 20px;
+  --proof-text-gap: 0px;
   --bar-cap-gap: 6px;
 
   /* === Spacing & Sizing === */
-  --row-vpad: 4px;
-  --lineno-vpad: 6px;
-  --just-vpad: 4px;
-  --min-row-h: 34px;
-  --input-vpad: 2px;
+  --proof-row-padding-vertical: 4px;
+  --line-number-padding-vertical: 6px;
+  --justification-padding-vertical: 4px;
+  --proof-row-min-height: 34px;
+  --input-padding-vertical: 2px;
   /* Dynamic line-number column width */
-  --lineno-w: calc(3ch + 8px);
+  --line-number-width: calc(3ch + 8px);
 }
 

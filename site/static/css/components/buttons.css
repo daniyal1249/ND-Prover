@@ -11,7 +11,7 @@
   font-weight: 600;
   font-size: 12px;
   padding: 12px 24px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   background: #fff;
   color: rgb(85, 85, 85);
@@ -25,7 +25,7 @@
 
 /* === Action Buttons === */
 .action-btn {
-  border: 1px solid var(--line);
+  border: 1px solid var(--border-color);
   background: #f7f7f7;
   width: 24px;
   height: 34px;
