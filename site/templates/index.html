@@ -45,9 +45,9 @@
 
   <div class="main-grid">
     <!-- LEFT COLUMN: Create problem + Proof (independent vertical stack) -->
-    <div class="col-left col-stack">
+    <div class="left-column col-stack">
       <!-- Create problem -->
-      <section class="create">
+      <section class="problem-creation-section">
         <section class="problem-setup" aria-label="Create problem">
           <label for="logic">Logic</label>
           <select id="logic" class="logic">
@@ -72,7 +72,7 @@
       </section>
 
       <!-- Proof editor (hidden until a problem is created) -->
-      <section id="proof-section" class="proof-pane" style="display:none;" aria-label="Proof area">
+      <section id="proof-pane" class="proof-pane" style="display:none;" aria-label="Proof area">
         <div id="problem-summary" class="problem-summary" aria-live="polite"></div>
 
         <section aria-label="Proof editor">
@@ -90,13 +90,13 @@
       </section>
 
       <!-- Proof check results (hidden until a proof is checked) -->
-      <section id="results-section" class="results-pane" style="display:none;" aria-label="Proof check results">
+      <section id="results-pane" class="results-pane" style="display:none;" aria-label="Proof check results">
         <div id="results" class="results" aria-live="polite"></div>
       </section>
     </div>
 
     <!-- RIGHT COLUMN: Actions help + Instructions (independent vertical stack) -->
-    <div class="col-right col-stack">
+    <div class="right-column col-stack">
       <!-- Actions help -->
       <aside class="actions-help" aria-label="Inline actions help">
         <div class="table-card">
@@ -159,7 +159,7 @@
             </tr>
 
             <tr>
-              <th colspan="2" class="inst-section">TFL</th>
+              <th colspan="2" class="instruction-section">TFL</th>
             </tr>
             <tr>
               <td>Propositional variables</td>
@@ -191,7 +191,7 @@
             </tr>
 
             <tr>
-              <th colspan="2" class="inst-section">FOL</th>
+              <th colspan="2" class="instruction-section">FOL</th>
             </tr>
             <tr>
               <td>Atomic sentences</td>
@@ -219,7 +219,7 @@
             </tr>
 
             <tr>
-              <th colspan="2" class="inst-section">ML</th>
+              <th colspan="2" class="instruction-section">ML</th>
             </tr>
             <tr>
               <td>Box</td>

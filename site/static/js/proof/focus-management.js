@@ -34,11 +34,11 @@ export function commitActiveEditor(state, filterInput, symbolize, processJustifi
   }
 
   const val = ae.textContent || '';
-  if (ae.classList.contains('input')) {
+  if (ae.classList.contains('formula-input')) {
     const processed = filterInput(val);
     const sym = processed ? symbolize(processed) : '';
     state.lines[idx].text = sym;
-  } else if (ae.classList.contains('just-input')) {
+  } else if (ae.classList.contains('justification-input')) {
     const processed = val ? processJustification(val) : '';
     state.lines[idx].justText = processed;
   }
@@ -48,9 +48,9 @@ export function commitActiveEditor(state, filterInput, symbolize, processJustifi
  * Focuses a specific line at the given index and positions cursor at end.
  * 
  * @param {number} index - Index of the line to focus
- * @param {string} field - Field to focus ('input' or 'just-input')
+ * @param {string} field - Field to focus ('formula-input' or 'justification-input')
  */
-export function focusLineAt(index, field = 'input') {
+export function focusLineAt(index, field = 'formula-input') {
   requestAnimationFrame(() => {
     const el = document.querySelector(`.proof-line[data-index="${index}"] .${field}`);
     if (!el) {
@@ -67,7 +67,7 @@ export function focusLineAt(index, field = 'input') {
     s.addRange(r);
     
     // Add focused class to container
-    const container = el.closest(field === 'input' ? '.cell' : '.just');
+    const container = el.closest(field === 'formula-input' ? '.formula-cell' : '.justification-cell');
     if (container) {
       container.classList.add('focused');
     }

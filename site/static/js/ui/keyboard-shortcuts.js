@@ -19,7 +19,7 @@ import { commitActiveEditor } from '../proof/focus-management.js';
  * @param {Object} state - Application state object
  * @param {number} startIdx - The starting line index
  * @param {number} direction - +1 for down, -1 for up
- * @param {string} field - Field selector ('input' or 'just-input')
+ * @param {string} field - Field selector ('formula-input' or 'justification-input')
  * @returns {number|null} The next editable line index, or null if none
  */
 function findNextEditableIndex(state, startIdx, direction, field) {
@@ -34,7 +34,7 @@ function findNextEditableIndex(state, startIdx, direction, field) {
     }
     const canEditFormula = !line.isPremise;
     const canEditJust = !(line.isAssumption || line.isPremise);
-    const editable = field === 'input' ? canEditFormula : canEditJust;
+    const editable = field === 'formula-input' ? canEditFormula : canEditJust;
     if (editable) {
       return i;
     }
@@ -86,13 +86,13 @@ export function attachKeyboardHandlers(
     // Arrow up/down => move within the formula column
     if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && noMods && !e.shiftKey) {
       const direction = e.key === 'ArrowDown' ? 1 : -1;
-      const nextIdx = findNextEditableIndex(state, idx, direction, 'input');
+      const nextIdx = findNextEditableIndex(state, idx, direction, 'formula-input');
       if (nextIdx !== null) {
         e.preventDefault();
         // Mirror click behavior: commit current editor, re-render, then focus target line/field
         commitActiveEditor(state, filterInput, symbolize, processJustification);
         renderProof();
-        focusLineAt(nextIdx, 'input');
+        focusLineAt(nextIdx, 'formula-input');
       }
       return;
     }
@@ -168,27 +168,27 @@ export function attachJustificationKeyboardHandlers(
     // Arrow up/down => move within the justification column
     if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && noMods && !e.shiftKey) {
       const direction = e.key === 'ArrowDown' ? 1 : -1;
-      const nextIdx = findNextEditableIndex(state, idx, direction, 'just-input');
+      const nextIdx = findNextEditableIndex(state, idx, direction, 'justification-input');
       if (nextIdx !== null) {
         e.preventDefault();
         // Mirror click behavior: commit current editor, re-render, then focus target line/field
         commitActiveEditor(state, filterInput, symbolize, processJustification);
         renderProof();
-        focusLineAt(nextIdx, 'just-input');
+        focusLineAt(nextIdx, 'justification-input');
       }
       return;
     }
 
     // Enter => same as ArrowDown (move to next editable justification cell)
     if (e.key === 'Enter' && !e.shiftKey && noMods) {
-      const nextIdx = findNextEditableIndex(state, idx, 1, 'just-input');
+      const nextIdx = findNextEditableIndex(state, idx, 1, 'justification-input');
 
       if (nextIdx !== null) {
         e.preventDefault(); // Prevent newlines when we actually move
         // Commit before moving, to ensure justification text is captured
         commitActiveEditor(state, filterInput, symbolize, processJustification);
         renderProof();
-        focusLineAt(nextIdx, 'just-input');
+        focusLineAt(nextIdx, 'justification-input');
       } else {
         // No editable justification below: behave like ArrowDown would
         // on the last editable cell — do not re-render, just prevent newline.

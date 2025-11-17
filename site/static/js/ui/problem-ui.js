@@ -84,7 +84,7 @@ export function initProblemUI(state, renderProof) {
       conclusionText
     };
 
-    const resultsSection = document.getElementById('results-section');
+    const resultsSection = document.getElementById('results-pane');
     const resultsBox = document.getElementById('results');
 
     try {
@@ -99,7 +99,7 @@ export function initProblemUI(state, renderProof) {
 
       if (!response.ok || !data.ok) {
         // Hide the proof pane if visible
-        const proofPane = document.getElementById('proof-section');
+        const proofPane = document.getElementById('proof-pane');
         if (proofPane) {
           proofPane.style.display = 'none';
         }
@@ -110,13 +110,13 @@ export function initProblemUI(state, renderProof) {
           resultsSection.classList.remove('results-pane--success');
           resultsSection.classList.add('results-pane--error');
           resultsBox.textContent = message;
-          resultsBox.classList.add('show');
+          resultsBox.classList.add('results--show');
         }
         return;
       }
     } catch (error) {
       // Network or server error; treat as validation failure
-      const proofPane = document.getElementById('proof-section');
+      const proofPane = document.getElementById('proof-pane');
       if (proofPane) {
         proofPane.style.display = 'none';
       }
@@ -125,7 +125,7 @@ export function initProblemUI(state, renderProof) {
         resultsSection.classList.remove('results-pane--success');
         resultsSection.classList.add('results-pane--error');
         resultsBox.textContent = 'An error occurred while validating the problem.';
-        resultsBox.classList.add('show');
+        resultsBox.classList.add('results--show');
       }
       return;
     }
@@ -135,7 +135,7 @@ export function initProblemUI(state, renderProof) {
       resultsSection.style.display = 'none';
       resultsSection.classList.remove('results-pane--success', 'results-pane--error');
       resultsBox.textContent = '';
-      resultsBox.classList.remove('show');
+      resultsBox.classList.remove('results--show');
     }
 
     // Reset proof
@@ -164,7 +164,7 @@ export function initProblemUI(state, renderProof) {
     }
 
     // Reveal the proof section if hidden
-    const proofPane = document.getElementById('proof-section');
+    const proofPane = document.getElementById('proof-pane');
     if (proofPane && proofPane.style.display === 'none') {
       proofPane.style.display = 'block';
     }

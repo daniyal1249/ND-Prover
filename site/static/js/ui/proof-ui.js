@@ -25,7 +25,7 @@ export function initProofUI(state, renderProof) {
     }
     addLine(state, 0, null, false, false); // First top-level line
     renderProof();
-    focusLineAt(0, 'input');
+    focusLineAt(0, 'formula-input');
   });
 
   // Begin subproof button (first-line only)
@@ -36,22 +36,22 @@ export function initProofUI(state, renderProof) {
     }
     addLine(state, 1, null, true, false); // First assumption at indent 1
     renderProof();
-    focusLineAt(0, 'input');
+    focusLineAt(0, 'formula-input');
   });
 
   // Check proof button
   const btnCheckProof = document.getElementById('check-proof');
-  const resultsSection = document.getElementById('results-section');
+  const resultsSection = document.getElementById('results-pane');
   const resultsBox = document.getElementById('results');
 
   if (btnCheckProof && resultsBox) {
     btnCheckProof.addEventListener('click', async () => {
-      // Reveal the results section if hidden (mirror proof-section behavior)
+      // Reveal the results section if hidden (mirror proof-pane behavior)
       if (resultsSection && resultsSection.style.display === 'none') {
         resultsSection.style.display = 'block';
       }
 
-      resultsBox.classList.add('show');
+      resultsBox.classList.add('results--show');
       const payload = serializeProofState(state);
 
       resultsBox.textContent = 'Checking proof...';

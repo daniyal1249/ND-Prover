@@ -114,18 +114,18 @@ function updateOldActiveCell(state) {
     return;
   }
 
-  if (oldActiveEl.classList.contains('input')) {
+  if (oldActiveEl.classList.contains('formula-input')) {
     const processed = filterInput(oldActiveEl.textContent || '');
     const sym = processed ? symbolize(processed) : '';
     oldActiveEl.textContent = sym;
-  } else if (oldActiveEl.classList.contains('just-input')) {
+  } else if (oldActiveEl.classList.contains('justification-input')) {
     const raw = oldActiveEl.textContent || '';
     const processed = raw ? processJustification(raw) : '';
     oldActiveEl.textContent = processed;
     
     // Update filled class and placeholder visibility for justification cells
-    const oldJust = oldActiveEl.closest('.just');
-    const oldPlaceholder = oldJust ? oldJust.querySelector('.j-placeholder') : null;
+    const oldJust = oldActiveEl.closest('.justification-cell');
+    const oldPlaceholder = oldJust ? oldJust.querySelector('.justification-placeholder') : null;
     if (processed) {
       if (oldJust) oldJust.classList.add('filled');
       if (oldPlaceholder) oldPlaceholder.classList.remove('show');
@@ -153,7 +153,7 @@ function handleBlurWithConditionalRender(inputElement, processedText, updateStat
   requestAnimationFrame(() => {
     const activeEl = document.activeElement;
     const isSwitchingToEditableCell = activeEl && activeEl.isContentEditable && (
-      activeEl.classList.contains('input') || activeEl.classList.contains('just-input')
+      activeEl.classList.contains('formula-input') || activeEl.classList.contains('justification-input')
     );
     
     if (isSwitchingToEditableCell) {
@@ -175,7 +175,7 @@ function handleBlurWithConditionalRender(inputElement, processedText, updateStat
  */
 function createHorizontalBar(line) {
   const h = document.createElement('div');
-  h.className = 'hbar';
+  h.className = 'horizontal-bar';
   h.style.left = `calc(${line.indent} * var(--proof-indent))`;
   const base = pxVar('--horizontal-bar-length');
   const extra = pxVar('--horizontal-bar-extra-width');
@@ -196,7 +196,7 @@ function createHorizontalBar(line) {
  */
 function createFormulaCell(line, idx, lineId, state, renderProof) {
   const cell = document.createElement('div');
-  cell.className = 'cell';
+  cell.className = 'formula-cell';
 
   // Bars
   const bars = document.createElement('div');
@@ -216,7 +216,7 @@ function createFormulaCell(line, idx, lineId, state, renderProof) {
 
   // Formula input
   const input = document.createElement('div');
-  input.className = 'input';
+  input.className = 'formula-input';
   input.setAttribute('role', 'textbox');
   const canEditFormula = !line.isPremise;
   input.setAttribute('contenteditable', String(canEditFormula));
@@ -237,7 +237,7 @@ function createFormulaCell(line, idx, lineId, state, renderProof) {
     window.__ndLastFocus = {
       kind: 'proof',
       index: idx,
-      field: 'input'
+      field: 'formula-input'
     };
   });
 
@@ -279,14 +279,14 @@ function createFormulaCell(line, idx, lineId, state, renderProof) {
     const currentIdx = currentRow ? parseInt(currentRow.dataset.index, 10) : -1;
     const alreadyEditingThisFormula =
       ae && ae.isContentEditable &&
-      ae.classList.contains('input') &&
+      ae.classList.contains('formula-input') &&
       currentIdx === idx;
 
     if (!alreadyEditingThisFormula) {
       // Switching to a different field - commit current edits and position cursor at end
       commitActiveEditor(state, filterInput, symbolize, processJustification);
       updateOldActiveCell(state);
-      focusLineAt(idx, 'input');
+      focusLineAt(idx, 'formula-input');
     }
     // If already editing this field, let the browser handle cursor positioning naturally
     // (don't call focusLineAt, which would reset cursor to end)
@@ -310,14 +310,14 @@ function createFormulaCell(line, idx, lineId, state, renderProof) {
  */
 function createJustificationCell(line, idx, lineId, state, renderProof) {
   const just = document.createElement('div');
-  just.className = 'just';
+  just.className = 'justification-cell';
 
   const jHover = document.createElement('div');
-  jHover.className = 'j-hover-bg';
+  jHover.className = 'justification-hover-bg';
   just.appendChild(jHover);
 
   const jPlaceholder = document.createElement('div');
-  jPlaceholder.className = 'j-placeholder';
+  jPlaceholder.className = 'justification-placeholder';
   const hasText = !!(line.justText && /\S/.test(line.justText));
   if (!hasText) {
     jPlaceholder.classList.add('show');
@@ -325,7 +325,7 @@ function createJustificationCell(line, idx, lineId, state, renderProof) {
   just.appendChild(jPlaceholder);
 
   const justInput = document.createElement('div');
-  justInput.className = 'just-input';
+  justInput.className = 'justification-input';
   justInput.setAttribute('role', 'textbox');
   const editable = !(line.isAssumption || line.isPremise);
   justInput.setAttribute('contenteditable', String(editable));
@@ -350,7 +350,7 @@ function createJustificationCell(line, idx, lineId, state, renderProof) {
     window.__ndLastFocus = {
       kind: 'proof',
       index: idx,
-      field: 'just-input'
+      field: 'justification-input'
     };
   });
 
@@ -401,14 +401,14 @@ function createJustificationCell(line, idx, lineId, state, renderProof) {
     const currentIdx = currentRow ? parseInt(currentRow.dataset.index, 10) : -1;
     const alreadyEditingThisJust =
       ae && ae.isContentEditable &&
-      ae.classList.contains('just-input') &&
+      ae.classList.contains('justification-input') &&
       currentIdx === idx;
 
     if (!alreadyEditingThisJust) {
       // Switching to a different field - commit current edits and position cursor at end
       commitActiveEditor(state, filterInput, symbolize, processJustification);
       updateOldActiveCell(state);
-      focusLineAt(idx, 'just-input');
+      focusLineAt(idx, 'justification-input');
     }
     // If already editing this field, let the browser handle cursor positioning naturally
     // (don't call focusLineAt, which would reset cursor to end)
@@ -565,7 +565,7 @@ function createProofLine(
 
   // Line number
   const ln = document.createElement('div');
-  ln.className = 'lineno';
+  ln.className = 'line-number';
   ln.textContent = String(idx + 1);
 
   // Formula cell

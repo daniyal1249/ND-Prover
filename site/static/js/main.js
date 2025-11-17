@@ -38,20 +38,20 @@ function createRenderFunction() {
     const wrappedAddLineAfterSame = (i) => {
       const newIdx = addLineAfterSame(state, i);
       render();
-      focusLineAt(newIdx, 'input');
+      focusLineAt(newIdx, 'formula-input');
     };
     
     const wrappedBeginSubproofBelow = (i) => {
       const newIdx = beginSubproofBelow(state, i);
       render();
-      focusLineAt(newIdx, 'input');
+      focusLineAt(newIdx, 'formula-input');
     };
     
     const wrappedEndSubproofAt = (i) => {
       const newIdx = endSubproofAt(state, i);
       if (newIdx !== null) {
         render();
-        focusLineAt(newIdx, 'input');
+        focusLineAt(newIdx, 'formula-input');
       }
     };
     
@@ -59,7 +59,7 @@ function createRenderFunction() {
       const newIdx = endAndBeginAnotherAt(state, i);
       if (newIdx !== null) {
         render();
-        focusLineAt(newIdx, 'input');
+        focusLineAt(newIdx, 'formula-input');
       }
     };
     
@@ -99,8 +99,8 @@ function enhanceRenderedLines(render, wrappedAddLineAfterSame, wrappedBeginSubpr
   lines.forEach((row) => {
     const idx = parseInt(row.dataset.index, 10);
     const lineId = Number(row.dataset.id);
-    const input = row.querySelector('.input');
-    const justInput = row.querySelector('.just-input');
+    const input = row.querySelector('.formula-input');
+    const justInput = row.querySelector('.justification-input');
     
     if (input && !input.dataset.handlersAttached) {
       input.dataset.handlersAttached = 'true';
@@ -157,7 +157,7 @@ function init() {
     }
 
     if (last.kind === 'proof') {
-      focusLineAt(last.index, last.field || 'input');
+      focusLineAt(last.index, last.field || 'formula-input');
     } else if (last.kind === 'problem' && last.inputId) {
       const el = document.getElementById(last.inputId);
       if (el) {

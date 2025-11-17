@@ -9,7 +9,7 @@
 /* === Proof Line Grid === */
 .proof-line {
   display: grid;
-  /* lineno | proof | just | actions */
+  /* line-number | proof | justification-cell | actions */
   grid-template-columns: var(--line-number-width) var(--proof-formula-width) var(--justification-width) var(--actions-width);
   column-gap: var(--justification-gap);
   align-items: stretch;
@@ -19,7 +19,7 @@
 }
 
 /* === Line Number === */
-.lineno {
+.line-number {
   padding: var(--line-number-padding-vertical) 8px var(--line-number-padding-vertical) 0;
   text-align: right;
   color: #000;
@@ -29,7 +29,7 @@
 }
 
 /* === Formula Cell === */
-.cell {
+.formula-cell {
   position: relative;
   display: flex;
   align-items: center;
@@ -40,11 +40,11 @@
 }
 
 /* Premise lines: disable hover and pointer */
-.cell.disabled {
+.formula-cell.disabled {
   cursor: default;
 }
 
-.cell.disabled:hover .hover-bg {
+.formula-cell.disabled:hover .hover-bg {
   opacity: 0;
 }
 
@@ -71,7 +71,7 @@
   top: var(--bar-cap-gap);
 }
 
-.hbar {
+.horizontal-bar {
   position: absolute;
   bottom: 0;
   height: 0;
@@ -94,11 +94,11 @@
   pointer-events: none;
 }
 
-.cell:hover .hover-bg {
+.formula-cell:hover .hover-bg {
   opacity: 1;
 }
 
-.cell.focused .hover-bg {
+.formula-cell.focused .hover-bg {
   opacity: 0;
 }
 
@@ -112,7 +112,7 @@
 }
 
 /* === Formula Input === */
-.input {
+.formula-input {
   width: 100%;
   border: none;
   outline: none;
@@ -127,7 +127,7 @@
 }
 
 /* === Justification Column === */
-.just {
+.justification-cell {
   position: relative;
   background: #fff;
   display: flex;
@@ -139,21 +139,21 @@
   padding-right: 0;
 }
 
-.just.disabled {
+.justification-cell.disabled {
   cursor: default;
 }
 
-.just.disabled .just-input {
+.justification-cell.disabled .justification-input {
   pointer-events: none;
 }
 
-.just.filled .just-input:not(:focus) {
+.justification-cell.filled .justification-input:not(:focus) {
   background: transparent;
 }
 
 /* === Justification Hover === */
-.j-hover-bg,
-.j-placeholder {
+.justification-hover-bg,
+.justification-placeholder {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -166,34 +166,34 @@
   pointer-events: none;
 }
 
-.just:hover .j-hover-bg {
+.justification-cell:hover .justification-hover-bg {
   opacity: 1;
 }
 
-.just.focused .j-hover-bg {
+.justification-cell.focused .justification-hover-bg {
   opacity: 0;
 }
 
-.j-placeholder.show {
+.justification-placeholder.show {
   opacity: 1;
 }
 
-.just:hover .j-placeholder.show {
+.justification-cell:hover .justification-placeholder.show {
   background: var(--hover-background-strong);
   opacity: 1;
 }
 
 /* Disable hover on non-editable justifications */
-.just.disabled:hover .j-hover-bg {
+.justification-cell.disabled:hover .justification-hover-bg {
   opacity: 0;
 }
 
-.just.disabled:hover .j-placeholder {
+.justification-cell.disabled:hover .justification-placeholder {
   opacity: 0;
 }
 
 /* === Justification Input === */
-.just-input {
+.justification-input {
   width: 100%;
   border: none;
   outline: none;
@@ -209,7 +209,7 @@
   z-index: 1;
 }
 
-.just-input:focus {
+.justification-input:focus {
   background: transparent;
 }
 
