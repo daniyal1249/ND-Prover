@@ -47,8 +47,8 @@ export function initProofUI(state, renderProof) {
   if (btnCheckProof && resultsBox) {
     btnCheckProof.addEventListener('click', async () => {
       // Reveal the results section if hidden (mirror proof-pane behavior)
-      if (resultsSection && resultsSection.style.display === 'none') {
-        resultsSection.style.display = 'block';
+      if (resultsSection && resultsSection.classList.contains('hidden')) {
+        resultsSection.classList.remove('hidden');
       }
 
       resultsBox.classList.add('results--show');

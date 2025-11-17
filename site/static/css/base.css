@@ -21,7 +21,17 @@ body {
   padding-left: var(--page-margin);
   padding-right: var(--page-margin);
   font-family: var(--sans);
-  background: #fff;
+  background: var(--background);
   color: var(--ink);
+}
+
+/* === Utility Classes === */
+.hidden {
+  display: none !important;
+}
+
+/* === Link Styles === */
+.site-header a {
+  text-decoration: none;
 }
 

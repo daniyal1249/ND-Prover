@@ -101,12 +101,12 @@ export function initProblemUI(state, renderProof) {
         // Hide the proof pane if visible
         const proofPane = document.getElementById('proof-pane');
         if (proofPane) {
-          proofPane.style.display = 'none';
+          proofPane.classList.add('hidden');
         }
 
         // Show error in results pane directly under problem-setup
         if (resultsSection && resultsBox) {
-          resultsSection.style.display = 'block';
+          resultsSection.classList.remove('hidden');
           resultsSection.classList.remove('results-pane--success');
           resultsSection.classList.add('results-pane--error');
           resultsBox.textContent = message;
@@ -118,10 +118,10 @@ export function initProblemUI(state, renderProof) {
       // Network or server error; treat as validation failure
       const proofPane = document.getElementById('proof-pane');
       if (proofPane) {
-        proofPane.style.display = 'none';
+        proofPane.classList.add('hidden');
       }
       if (resultsSection && resultsBox) {
-        resultsSection.style.display = 'block';
+        resultsSection.classList.remove('hidden');
         resultsSection.classList.remove('results-pane--success');
         resultsSection.classList.add('results-pane--error');
         resultsBox.textContent = 'An error occurred while validating the problem.';
@@ -132,7 +132,7 @@ export function initProblemUI(state, renderProof) {
 
     // At this point, validation succeeded; clear any previous results
     if (resultsSection && resultsBox) {
-      resultsSection.style.display = 'none';
+      resultsSection.classList.add('hidden');
       resultsSection.classList.remove('results-pane--success', 'results-pane--error');
       resultsBox.textContent = '';
       resultsBox.classList.remove('results--show');
@@ -165,8 +165,8 @@ export function initProblemUI(state, renderProof) {
 
     // Reveal the proof section if hidden
     const proofPane = document.getElementById('proof-pane');
-    if (proofPane && proofPane.style.display === 'none') {
-      proofPane.style.display = 'block';
+    if (proofPane && proofPane.classList.contains('hidden')) {
+      proofPane.classList.remove('hidden');
     }
 
     renderProof();

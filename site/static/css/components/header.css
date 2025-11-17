@@ -8,7 +8,7 @@
 /* === Top Header === */
 /* Top header (centered title) */
 .site-header {
-  padding: 40px 16px;
+  padding: var(--spacing-xxxl) var(--spacing-xl);
   text-align: center;
 }
 
@@ -17,7 +17,7 @@
 }
 
 .site-header p {
-  margin: 8px 0 0;
-  color: #444;
+  margin: var(--spacing-md) 0 0;
+  color: var(--text-color-tertiary);
 }
 

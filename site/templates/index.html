@@ -34,11 +34,11 @@
     <h1>Fitch-Style Proof Checker</h1>
     <p>
       This is a proof editor and checker for the Fitch-style natural deduction system found in 
-      <a href="https://forallx.openlogicproject.org" target="_blank" rel="noreferrer" style="text-decoration: none;"><em>forall x: Calgary</em></a>. 
+      <a href="https://forallx.openlogicproject.org" target="_blank" rel="noreferrer"><em>forall x: Calgary</em></a>. 
       It is based on the 
-      <a href="https://github.com/OpenLogicProject/fitch-checker" target="_blank" rel="noreferrer" style="text-decoration: none;">Open Logic Project</a> 
+      <a href="https://github.com/OpenLogicProject/fitch-checker" target="_blank" rel="noreferrer">Open Logic Project</a> 
       proof checker. More information can be found in the 
-      <a href="https://github.com/daniyal1249/nd-prover" target="_blank" rel="noreferrer" style="text-decoration: none;">ND-Prover</a> 
+      <a href="https://github.com/daniyal1249/nd-prover" target="_blank" rel="noreferrer">ND-Prover</a> 
       repository.
     </p>
   </header>
@@ -65,14 +65,14 @@
           <label for="conclusion">Conclusion</label>
           <input id="conclusion" class="text-input" type="text" />
 
-          <div style="grid-column:1 / -1; display:flex; justify-content:flex-end; gap:8px; margin-top:4px;">
+          <div>
             <button id="create-problem" class="ui-btn" type="button">CREATE PROBLEM</button>
           </div>
         </section>
       </section>
 
       <!-- Proof editor (hidden until a problem is created) -->
-      <section id="proof-pane" class="proof-pane" style="display:none;" aria-label="Proof area">
+      <section id="proof-pane" class="proof-pane hidden" aria-label="Proof area">
         <div id="problem-summary" class="problem-summary" aria-live="polite"></div>
 
         <section aria-label="Proof editor">
@@ -83,14 +83,14 @@
 
           <div id="proof" class="proof" role="list"></div>
 
-          <div class="editor-actions" style="display:flex; justify-content:flex-end; gap:8px; margin-top:20px;">
+          <div class="editor-actions">
             <button id="check-proof" class="ui-btn" type="button">CHECK PROOF</button>
           </div>
         </section>
       </section>
 
       <!-- Proof check results (hidden until a proof is checked) -->
-      <section id="results-pane" class="results-pane" style="display:none;" aria-label="Proof check results">
+      <section id="results-pane" class="results-pane hidden" aria-label="Proof check results">
         <div id="results" class="results" aria-live="polite"></div>
       </section>
     </div>
@@ -100,10 +100,10 @@
       <!-- Actions help -->
       <aside class="actions-help" aria-label="Inline actions help">
         <div class="table-card">
-          <table class="table-like">
+          <table class="table-like actions-help-table">
             <colgroup>
-              <col style="width: 15%;">
-              <col style="width: 85%;">
+              <col>
+              <col>
             </colgroup>
 
             <!-- Section header, same pattern as Instructions -->
@@ -122,25 +122,25 @@
               <td class="btn-cell">
                 <button class="action-btn action-btn--demo" type="button" aria-hidden="true" tabindex="-1">↓</button>
               </td>
-              <td style="white-space: pre-wrap;">Add a line below  <kbd>Enter</kbd></td>
+              <td class="pre-wrap">Add a line below  <kbd>Enter</kbd></td>
             </tr>
             <tr>
               <td class="btn-cell">
                 <button class="action-btn action-btn--demo" type="button" aria-hidden="true" tabindex="-1">→</button>
               </td>
-              <td style="white-space: pre-wrap;">Begin a subproof below  <kbd>Tab</kbd></td>
+              <td class="pre-wrap">Begin a subproof below  <kbd>Tab</kbd></td>
             </tr>
             <tr>
               <td class="btn-cell">
                 <button class="action-btn action-btn--demo" type="button" aria-hidden="true" tabindex="-1">←</button>
               </td>
-              <td style="white-space: pre-wrap;">End this subproof and add a line below  <kbd>Shift</kbd>+<kbd>Enter</kbd></td>
+              <td class="pre-wrap">End this subproof and add a line below  <kbd>Shift</kbd>+<kbd>Enter</kbd></td>
             </tr>
             <tr>
               <td class="btn-cell">
                 <button class="action-btn action-btn--demo" type="button" aria-hidden="true" tabindex="-1">↔</button>
               </td>
-              <td style="white-space: pre-wrap;">End this subproof and begin another below  <kbd>Shift</kbd>+<kbd>Tab</kbd></td>
+              <td class="pre-wrap">End this subproof and begin another below  <kbd>Shift</kbd>+<kbd>Tab</kbd></td>
             </tr>
           </table>
         </div>
@@ -149,10 +149,10 @@
       <!-- Instructions -->
       <section class="instructions" aria-label="Instructions">
         <div class="table-card">
-          <table class="table-like">
+          <table class="table-like instructions-table">
             <colgroup>
-              <col style="width: 40%;">
-              <col style="width: 60%;">
+              <col>
+              <col>
             </colgroup>
             <tr>
               <th colspan="2">Syntax rules</th>
@@ -167,27 +167,27 @@
             </tr>
             <tr>
               <td>Not</td>
-              <td style="white-space: pre-wrap;">not  ¬  ~  ∼  -  −</td>
+              <td class="pre-wrap">not  ¬  ~  ∼  -  −</td>
             </tr>
             <tr>
               <td>And</td>
-              <td style="white-space: pre-wrap;">and  ∧  ^  &  .  ·  *</td>
+              <td class="pre-wrap">and  ∧  ^  &  .  ·  *</td>
             </tr>
             <tr>
               <td>Or</td>
-              <td style="white-space: pre-wrap;">or  ∨</td>
+              <td class="pre-wrap">or  ∨</td>
             </tr>
             <tr>
               <td>Implies</td>
-              <td style="white-space: pre-wrap;">imp  →  ⇒  ⊃  ->  ></td>
+              <td class="pre-wrap">imp  →  ⇒  ⊃  ->  ></td>
             </tr>
             <tr>
               <td>Iff</td>
-              <td style="white-space: pre-wrap;">iff  ↔  ≡  <-></td>
+              <td class="pre-wrap">iff  ↔  ≡  <-></td>
             </tr>
             <tr>
               <td>Contradiction</td>
-              <td style="white-space: pre-wrap;">bot  ⊥  XX  #</td>
+              <td class="pre-wrap">bot  ⊥  XX  #</td>
             </tr>
 
             <tr>
@@ -211,11 +211,11 @@
             </tr>
             <tr>
               <td>Forall</td>
-              <td style="white-space: pre-wrap;">forall x  ∀x  Ax  ⋀x</td>
+              <td class="pre-wrap">forall x  ∀x  Ax  ⋀x</td>
             </tr>
             <tr>
               <td>Exists</td>
-              <td style="white-space: pre-wrap;">exists x  ∃x  Ex  ⋁x</td>
+              <td class="pre-wrap">exists x  ∃x  Ex  ⋁x</td>
             </tr>
 
             <tr>
@@ -223,11 +223,11 @@
             </tr>
             <tr>
               <td>Box</td>
-              <td style="white-space: pre-wrap;">box  □  []</td>
+              <td class="pre-wrap">box  □  []</td>
             </tr>
             <tr>
               <td>Diamond</td>
-              <td style="white-space: pre-wrap;">dia  ♢  <></td>
+              <td class="pre-wrap">dia  ♢  <></td>
             </tr>
           </table>
         </div>

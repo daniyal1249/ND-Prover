@@ -8,10 +8,10 @@
 /* === Table Card Wrapper === */
 /* Shared wrapper for tables to get rounded corners + padding like create problem */
 .table-card {
-  background: #fff;
+  background: var(--background);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl);
   /* Clip inner table corners */
   overflow: hidden;
 }
@@ -26,7 +26,7 @@
 .table-like {
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
+  background: var(--background);
   border: 1px solid var(--border-color);
   table-layout: fixed;
   word-wrap: break-word;
@@ -40,15 +40,15 @@
 }
 
 .table-like th {
-  padding: 0 8px 16px;
+  padding: 0 var(--spacing-md) var(--spacing-xl);
   text-align: center;
   font-weight: 600;
-  font-size: var(--table-header-size, 16px);
+  font-size: var(--table-header-size, var(--spacing-xl));
 }
 
 .table-like td {
-  padding: var(--table-cell-vpad, 12px) 8px;
-  font-size: var(--table-body-size, 14px);
+  padding: var(--table-cell-vpad, var(--spacing-lg)) var(--spacing-md);
+  font-size: var(--table-body-size, var(--font-size-lg));
 }
 
 .table-like th + th,
@@ -64,37 +64,18 @@
 /* === Instructions Table === */
 /* Instructions: section-specific sizes via vars (same look as before) */
 .instructions table {
-  --table-header-size: 16px;
-  --table-body-size: 14px;
-  --table-cell-vpad: 12px;
+  --table-header-size: var(--spacing-xl);
+  --table-body-size: var(--font-size-lg);
+  --table-cell-vpad: var(--spacing-lg);
   --table-valign: middle;
 }
 
 .instructions .instruction-section {
-  padding: 10px 8px;
+  padding: var(--instruction-section-padding) var(--spacing-md);
   text-align: left;
 }
 
 /* === Actions Help Table === */
-.about,
-.actions-help {
-  background: #fff;
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 16px;
-}
-
-.about p,
-.actions-help p {
-  margin: 0 0 10px;
-}
-
-.about h3,
-.actions-help h3 {
-  margin: 0 0 10px;
-  font-weight: 600;
-}
-
 /* Remove the card chrome for actions-help now that it is a table */
 .actions-help {
   background: transparent;
@@ -104,9 +85,9 @@
 
 /* Actions-help table: same typography as instructions */
 .actions-help table {
-  --table-header-size: 16px;
-  --table-body-size: 14px;
-  --table-cell-vpad: 10px;
+  --table-header-size: var(--spacing-xl);
+  --table-body-size: var(--font-size-lg);
+  --table-cell-vpad: var(--instruction-section-padding);
   --table-valign: middle;
 }
 
@@ -124,19 +105,42 @@
 .actions-help .action-btn--demo:hover {
   /* Cancel global button:hover filter */
   filter: none;
-  background: #f7f7f7;
+  background: var(--background-light);
 }
 
 /* === Keyboard Shortcut Tags === */
 kbd {
   display: inline-block;
-  padding: 2px 4px;
+  padding: var(--spacing-xs) var(--spacing-sm);
   border: 1px solid var(--border-color);
-  border-radius: 4px;
-  background: #f7f7f7;
+  border-radius: var(--border-radius-sm);
+  background: var(--background-light);
   font-family: monospace;
-  font-size: 12px;
+  font-size: var(--font-size-sm);
   line-height: 1.2;
   white-space: nowrap;
+}
+
+/* === Table Column Widths === */
+.actions-help-table col:nth-child(1) {
+  width: 15%;
+}
+
+.actions-help-table col:nth-child(2) {
+  width: 85%;
+}
+
+.instructions-table col:nth-child(1) {
+  width: 40%;
+}
+
+.instructions-table col:nth-child(2) {
+  width: 60%;
+}
+
+/* === Table Cell Content === */
+.table-like td[data-pre-wrap],
+.table-like .pre-wrap {
+  white-space: pre-wrap;
 }
 

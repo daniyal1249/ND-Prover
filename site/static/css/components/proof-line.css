@@ -20,10 +20,10 @@
 
 /* === Line Number === */
 .line-number {
-  padding: var(--line-number-padding-vertical) 8px var(--line-number-padding-vertical) 0;
+  padding: var(--line-number-padding-vertical) var(--spacing-md) var(--line-number-padding-vertical) 0;
   text-align: right;
-  color: #000;
-  background: #fff;
+  color: var(--bar-color);
+  background: var(--background);
   font-family: var(--math-font);
   font-variant-numeric: tabular-nums;
 }
@@ -33,9 +33,9 @@
   position: relative;
   display: flex;
   align-items: center;
-  padding: var(--proof-row-padding-vertical) 12px;
+  padding: var(--proof-row-padding-vertical) var(--spacing-lg);
   min-height: var(--proof-row-min-height);
-  background: #fff;
+  background: var(--background);
   cursor: text;
 }
 
@@ -89,7 +89,7 @@
   right: 0;
   background: var(--hover-background);
   opacity: 0;
-  transition: opacity 0.05s linear;
+  transition: opacity var(--transition-fast);
   z-index: 0;
   pointer-events: none;
 }
@@ -123,16 +123,16 @@
   padding: var(--input-padding-vertical) 0;
   white-space: pre-wrap;
   word-break: break-word;
-  min-height: 22px;
+  min-height: var(--input-min-height);
 }
 
 /* === Justification Column === */
 .justification-cell {
   position: relative;
-  background: #fff;
+  background: var(--background);
   display: flex;
   align-items: center;
-  padding: var(--justification-padding-vertical) 10px;
+  padding: var(--justification-padding-vertical) var(--justification-padding-horizontal);
   min-height: var(--proof-row-min-height);
   cursor: text;
   padding-left: 0;
@@ -161,7 +161,7 @@
   right: 0;
   background: var(--hover-background);
   opacity: 0;
-  transition: opacity 0.05s linear;
+  transition: opacity var(--transition-fast);
   z-index: 0;
   pointer-events: none;
 }
@@ -201,10 +201,10 @@
   font-family: var(--math-font);
   font-size: var(--font-size);
   line-height: var(--line-height);
-  padding: var(--input-padding-vertical) 4px;
+  padding: var(--input-padding-vertical) var(--spacing-sm);
   white-space: pre-wrap;
   word-break: break-word;
-  min-height: 22px;
+  min-height: var(--input-min-height);
   position: relative;
   z-index: 1;
 }
@@ -217,14 +217,14 @@
 /* Per-line actions */
 .line-actions {
   display: flex;
-  gap: 6px;
+  gap: var(--line-actions-gap);
   align-items: center;
   justify-content: flex-start;
-  padding: 0 8px;
+  padding: 0 var(--spacing-md);
   min-height: var(--proof-row-min-height);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.08s linear;
+  transition: opacity var(--transition-medium);
 }
 
 .proof-line:hover .line-actions,

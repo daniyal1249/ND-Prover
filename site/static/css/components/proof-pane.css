@@ -7,30 +7,30 @@
 
 /* === Proof Pane Container === */
 .proof-pane {
-  background: #fff;
+  background: var(--background);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl);
   min-width: 0;
   overflow-x: hidden; /* Prevent overflow into right column - scrolling happens in .proof */
 }
 
 /* === Results Pane Container === */
 .results-pane {
-  background: #fff;
+  background: var(--background);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl);
 }
 
 .results-pane--success {
-  border-color: #4caf50;
-  background: #e8f5e9;
+  border-color: var(--success-color);
+  background: var(--success-background);
 }
 
 .results-pane--error {
-  border-color: #d32f2f;
-  background: #ffebee;
+  border-color: var(--error-color);
+  background: var(--error-background);
 }
 
 .proof {
@@ -40,24 +40,32 @@
   overflow-x: auto; /* Scroll horizontally when proof lines are wider than container */
   overflow-y: visible;
   width: 100%;
-  padding-bottom: 12px;
+  padding-bottom: var(--proof-padding-bottom);
 }
 
 /* === Results Display === */
 .help {
-  color: #666;
-  font-size: 13px;
-  margin: 8px 2px;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-md);
+  margin: var(--help-margin);
 }
 
 .results {
   margin: 0;
   padding: 0;
   color: var(--ink);
-  font-size: 15px;
+  font-size: var(--font-size-xl);
   display: none;
 }
 
 .results--show {
   display: block;
+}
+
+/* === Editor Actions === */
+.editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  margin-top: var(--editor-actions-margin-top);
 }

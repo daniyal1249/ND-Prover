@@ -7,7 +7,7 @@
 
 .toolbar {
   display: flex;
-  gap: 8px;
+  gap: var(--spacing-md);
   align-items: center;
   flex-wrap: wrap;
 }

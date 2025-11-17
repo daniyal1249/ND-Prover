@@ -13,6 +13,17 @@
   --hover-background: #ededed;
   --hover-background-strong: #dcdcdc;
   --bar-color: #000;
+  --background: #fff;
+  --text-color-secondary: #333;
+  --text-color-tertiary: #444;
+  --text-color-muted: #666;
+  --text-color-button: rgb(85, 85, 85);
+  --background-light: #f7f7f7;
+  --background-lighter: #eee;
+  --success-color: #4caf50;
+  --success-background: #e8f5e9;
+  --error-color: #d32f2f;
+  --error-background: #ffebee;
 
   /* === Typography === */
   /* Site-wide font */
@@ -21,6 +32,10 @@
   --math-font: "Noto Sans Math", sans-serif;
   --font-size: 16px;
   --line-height: 1.25;
+  --font-size-sm: 12px;
+  --font-size-md: 13px;
+  --font-size-lg: 14px;
+  --font-size-xl: 15px;
 
   /* === Layout === */
   --page-margin: 10%;
@@ -48,9 +63,39 @@
   --proof-row-padding-vertical: 4px;
   --line-number-padding-vertical: 6px;
   --justification-padding-vertical: 4px;
+  --justification-padding-horizontal: 10px;
   --proof-row-min-height: 34px;
   --input-padding-vertical: 2px;
+  --line-actions-gap: 6px;
   /* Dynamic line-number column width */
   --line-number-width: calc(3ch + 8px);
+  --spacing-xs: 2px;
+  --spacing-sm: 4px;
+  --spacing-md: 8px;
+  --spacing-lg: 12px;
+  --spacing-xl: 16px;
+  --spacing-xxl: 24px;
+  --spacing-xxxl: 40px;
+
+  /* === Border Radius === */
+  --border-radius-sm: 4px;
+  --border-radius-md: 6px;
+  --border-radius-lg: 12px;
+
+  /* === Component-Specific Dimensions === */
+  --input-min-height: 22px;
+  --action-btn-width: 24px;
+  --action-btn-height: 34px;
+  --problem-setup-label-width: 120px;
+  --problem-summary-margin-bottom: 34px;
+  --instruction-section-padding: 10px;
+  --proof-padding-bottom: 12px;
+  --help-margin: 8px 2px;
+  --logic-select-width: 50%;
+  --editor-actions-margin-top: 20px;
+
+  /* === Transitions === */
+  --transition-fast: 0.05s linear;
+  --transition-medium: 0.08s linear;
 }
 

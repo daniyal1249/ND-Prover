@@ -14,7 +14,7 @@
     minmax(0, calc(var(--left-ratio) * (100% - var(--grid-col-gap))))
     minmax(0, calc((1 - var(--left-ratio)) * (100% - var(--grid-col-gap))));
   align-items: start;
-  margin: 0 0 40px;
+  margin: 0 0 var(--spacing-xxxl);
 }
 
 /* === Column Stacks === */

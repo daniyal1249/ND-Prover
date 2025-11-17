@@ -68,7 +68,12 @@ export function updateToolbarVisibility(toolbar, state) {
   if (!toolbar) {
     return;
   }
-  toolbar.style.display = state.lines.length === 0 ? 'flex' : 'none';
+  // Toolbar should be visible (flex) when there are no lines, hidden otherwise
+  if (state.lines.length === 0) {
+    toolbar.classList.remove('hidden');
+  } else {
+    toolbar.classList.add('hidden');
+  }
 }
 
 /**

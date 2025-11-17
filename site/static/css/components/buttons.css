@@ -9,12 +9,12 @@
 .ui-btn {
   font-family: var(--sans);
   font-weight: 600;
-  font-size: 12px;
-  padding: 12px 24px;
+  font-size: var(--font-size-sm);
+  padding: var(--spacing-lg) var(--spacing-xxl);
   border: 1px solid var(--border-color);
-  border-radius: 6px;
-  background: #fff;
-  color: rgb(85, 85, 85);
+  border-radius: var(--border-radius-md);
+  background: var(--background);
+  color: var(--text-color-button);
   cursor: pointer;
   user-select: none;
 }
@@ -26,14 +26,14 @@
 /* === Action Buttons === */
 .action-btn {
   border: 1px solid var(--border-color);
-  background: #f7f7f7;
-  width: 24px;
-  height: 34px;
-  border-radius: 6px;
+  background: var(--background-light);
+  width: var(--action-btn-width);
+  height: var(--action-btn-height);
+  border-radius: var(--border-radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: var(--font-size-lg);
   line-height: 1;
   cursor: pointer;
   padding: 0;
@@ -43,6 +43,6 @@
 
 .action-btn:hover {
   filter: brightness(0.98);
-  background: #eee;
+  background: var(--background-lighter);
 }
 

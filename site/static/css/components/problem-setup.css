@@ -9,42 +9,42 @@
 /* === Problem Setup Form === */
 /* Panels / cards (white backgrounds, grayscale) */
 .problem-setup {
-  padding: 16px;
-  background: #fff;
+  padding: var(--spacing-xl);
+  background: var(--background);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
+  border-radius: var(--border-radius-lg);
   display: grid;
-  grid-template-columns: 120px minmax(0, 1fr);
-  gap: 8px 12px;
+  grid-template-columns: var(--problem-setup-label-width) minmax(0, 1fr);
+  gap: var(--spacing-md) var(--spacing-lg);
   align-items: center;
   min-width: 0; /* Allow shrinking below content size on mobile */
 }
 
 .problem-setup label {
-  color: #333;
-  font-size: 15px;
+  color: var(--text-color-secondary);
+  font-size: var(--font-size-xl);
 }
 
 /* === Form Inputs === */
 /* Logic select (width 50% of its field column) */
 select.logic {
   font-family: var(--sans);
-  font-size: 14px;
-  padding: 8px;
+  font-size: var(--font-size-lg);
+  padding: var(--spacing-md);
   border: 1px solid var(--border-color);
-  border-radius: 6px;
-  background: #fff;
-  width: 50%;
+  border-radius: var(--border-radius-md);
+  background: var(--background);
+  width: var(--logic-select-width);
 }
 
 /* Single-line inputs for Premises/Conclusion */
 .text-input {
   font-family: var(--math-font);
-  font-size: 14px;
-  padding: 8px;
+  font-size: var(--font-size-lg);
+  padding: var(--spacing-md);
   border: 1px solid var(--border-color);
-  border-radius: 6px;
-  background: #fff;
+  border-radius: var(--border-radius-md);
+  background: var(--background);
   width: 100%;
 }
 
@@ -57,13 +57,22 @@ select.logic {
 /* Summary line above the editor */
 .problem-summary {
   color: var(--ink);
-  margin: 0 0 34px;
+  margin: 0 0 var(--problem-summary-margin-bottom);
   font-family: var(--sans);
-  font-size: 15px;
+  font-size: var(--font-size-xl);
 }
 
 /* Mathematical content in problem summary */
 .problem-summary .math-content {
   font-family: var(--math-font);
+}
+
+/* === Button Container === */
+.problem-setup > div:last-child {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-sm);
 }
 
