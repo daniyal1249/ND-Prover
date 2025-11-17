@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Proof Pane Component
  * 
  * Styles for the proof editor container and related elements.
@@ -6,16 +6,16 @@
  */
 
 /* === Proof Pane Container === */
-/* Proof pane gets the same card chrome */
 .proof-pane {
   background: #fff;
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 16px;
+  min-width: 0;
+  overflow-x: hidden; /* Prevent overflow into right column - scrolling happens in .proof */
 }
 
 /* === Results Pane Container === */
-/* Results pane uses the same card chrome as the proof pane */
 .results-pane {
   background: #fff;
   border: 1px solid var(--line);
@@ -37,7 +37,9 @@
   background: transparent;
   border: none;
   border-radius: 0;
-  overflow: visible;
+  overflow-x: auto; /* Scroll horizontally when proof lines are wider than container */
+  overflow-y: visible;
+  width: 100%;
 }
 
 /* === Results Display === */
@@ -58,4 +60,3 @@
 .results.show {
   display: block;
 }
-

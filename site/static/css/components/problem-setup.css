@@ -17,6 +17,7 @@
   grid-template-columns: 120px minmax(0, 1fr);
   gap: 8px 12px;
   align-items: center;
+  min-width: 0; /* Allow shrinking below content size on mobile */
 }
 
 .problem-setup label {

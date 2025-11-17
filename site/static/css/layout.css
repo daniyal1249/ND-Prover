@@ -23,5 +23,6 @@
   row-gap: var(--grid-row-gap);
   grid-auto-rows: max-content;
   align-content: start;
+  min-width: 0; /* Allow shrinking below content size on mobile */
 }
 

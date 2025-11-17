@@ -14,6 +14,8 @@
   column-gap: var(--just-gap);
   align-items: stretch;
   position: relative;
+  /* Ensure proof lines maintain their full width for hover region to work */
+  min-width: calc(var(--lineno-w) + var(--proof-w) + var(--just-w) + var(--actions-w));
 }
 
 /* === Line Number === */
