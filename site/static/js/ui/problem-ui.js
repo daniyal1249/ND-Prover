@@ -158,7 +158,7 @@ export function initProblemUI(state, renderProof) {
 
     // Create premise lines
     for (const p of parts) {
-      const line = addLine(state, 0, null, false, true, 'premise');
+      const line = addLine(state, 0, null, false, true);
       line.text = p; // Already symbolized
       line.justText = 'PR'; // Show PR in justification column
     }

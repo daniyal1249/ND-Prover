@@ -28,6 +28,44 @@ export function buildRawLineString(line) {
 }
 
 /**
+ * Computes the correct kind for a line based on its position in the proof structure.
+ * 
+ * Rules:
+ * - Premises always have kind 'premise'
+ * - Assumptions:
+ *   - If previous line has same indent → 'end_and_begin' (comes after another subproof)
+ *   - Otherwise → 'assumption' (new subproof)
+ * - Regular lines (not assumption, not premise):
+ *   - If previous line has larger indent → 'close_subproof' (closing a subproof)
+ *   - Otherwise → 'line' (regular line)
+ * 
+ * @param {Array} lines - All proof lines
+ * @param {number} index - Index of the line to compute kind for
+ * @param {Object} line - The line object
+ * @returns {string} The computed kind
+ */
+function computeLineKind(lines, index, line) {
+  if (line.isPremise) {
+    return 'premise';
+  }
+
+  const prevLine = index > 0 ? lines[index - 1] : null;
+
+  if (line.isAssumption) {
+    if (prevLine && prevLine.indent === line.indent) {
+      return 'end_and_begin';
+    }
+    return 'assumption';
+  }
+
+  if (prevLine && prevLine.indent > line.indent) {
+    return 'close_subproof';
+  }
+  
+  return 'line';
+}
+
+/**
  * Serializes the entire proof state into a JSON-ready object.
  *
  * Backend contract (per-line):
@@ -48,7 +86,7 @@ export function serializeProofState(state) {
     premisesText: state.problem.premisesText,
     conclusionText: state.problem.conclusionText,
     lines: state.lines.map((line, index) => {
-      const kind = line.kind;
+      const kind = computeLineKind(state.lines, index, line);
       const isAssumptionLike = kind === 'assumption' || kind === 'end_and_begin';
       const formulaText = (line.text || '').trim();
       const justText = (line.justText || '').trim();
@@ -61,7 +99,6 @@ export function serializeProofState(state) {
         isPremise: line.isPremise,
         formulaText,
         justText,
-        // For assumptions, parse_assumption only takes the formula, not "formula; AS".
         raw: isAssumptionLike
           ? formulaText
           : buildRawLineString(line)
@@ -69,5 +106,3 @@ export function serializeProofState(state) {
     })
   };
 }
-
-

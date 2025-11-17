@@ -14,7 +14,6 @@
  * @param {number|null} afterIndex - Index to insert after (null = append)
  * @param {boolean} isAssumption - Whether this is an assumption line
  * @param {boolean} isPremise - Whether this is a premise line
- * @param {string|null} kind - Optional kind override
  * @returns {Object} The created line object
  */
 export function addLine(
@@ -22,20 +21,15 @@ export function addLine(
   indent = 0,
   afterIndex = null,
   isAssumption = false,
-  isPremise = false,
-  kind = null
+  isPremise = false
 ) {
-  const resolvedKind = kind
-    ?? (isPremise ? 'premise' : isAssumption ? 'assumption' : 'line');
-
   const line = {
     id: state.nextId++,
     indent,
     text: '',
     justText: isAssumption ? 'AS' : '',
     isAssumption,
-    isPremise,
-    kind: resolvedKind
+    isPremise
   };
   
   if (afterIndex == null || afterIndex < 0) {
@@ -103,7 +97,7 @@ export function addLineAfterSame(state, i) {
  */
 export function beginSubproofBelow(state, i) {
   const base = state.lines[i] ? state.lines[i].indent : 0;
-  addLine(state, base + 1, i, true, false, 'assumption');
+  addLine(state, base + 1, i, true, false);
   return i + 1;
 }
 
@@ -120,7 +114,7 @@ export function endSubproofAt(state, i) {
     return null;
   }
   const parentIndent = line.indent - 1;
-  addLine(state, parentIndent, i, false, false, 'close_subproof');
+  addLine(state, parentIndent, i, false, false);
   return i + 1;
 }
 
@@ -136,11 +130,7 @@ export function endAndBeginAnotherAt(state, i) {
   if (!line || line.indent < 1) {
     return null;
   }
-  // This represents the combined operation:
-  //   end_subproof (using the current subproof's conclusion)
-  //   and immediately begin a new subproof with a fresh assumption.
-  // The backend distinguishes this from a regular assumption via kind.
-  addLine(state, line.indent, i, true, false, 'end_and_begin');
+  addLine(state, line.indent, i, true, false);
   return i + 1;
 }
 
