@@ -7,35 +7,40 @@
  * Dependencies: utils/symbolization.js
  */
 
-import { symbolize as symbolizeText } from './symbolization.js';
+import { symbolize } from './symbolization.js';
 
 /**
- * Filters and normalizes input text by trimming and collapsing whitespace.
+ * Processes formula text by symbolizing and normalizing spacing.
+ * Removes all whitespace, adds spaces around binary operators, then normalizes spacing.
  * 
- * @param {string} s - Input string to filter
- * @returns {string} Filtered and normalized string
+ * @param {string} raw - Raw input text to process
+ * @returns {string} Processed formula text
  */
-export function filterInput(s) {
-  let t = (s ?? '').trim();
-  // Normalize all whitespace to single spaces
-  t = t.replace(/\s/g, ' ');
-  // Collapse multiple spaces to single space
+export function processFormula(raw) {
+  const sym = symbolize(raw);
+  if (!sym || typeof sym !== 'string') {
+    return '';
+  }
+  
+  let t = sym.replace(/\s/g, '');
+  const binaryOperators = ['∧', '∨', '→', '↔', '='];
+  for (const op of binaryOperators) {
+    t = t.replace(new RegExp(escapeRegex(op), 'g'), ` ${op} `);
+  }
+  
   t = t.replace(/ +/g, ' ');
+  t = t.trim();
   return t;
 }
 
 /**
- * Symbolizes logical formulas by converting natural language operators
- * to logical symbols using the JavaScript symbolization module.
+ * Escapes special regex characters in a string.
  * 
- * @param {string} raw - Raw input text to symbolize
- * @returns {string} Symbolized text
+ * @param {string} str - String to escape
+ * @returns {string} Escaped string safe for use in regex
  */
-export function symbolize(raw) {
-  if (!raw) {
-    return '';
-  }
-  return symbolizeText(String(raw));
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 /**
@@ -55,9 +60,14 @@ export function processJustification(raw) {
     return clean(symbolize(s));
   }
   
+  // Check if text after comma is empty or just whitespace
+  const right = clean(s.slice(i + 1));
+  if (!right) {
+    // Treat as if no comma, just symbolize and clean the left part
+    return clean(symbolize(s.slice(0, i)));
+  }
+  
   // Split on comma: symbolize left part (rule), preserve right part (line refs)
   const left = clean(symbolize(s.slice(0, i)));
-  const right = clean(s.slice(i + 1));
   return `${left}, ${right}`;
 }
-

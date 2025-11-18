@@ -108,15 +108,18 @@ function replaceSymbol(match) {
  * This function replaces natural language operators (e.g., "and", "or", "not")
  * and their various representations with standard logical symbols.
  *
- * @param {string} s - The input string to symbolize
+ * @param {string|any} s - The input to symbolize (will be converted to string)
  * @returns {string} The symbolized string with operators replaced
  */
 export function symbolize(s) {
-  if (!s || typeof s !== 'string') {
+  if (!s) {
     return '';
   }
   
+  // Convert to string (handles non-string inputs like numbers, null, etc.)
+  const str = String(s);
+  
   // Replace all matched operators with their symbols
-  return s.replace(SYMBOL_REGEX, replaceSymbol);
+  return str.replace(SYMBOL_REGEX, replaceSymbol);
 }
 

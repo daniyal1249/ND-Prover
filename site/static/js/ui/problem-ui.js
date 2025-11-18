@@ -7,11 +7,11 @@
  * Dependencies: state.js, utils/input-processing.js, proof/line-operations.js
  */
 
-import { filterInput, symbolize } from '../utils/input-processing.js';
+import { processFormula } from '../utils/input-processing.js';
 import { addLine } from '../proof/line-operations.js';
 
 /**
- * Commits an input box value to state, filtering and symbolizing the text.
+ * Commits an input box value to state, processing the text.
  * 
  * @param {HTMLElement} el - Input element
  * @param {string} target - Target property name in state.problem
@@ -19,10 +19,9 @@ import { addLine } from '../proof/line-operations.js';
  */
 export function commitInputBox(el, target, state) {
   const raw = el.value || '';
-  const processed = filterInput(raw);
-  const sym = processed ? symbolize(processed) : '';
-  el.value = sym; // Render symbolized text
-  state.problem[target] = sym; // Store symbolized text
+  const processed = processFormula(raw);
+  el.value = processed;
+  state.problem[target] = processed;
 }
 
 /**

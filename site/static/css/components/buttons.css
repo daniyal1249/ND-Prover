@@ -16,6 +16,7 @@
   background: var(--background);
   color: var(--text-color-button);
   cursor: pointer;
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -38,6 +39,7 @@
   cursor: pointer;
   padding: 0;
   color: var(--ink);
+  -webkit-user-select: none;
   user-select: none;
 }
 

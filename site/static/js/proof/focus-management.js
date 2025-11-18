@@ -11,11 +11,10 @@
  * Handles both formula inputs and justification inputs.
  * 
  * @param {Object} state - Application state object
- * @param {Function} filterInput - Function to filter input text
- * @param {Function} symbolize - Function to symbolize text
+ * @param {Function} processFormula - Function to process formula text
  * @param {Function} processJustification - Function to process justification text
  */
-export function commitActiveEditor(state, filterInput, symbolize, processJustification) {
+export function commitActiveEditor(state, processFormula, processJustification) {
   const ae = document.activeElement;
   if (!ae || !ae.isContentEditable) {
     return;
@@ -29,18 +28,14 @@ export function commitActiveEditor(state, filterInput, symbolize, processJustifi
   const lineId = Number(row.dataset.id);
   const idx = state.lines.findIndex((l) => l.id === lineId);
   if (idx === -1) {
-    // Row no longer corresponds to a live line
     return;
   }
 
   const val = ae.textContent || '';
   if (ae.classList.contains('formula-input')) {
-    const processed = filterInput(val);
-    const sym = processed ? symbolize(processed) : '';
-    state.lines[idx].text = sym;
+    state.lines[idx].text = processFormula(val);
   } else if (ae.classList.contains('justification-input')) {
-    const processed = val ? processJustification(val) : '';
-    state.lines[idx].justText = processed;
+    state.lines[idx].justText = val ? processJustification(val) : '';
   }
 }
 

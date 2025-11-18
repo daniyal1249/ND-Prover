@@ -1,5 +1,4 @@
 from __future__ import annotations
-import os
 
 from flask import Flask, jsonify, render_template, request
 
@@ -14,6 +13,21 @@ app = Flask(
     static_folder="site/static",
     static_url_path="/static",
 )
+
+
+@app.after_request
+def add_cache_control(response):
+    """Add cache-control headers to static file responses."""
+    if request.path.startswith("/static/"):
+        # In production, cache static assets for 1 day
+        if app.debug:
+            response.cache_control.no_cache = True
+            response.cache_control.no_store = True
+            response.cache_control.must_revalidate = True
+        else:
+            response.cache_control.max_age = 86400
+            response.cache_control.public = True
+    return response
 
 
 def _json_error(message: str, *, status: str = "error", code: int = 400):
@@ -182,5 +196,4 @@ def validate_problem():
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=5000, debug=True)

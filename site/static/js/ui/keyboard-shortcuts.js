@@ -9,7 +9,7 @@
  *               proof/focus-management.js
  */
 
-import { filterInput, symbolize, processJustification } from '../utils/input-processing.js';
+import { processFormula, processJustification } from '../utils/input-processing.js';
 import { commitActiveEditor } from '../proof/focus-management.js';
 
 /**
@@ -73,13 +73,11 @@ export function attachKeyboardHandlers(
   input.addEventListener('keydown', (e) => {
     const noMods = !e.metaKey && !e.ctrlKey && !e.altKey;
 
-    // Commit the current text before we mutate state/render
     const commitLineText = () => {
-      const processed = filterInput(input.textContent || '');
-      const sym = processed ? symbolize(processed) : '';
+      const processed = processFormula(input.textContent || '');
       const i = state.lines.findIndex((l) => l.id === lineId);
       if (i !== -1) {
-        state.lines[i].text = sym;
+        state.lines[i].text = processed;
       }
     };
 
@@ -90,7 +88,7 @@ export function attachKeyboardHandlers(
       if (nextIdx !== null) {
         e.preventDefault();
         // Mirror click behavior: commit current editor, re-render, then focus target line/field
-        commitActiveEditor(state, filterInput, symbolize, processJustification);
+        commitActiveEditor(state, processFormula, processJustification);
         renderProof();
         focusLineAt(nextIdx, 'formula-input');
       }
@@ -172,7 +170,7 @@ export function attachJustificationKeyboardHandlers(
       if (nextIdx !== null) {
         e.preventDefault();
         // Mirror click behavior: commit current editor, re-render, then focus target line/field
-        commitActiveEditor(state, filterInput, symbolize, processJustification);
+        commitActiveEditor(state, processFormula, processJustification);
         renderProof();
         focusLineAt(nextIdx, 'justification-input');
       }
@@ -186,7 +184,7 @@ export function attachJustificationKeyboardHandlers(
       if (nextIdx !== null) {
         e.preventDefault(); // Prevent newlines when we actually move
         // Commit before moving, to ensure justification text is captured
-        commitActiveEditor(state, filterInput, symbolize, processJustification);
+        commitActiveEditor(state, processFormula, processJustification);
         renderProof();
         focusLineAt(nextIdx, 'justification-input');
       } else {

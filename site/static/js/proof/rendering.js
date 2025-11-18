@@ -9,7 +9,7 @@
  */
 
 import { textWidth, pxVar } from '../utils/text-measurement.js';
-import { filterInput, symbolize, processJustification } from '../utils/input-processing.js';
+import { processFormula, processJustification } from '../utils/input-processing.js';
 import { commitActiveEditor, focusLineAt } from './focus-management.js';
 
 /**
@@ -120,9 +120,8 @@ function updateOldActiveCell(state) {
   }
 
   if (oldActiveEl.classList.contains('formula-input')) {
-    const processed = filterInput(oldActiveEl.textContent || '');
-    const sym = processed ? symbolize(processed) : '';
-    oldActiveEl.textContent = sym;
+    const processed = processFormula(oldActiveEl.textContent || '');
+    oldActiveEl.textContent = processed;
   } else if (oldActiveEl.classList.contains('justification-input')) {
     const raw = oldActiveEl.textContent || '';
     const processed = raw ? processJustification(raw) : '';
@@ -252,8 +251,7 @@ function createFormulaCell(line, idx, lineId, state, renderProof) {
       return;
     }
     cell.classList.remove('focused');
-    const processed = filterInput(input.textContent || '');
-    const sym = processed ? symbolize(processed) : '';
+    const processed = processFormula(input.textContent || '');
     const i = state.lines.findIndex((l) => l.id === lineId);
     if (i === -1) {
       return;
@@ -261,7 +259,7 @@ function createFormulaCell(line, idx, lineId, state, renderProof) {
     
     handleBlurWithConditionalRender(
       input,
-      sym,
+      processed,
       (text) => { state.lines[i].text = text; },
       renderProof
     );
@@ -271,7 +269,7 @@ function createFormulaCell(line, idx, lineId, state, renderProof) {
   cell.addEventListener('pointerup', (e) => {
     e.preventDefault();
     if (!canEditFormula) {
-      commitActiveEditor(state, filterInput, symbolize, processJustification);
+      commitActiveEditor(state, processFormula, processJustification);
       const ae = document.activeElement;
       if (ae && typeof ae.blur === 'function') {
         ae.blur();
@@ -289,7 +287,7 @@ function createFormulaCell(line, idx, lineId, state, renderProof) {
 
     if (!alreadyEditingThisFormula) {
       // Switching to a different field - commit current edits and position cursor at end
-      commitActiveEditor(state, filterInput, symbolize, processJustification);
+      commitActiveEditor(state, processFormula, processJustification);
       updateOldActiveCell(state);
       focusLineAt(idx, 'formula-input');
     }
@@ -393,7 +391,7 @@ function createJustificationCell(line, idx, lineId, state, renderProof) {
   just.addEventListener('pointerup', (e) => {
     e.preventDefault();
     if (!editable) {
-      commitActiveEditor(state, filterInput, symbolize, processJustification);
+      commitActiveEditor(state, processFormula, processJustification);
       const ae = document.activeElement;
       if (ae && typeof ae.blur === 'function') {
         ae.blur();
@@ -411,7 +409,7 @@ function createJustificationCell(line, idx, lineId, state, renderProof) {
 
     if (!alreadyEditingThisJust) {
       // Switching to a different field - commit current edits and position cursor at end
-      commitActiveEditor(state, filterInput, symbolize, processJustification);
+      commitActiveEditor(state, processFormula, processJustification);
       updateOldActiveCell(state);
       focusLineAt(idx, 'justification-input');
     }

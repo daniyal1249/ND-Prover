@@ -11,7 +11,7 @@ import { state } from './state.js';
 import { renderProof as renderProofFn, updateToolbarVisibility } from './proof/rendering.js';
 import { deleteLineAt, addLineAfterSame, beginSubproofBelow, endSubproofAt, endAndBeginAnotherAt } from './proof/line-operations.js';
 import { focusLineAt, commitActiveEditor } from './proof/focus-management.js';
-import { filterInput, symbolize, processJustification } from './utils/input-processing.js';
+import { processFormula, processJustification } from './utils/input-processing.js';
 import { attachKeyboardHandlers, attachJustificationKeyboardHandlers } from './ui/keyboard-shortcuts.js';
 import { initProblemUI } from './ui/problem-ui.js';
 import { initProofUI } from './ui/proof-ui.js';
@@ -30,7 +30,7 @@ function createRenderFunction() {
     // Create wrapper functions that handle render and focus
     // These are passed to rendering.js for button handlers and keyboard shortcuts
     const wrappedDeleteLineAt = (i) => {
-      commitActiveEditor(state, filterInput, symbolize, processJustification);
+      commitActiveEditor(state, processFormula, processJustification);
       deleteLineAt(state, i);
       render();
     };
