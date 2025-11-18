@@ -31,9 +31,6 @@
 /* === Formula Cell === */
 .formula-cell {
   position: relative;
-  display: flex;
-  align-items: center;
-  padding: var(--proof-row-padding-vertical) var(--spacing-lg);
   min-height: var(--proof-row-min-height);
   background: var(--background);
   cursor: text;
@@ -42,10 +39,25 @@
 /* Premise lines: disable hover and pointer */
 .formula-cell.disabled {
   cursor: default;
+  background: var(--background);
 }
 
-.formula-cell.disabled:hover .hover-bg {
-  opacity: 0;
+.formula-cell.disabled:hover {
+  background: var(--background);
+}
+
+/* Focused: always white (overrides hover) */
+.formula-cell.focused {
+  background: var(--background);
+}
+
+.formula-cell.focused:hover {
+  background: var(--background);
+}
+
+/* Hover: show grey background (not focused, not disabled) */
+.formula-cell:not(.disabled):not(.focused):hover {
+  background: var(--hover-background);
 }
 
 /* === Bars (Proof Column) === */
@@ -79,68 +91,64 @@
   z-index: 3;
 }
 
-/* === Hover Background === */
-/* Hover background inside the content column */
-.hover-bg {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--hover-background);
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-  z-index: 0;
-  pointer-events: none;
-}
-
-.formula-cell:hover .hover-bg {
-  opacity: 1;
-}
-
-.formula-cell.focused .hover-bg {
-  opacity: 0;
-}
-
-/* === Input Wrapper === */
-.input-wrap {
-  flex: 1;
-  position: relative;
-  z-index: 1;
-  /* Set per-line in JS using style attribute */
-  margin-left: 0;
-}
-
 /* === Formula Input === */
 .formula-input {
-  width: 100%;
   border: none;
   outline: none;
   background: transparent;
   font-family: var(--math-font);
   font-size: var(--font-size);
   line-height: var(--line-height);
-  padding: var(--input-padding-vertical) 0;
-  white-space: pre-wrap;
-  word-break: break-word;
   min-height: var(--input-min-height);
+  box-sizing: border-box;
+  color: inherit;
+}
+
+.formula-input:disabled {
+  opacity: 1;
+  cursor: default;
 }
 
 /* === Justification Column === */
 .justification-cell {
   position: relative;
   background: var(--background);
-  display: flex;
-  align-items: center;
-  padding: var(--justification-padding-vertical) var(--justification-padding-horizontal);
   min-height: var(--proof-row-min-height);
   cursor: text;
-  padding-left: 0;
-  padding-right: 0;
 }
 
+/* Non-editable: always white, no hover effects (must come first) */
 .justification-cell.disabled {
   cursor: default;
+  background: var(--background);
+}
+
+.justification-cell.disabled:hover {
+  background: var(--background);
+}
+
+/* Focused: always white (overrides everything) */
+.justification-cell.focused {
+  background: var(--background);
+}
+
+.justification-cell.focused:hover {
+  background: var(--background);
+}
+
+/* Empty cells: light grey background */
+.justification-cell:not(.filled):not(.disabled):not(.focused) {
+  background: var(--hover-background);
+}
+
+/* Empty cell hovered (not focused): darker grey */
+.justification-cell:not(.filled):not(.disabled):not(.focused):hover {
+  background: var(--hover-background-strong);
+}
+
+/* Filled cell hovered (not focused): lighter grey */
+.justification-cell.filled:not(.disabled):not(.focused):hover {
+  background: var(--hover-background);
 }
 
 .justification-cell.disabled .justification-input {
@@ -151,66 +159,27 @@
   background: transparent;
 }
 
-/* === Justification Hover === */
-.justification-hover-bg,
-.justification-placeholder {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--hover-background);
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-  z-index: 0;
-  pointer-events: none;
-}
-
-.justification-cell:hover .justification-hover-bg {
-  opacity: 1;
-}
-
-.justification-cell.focused .justification-hover-bg {
-  opacity: 0;
-}
-
-.justification-placeholder.show {
-  opacity: 1;
-}
-
-.justification-cell:hover .justification-placeholder.show {
-  background: var(--hover-background-strong);
-  opacity: 1;
-}
-
-/* Disable hover on non-editable justifications */
-.justification-cell.disabled:hover .justification-hover-bg {
-  opacity: 0;
-}
-
-.justification-cell.disabled:hover .justification-placeholder {
-  opacity: 0;
-}
-
 /* === Justification Input === */
 .justification-input {
-  width: 100%;
   border: none;
   outline: none;
   background: transparent;
   font-family: var(--math-font);
   font-size: var(--font-size);
   line-height: var(--line-height);
-  padding: var(--input-padding-vertical) var(--spacing-sm);
-  white-space: pre-wrap;
-  word-break: break-word;
+  padding: var(--proof-row-padding-vertical) var(--spacing-sm);
   min-height: var(--input-min-height);
-  position: relative;
-  z-index: 1;
+  box-sizing: border-box;
+  color: inherit;
 }
 
 .justification-input:focus {
   background: transparent;
+}
+
+.justification-input:disabled {
+  opacity: 1;
+  cursor: default;
 }
 
 /* === Line Actions === */

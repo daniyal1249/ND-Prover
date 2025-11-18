@@ -16,7 +16,7 @@
  */
 export function commitActiveEditor(state, processFormula, processJustification) {
   const ae = document.activeElement;
-  if (!ae || !ae.isContentEditable) {
+  if (!ae || (ae.tagName !== 'INPUT' && ae.tagName !== 'TEXTAREA')) {
     return;
   }
 
@@ -31,7 +31,7 @@ export function commitActiveEditor(state, processFormula, processJustification) 
     return;
   }
 
-  const val = ae.textContent || '';
+  const val = ae.value || '';
   if (ae.classList.contains('formula-input')) {
     state.lines[idx].text = processFormula(val);
   } else if (ae.classList.contains('justification-input')) {
@@ -54,12 +54,10 @@ export function focusLineAt(index, field = 'formula-input') {
     el.focus({ preventScroll: true });
     
     // Position cursor at end of content
-    const r = document.createRange();
-    const s = window.getSelection();
-    r.selectNodeContents(el);
-    r.collapse(false);
-    s.removeAllRanges();
-    s.addRange(r);
+    if (el.setSelectionRange) {
+      const len = el.value.length;
+      el.setSelectionRange(len, len);
+    }
     
     // Add focused class to container
     const container = el.closest(field === 'formula-input' ? '.formula-cell' : '.justification-cell');

@@ -10,7 +10,6 @@
  */
 
 import { processFormula, processJustification } from '../utils/input-processing.js';
-import { commitActiveEditor } from '../proof/focus-management.js';
 
 /**
  * Finds the next editable line index in the given column above or below a start index.
@@ -74,7 +73,7 @@ export function attachKeyboardHandlers(
     const noMods = !e.metaKey && !e.ctrlKey && !e.altKey;
 
     const commitLineText = () => {
-      const processed = processFormula(input.textContent || '');
+      const processed = processFormula(input.value || '');
       const i = state.lines.findIndex((l) => l.id === lineId);
       if (i !== -1) {
         state.lines[i].text = processed;
@@ -87,9 +86,7 @@ export function attachKeyboardHandlers(
       const nextIdx = findNextEditableIndex(state, idx, direction, 'formula-input');
       if (nextIdx !== null) {
         e.preventDefault();
-        // Mirror click behavior: commit current editor, re-render, then focus target line/field
-        commitActiveEditor(state, processFormula, processJustification);
-        renderProof();
+        // Focus new cell - blur handler will automatically commit and update in place
         focusLineAt(nextIdx, 'formula-input');
       }
       return;
@@ -169,9 +166,7 @@ export function attachJustificationKeyboardHandlers(
       const nextIdx = findNextEditableIndex(state, idx, direction, 'justification-input');
       if (nextIdx !== null) {
         e.preventDefault();
-        // Mirror click behavior: commit current editor, re-render, then focus target line/field
-        commitActiveEditor(state, processFormula, processJustification);
-        renderProof();
+        // Focus new cell - blur handler will automatically commit and update in place
         focusLineAt(nextIdx, 'justification-input');
       }
       return;
@@ -183,13 +178,11 @@ export function attachJustificationKeyboardHandlers(
 
       if (nextIdx !== null) {
         e.preventDefault(); // Prevent newlines when we actually move
-        // Commit before moving, to ensure justification text is captured
-        commitActiveEditor(state, processFormula, processJustification);
-        renderProof();
+        // Focus new cell - blur handler will automatically commit and update in place
         focusLineAt(nextIdx, 'justification-input');
       } else {
         // No editable justification below: behave like ArrowDown would
-        // on the last editable cell — do not re-render, just prevent newline.
+        // on the last editable cell — just prevent newline.
         e.preventDefault();
       }
       return;

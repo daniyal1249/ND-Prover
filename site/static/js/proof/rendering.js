@@ -104,7 +104,7 @@ export function addBars(container, depth, capLast = false) {
  */
 function updateOldActiveCell(state) {
   const oldActiveEl = document.activeElement;
-  if (!oldActiveEl || !oldActiveEl.isContentEditable) {
+  if (!oldActiveEl || (oldActiveEl.tagName !== 'INPUT' && oldActiveEl.tagName !== 'TEXTAREA')) {
     return;
   }
 
@@ -120,55 +120,37 @@ function updateOldActiveCell(state) {
   }
 
   if (oldActiveEl.classList.contains('formula-input')) {
-    const processed = processFormula(oldActiveEl.textContent || '');
-    oldActiveEl.textContent = processed;
+    const processed = processFormula(oldActiveEl.value || '');
+    oldActiveEl.value = processed;
   } else if (oldActiveEl.classList.contains('justification-input')) {
-    const raw = oldActiveEl.textContent || '';
+    const raw = oldActiveEl.value || '';
     const processed = raw ? processJustification(raw) : '';
-    oldActiveEl.textContent = processed;
+    oldActiveEl.value = processed;
     
-    // Update filled class and placeholder visibility for justification cells
+    // Update filled class for justification cells
     const oldJust = oldActiveEl.closest('.justification-cell');
-    const oldPlaceholder = oldJust ? oldJust.querySelector('.justification-placeholder') : null;
-    if (processed) {
-      if (oldJust) oldJust.classList.add('filled');
-      if (oldPlaceholder) oldPlaceholder.classList.remove('show');
-    } else {
-      if (oldJust) oldJust.classList.remove('filled');
-      if (oldPlaceholder) oldPlaceholder.classList.add('show');
+    if (oldJust) {
+      if (processed) {
+        oldJust.classList.add('filled');
+      } else {
+        oldJust.classList.remove('filled');
+      }
     }
   }
 }
 
 /**
- * Handles blur event logic: updates state and conditionally re-renders.
- * Prevents keyboard flicker on mobile by updating in place when switching to another editable cell.
+ * Handles blur event logic: updates state and updates the input value in place.
+ * Always updates in place to avoid unnecessary DOM recreation.
  * 
  * @param {HTMLElement} inputElement - The input element that was blurred
  * @param {string} processedText - The processed text to display
  * @param {Function} updateState - Function to update state with processed text
- * @param {Function} renderProof - Function to trigger full re-render
  */
-function handleBlurWithConditionalRender(inputElement, processedText, updateState, renderProof) {
+function handleInputBlur(inputElement, processedText, updateState) {
   updateState(processedText);
-  
-  // Check if we're switching to another editable cell (to prevent keyboard flicker on mobile)
-  // Use requestAnimationFrame to check after the focus event has fired
-  requestAnimationFrame(() => {
-    const activeEl = document.activeElement;
-    const isSwitchingToEditableCell = activeEl && activeEl.isContentEditable && (
-      activeEl.classList.contains('formula-input') || activeEl.classList.contains('justification-input')
-    );
-    
-    if (isSwitchingToEditableCell) {
-      // Update text content in place to show processed text without recreating DOM
-      // This keeps the keyboard open on mobile while still rendering the text
-      inputElement.textContent = processedText;
-    } else {
-      // Full render when blurring to non-editable element
-      renderProof();
-    }
-  });
+  // Always update value in place to show processed text without recreating DOM
+  inputElement.value = processedText;
 }
 
 /**
@@ -186,6 +168,25 @@ function createHorizontalBar(line) {
   const width = line.text ? (textWidth(line.text) + pxVar('--proof-text-gap') + extra) : base;
   h.style.width = Math.max(base, width) + 'px';
   return h;
+}
+
+/**
+ * Updates the width of the horizontal bar in a formula cell based on the current text.
+ * Only updates if a horizontal bar exists (e.g., for assumption cells).
+ * 
+ * @param {HTMLElement} cell - The formula cell element
+ * @param {string} text - The text to measure for bar width
+ */
+function updateHorizontalBarWidth(cell, text) {
+  const horizontalBar = cell.querySelector('.horizontal-bar');
+  if (!horizontalBar) {
+    return;
+  }
+  
+  const base = pxVar('--horizontal-bar-length');
+  const extra = pxVar('--horizontal-bar-extra-width');
+  const width = text ? (textWidth(text) + pxVar('--proof-text-gap') + extra) : base;
+  horizontalBar.style.width = Math.max(base, width) + 'px';
 }
 
 /**
@@ -208,24 +209,32 @@ function createFormulaCell(line, idx, lineId, state, renderProof) {
   addBars(bars, line.indent, line.isAssumption);
   cell.appendChild(bars);
 
-  // Hover background
-  const hover = document.createElement('div');
-  hover.className = 'hover-bg';
-  cell.appendChild(hover);
-
-  // Input wrapper
-  const wrap = document.createElement('div');
-  wrap.className = 'input-wrap';
-  wrap.style.marginLeft = `calc(${line.indent} * var(--proof-indent) + var(--proof-text-gap))`;
-
   // Formula input
-  const input = document.createElement('div');
+  const input = document.createElement('input');
+  input.type = 'text';
   input.className = 'formula-input';
-  input.setAttribute('role', 'textbox');
   const canEditFormula = !line.isPremise;
-  input.setAttribute('contenteditable', String(canEditFormula));
+  input.disabled = !canEditFormula;
   input.spellcheck = false;
-  input.textContent = line.text || '';
+  input.value = line.text || '';
+  
+  // Position input absolutely to fill the cell
+  input.style.position = 'absolute';
+  input.style.top = '0';
+  input.style.bottom = '0';
+  input.style.left = '0';
+  input.style.right = '0';
+  input.style.zIndex = '1';
+  
+  // Set padding to fill cell and maintain text position based on indent
+  const paddingLeft = `calc(var(--spacing-lg) + ${line.indent} * var(--proof-indent) + var(--proof-text-gap))`;
+  const paddingRight = 'var(--spacing-lg)';
+  const paddingTop = 'var(--proof-row-padding-vertical)';
+  const paddingBottom = 'var(--proof-row-padding-vertical)';
+  input.style.paddingLeft = paddingLeft;
+  input.style.paddingRight = paddingRight;
+  input.style.paddingTop = paddingTop;
+  input.style.paddingBottom = paddingBottom;
 
   if (!canEditFormula) {
     cell.classList.add('disabled');
@@ -251,52 +260,35 @@ function createFormulaCell(line, idx, lineId, state, renderProof) {
       return;
     }
     cell.classList.remove('focused');
-    const processed = processFormula(input.textContent || '');
+    const processed = processFormula(input.value || '');
     const i = state.lines.findIndex((l) => l.id === lineId);
     if (i === -1) {
       return;
     }
     
-    handleBlurWithConditionalRender(
+    handleInputBlur(
       input,
       processed,
-      (text) => { state.lines[i].text = text; },
-      renderProof
+      (text) => { state.lines[i].text = text; }
     );
+    
+    // Update horizontal bar width if this line has a horizontal bar (e.g., assumptions)
+    updateHorizontalBarWidth(cell, processed);
   });
 
-  // Cell click handler
-  cell.addEventListener('pointerup', (e) => {
-    e.preventDefault();
-    if (!canEditFormula) {
-      commitActiveEditor(state, processFormula, processJustification);
+  // Cell click handler for disabled cells only
+  // Disabled inputs don't blur other elements when clicked, so we need to handle it
+  if (!canEditFormula) {
+    cell.addEventListener('pointerup', (e) => {
+      e.preventDefault();
       const ae = document.activeElement;
       if (ae && typeof ae.blur === 'function') {
         ae.blur();
       }
-      return;
-    }
+    });
+  }
 
-    const ae = document.activeElement;
-    const currentRow = ae && ae.isContentEditable ? ae.closest('.proof-line') : null;
-    const currentIdx = currentRow ? parseInt(currentRow.dataset.index, 10) : -1;
-    const alreadyEditingThisFormula =
-      ae && ae.isContentEditable &&
-      ae.classList.contains('formula-input') &&
-      currentIdx === idx;
-
-    if (!alreadyEditingThisFormula) {
-      // Switching to a different field - commit current edits and position cursor at end
-      commitActiveEditor(state, processFormula, processJustification);
-      updateOldActiveCell(state);
-      focusLineAt(idx, 'formula-input');
-    }
-    // If already editing this field, let the browser handle cursor positioning naturally
-    // (don't call focusLineAt, which would reset cursor to end)
-  });
-
-  wrap.appendChild(input);
-  cell.appendChild(wrap);
+  cell.appendChild(input);
 
   return cell;
 }
@@ -315,26 +307,23 @@ function createJustificationCell(line, idx, lineId, state, renderProof) {
   const just = document.createElement('div');
   just.className = 'justification-cell';
 
-  const jHover = document.createElement('div');
-  jHover.className = 'justification-hover-bg';
-  just.appendChild(jHover);
-
-  const jPlaceholder = document.createElement('div');
-  jPlaceholder.className = 'justification-placeholder';
-  const hasText = !!(line.justText && /\S/.test(line.justText));
-  if (!hasText) {
-    jPlaceholder.classList.add('show');
-  }
-  just.appendChild(jPlaceholder);
-
-  const justInput = document.createElement('div');
+  const justInput = document.createElement('input');
+  justInput.type = 'text';
   justInput.className = 'justification-input';
-  justInput.setAttribute('role', 'textbox');
   const editable = !(line.isAssumption || line.isPremise);
-  justInput.setAttribute('contenteditable', String(editable));
+  justInput.disabled = !editable;
   justInput.spellcheck = false;
-  justInput.textContent = line.justText || '';
+  justInput.value = line.justText || '';
+  
+  // Position input absolutely to fill the cell
+  justInput.style.position = 'absolute';
+  justInput.style.top = '0';
+  justInput.style.bottom = '0';
+  justInput.style.left = '0';
+  justInput.style.right = '0';
+  justInput.style.zIndex = '1';
 
+  const hasText = !!(line.justText && /\S/.test(line.justText));
   if (!editable) {
     just.classList.add('disabled');
   }
@@ -348,7 +337,6 @@ function createJustificationCell(line, idx, lineId, state, renderProof) {
       return;
     }
     just.classList.add('focused');
-    jPlaceholder.classList.remove('show');
     // Remember last focused proof editor so we can restore it after Alt+Tab
     window.__ndLastFocus = {
       kind: 'proof',
@@ -363,59 +351,38 @@ function createJustificationCell(line, idx, lineId, state, renderProof) {
       return;
     }
     just.classList.remove('focused');
-    const raw = justInput.textContent || '';
+    const raw = justInput.value || '';
     const processed = raw ? processJustification(raw) : '';
     const i = state.lines.findIndex((l) => l.id === lineId);
     if (i === -1) {
       return;
     }
     
-    handleBlurWithConditionalRender(
+    handleInputBlur(
       justInput,
       processed,
       (text) => {
         state.lines[i].justText = text;
         if (text) {
           just.classList.add('filled');
-          jPlaceholder.classList.remove('show');
         } else {
           just.classList.remove('filled');
-          jPlaceholder.classList.add('show');
         }
-      },
-      renderProof
+      }
     );
   });
 
-  // Justification click handler
-  just.addEventListener('pointerup', (e) => {
-    e.preventDefault();
-    if (!editable) {
-      commitActiveEditor(state, processFormula, processJustification);
+  // Cell click handler for disabled cells only
+  // Disabled inputs don't blur other elements when clicked, so we need to handle it
+  if (!editable) {
+    just.addEventListener('pointerup', (e) => {
+      e.preventDefault();
       const ae = document.activeElement;
       if (ae && typeof ae.blur === 'function') {
         ae.blur();
       }
-      return;
-    }
-
-    const ae = document.activeElement;
-    const currentRow = ae && ae.isContentEditable ? ae.closest('.proof-line') : null;
-    const currentIdx = currentRow ? parseInt(currentRow.dataset.index, 10) : -1;
-    const alreadyEditingThisJust =
-      ae && ae.isContentEditable &&
-      ae.classList.contains('justification-input') &&
-      currentIdx === idx;
-
-    if (!alreadyEditingThisJust) {
-      // Switching to a different field - commit current edits and position cursor at end
-      commitActiveEditor(state, processFormula, processJustification);
-      updateOldActiveCell(state);
-      focusLineAt(idx, 'justification-input');
-    }
-    // If already editing this field, let the browser handle cursor positioning naturally
-    // (don't call focusLineAt, which would reset cursor to end)
-  });
+    });
+  }
 
   just.appendChild(justInput);
   return just;
