@@ -41,13 +41,29 @@ export function commitActiveEditor(state, processFormula, processJustification) 
 
 /**
  * Focuses a specific line at the given index and positions cursor at end.
+ * Uses lineId from state as fallback if data-index lookup fails (e.g., during DOM updates).
  * 
  * @param {number} index - Index of the line to focus
  * @param {string} field - Field to focus ('formula-input' or 'justification-input')
+ * @param {Object} state - Optional state object for fallback lookup by lineId
  */
-export function focusLineAt(index, field = 'formula-input') {
+export function focusLineAt(index, field = 'formula-input', state = null) {
   requestAnimationFrame(() => {
-    const el = document.querySelector(`.proof-line[data-index="${index}"] .${field}`);
+    // Try to find element by data-index first
+    let el = document.querySelector(`.proof-line[data-index="${index}"] .${field}`);
+    
+    // If not found and state is provided, try finding by lineId as fallback
+    if (!el && state && state.lines && index >= 0 && index < state.lines.length) {
+      const line = state.lines[index];
+      if (line) {
+        const lineId = line.id;
+        const row = document.querySelector(`.proof-line[data-id="${lineId}"]`);
+        if (row) {
+          el = row.querySelector(`.${field}`);
+        }
+      }
+    }
+    
     if (!el) {
       return;
     }

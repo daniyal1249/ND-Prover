@@ -25,7 +25,7 @@ export function initProofUI(state, renderProof) {
     }
     addLine(state, 0, null, false, false); // First top-level line
     renderProof();
-    focusLineAt(0, 'formula-input');
+    focusLineAt(0, 'formula-input', state);
   });
 
   // Begin subproof button (first-line only)
@@ -36,7 +36,7 @@ export function initProofUI(state, renderProof) {
     }
     addLine(state, 1, null, true, false); // First assumption at indent 1
     renderProof();
-    focusLineAt(0, 'formula-input');
+    focusLineAt(0, 'formula-input', state);
   });
 
   // Check proof button

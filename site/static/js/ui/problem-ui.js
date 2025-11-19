@@ -36,7 +36,6 @@ export function initProblemUI(state, renderProof) {
   const premisesBox = document.getElementById('premises');
   const conclusionBox = document.getElementById('conclusion');
 
-  // Track last-focused problem input so we can restore it after Alt+Tab
   premisesBox.addEventListener('focus', () => {
     window.__ndLastFocus = {
       kind: 'problem',

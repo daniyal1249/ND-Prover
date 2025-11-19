@@ -97,49 +97,6 @@ export function addBars(container, depth, capLast = false) {
 }
 
 /**
- * Updates the old active cell's content when switching to a new field.
- * This keeps the keyboard open on mobile while still rendering processed text.
- * 
- * @param {Object} state - Application state object
- */
-function updateOldActiveCell(state) {
-  const oldActiveEl = document.activeElement;
-  if (!oldActiveEl || (oldActiveEl.tagName !== 'INPUT' && oldActiveEl.tagName !== 'TEXTAREA')) {
-    return;
-  }
-
-  const oldRow = oldActiveEl.closest('.proof-line');
-  if (!oldRow) {
-    return;
-  }
-
-  const oldLineId = Number(oldRow.dataset.id);
-  const oldIdx = state.lines.findIndex((l) => l.id === oldLineId);
-  if (oldIdx === -1) {
-    return;
-  }
-
-  if (oldActiveEl.classList.contains('formula-input')) {
-    const processed = processFormula(oldActiveEl.value || '');
-    oldActiveEl.value = processed;
-  } else if (oldActiveEl.classList.contains('justification-input')) {
-    const raw = oldActiveEl.value || '';
-    const processed = raw ? processJustification(raw) : '';
-    oldActiveEl.value = processed;
-    
-    // Update filled class for justification cells
-    const oldJust = oldActiveEl.closest('.justification-cell');
-    if (oldJust) {
-      if (processed) {
-        oldJust.classList.add('filled');
-      } else {
-        oldJust.classList.remove('filled');
-      }
-    }
-  }
-}
-
-/**
  * Handles blur event logic: updates state and updates the input value in place.
  * Always updates in place to avoid unnecessary DOM recreation.
  * 
@@ -196,10 +153,9 @@ function updateHorizontalBarWidth(cell, text) {
  * @param {number} idx - Line index
  * @param {number} lineId - Stable line ID
  * @param {Object} state - Application state object
- * @param {Function} renderProof - Function to trigger full re-render
  * @returns {HTMLElement} Formula cell element
  */
-function createFormulaCell(line, idx, lineId, state, renderProof) {
+function createFormulaCell(line, idx, lineId, state) {
   const cell = document.createElement('div');
   cell.className = 'formula-cell';
 
@@ -246,7 +202,6 @@ function createFormulaCell(line, idx, lineId, state, renderProof) {
       return;
     }
     cell.classList.add('focused');
-    // Remember last focused proof editor so we can restore it after Alt+Tab
     window.__ndLastFocus = {
       kind: 'proof',
       index: idx,
@@ -266,27 +221,28 @@ function createFormulaCell(line, idx, lineId, state, renderProof) {
       return;
     }
     
+    if (state.lines[i].text === processed) {
+      input.value = processed;
+      updateHorizontalBarWidth(cell, processed);
+      updateProofDimensions(state);
+      return;
+    }
+    
     handleInputBlur(
       input,
       processed,
       (text) => { state.lines[i].text = text; }
     );
     
-    // Update horizontal bar width if this line has a horizontal bar (e.g., assumptions)
     updateHorizontalBarWidth(cell, processed);
+    updateProofDimensions(state);
   });
 
-  // Cell click handler for disabled cells only
-  // Disabled inputs don't blur other elements when clicked, so we need to handle it
-  if (!canEditFormula) {
-    cell.addEventListener('pointerup', (e) => {
-      e.preventDefault();
-      const ae = document.activeElement;
-      if (ae && typeof ae.blur === 'function') {
-        ae.blur();
-      }
-    });
-  }
+  // Note: When clicking on a disabled input, the click event bubbles up to the cell container.
+  // The browser automatically blurs the currently focused element when clicking on a non-focusable
+  // element (the cell div), so no manual blur handler is needed here. The pointer-events: none
+  // on disabled inputs is useful for preventing the input from being the event target and for
+  // cursor behavior, but blur happens regardless due to event bubbling.
 
   cell.appendChild(input);
 
@@ -300,10 +256,9 @@ function createFormulaCell(line, idx, lineId, state, renderProof) {
  * @param {number} idx - Line index
  * @param {number} lineId - Stable line ID
  * @param {Object} state - Application state object
- * @param {Function} renderProof - Function to trigger full re-render
  * @returns {HTMLElement} Justification cell element
  */
-function createJustificationCell(line, idx, lineId, state, renderProof) {
+function createJustificationCell(line, idx, lineId, state) {
   const just = document.createElement('div');
   just.className = 'justification-cell';
 
@@ -337,7 +292,6 @@ function createJustificationCell(line, idx, lineId, state, renderProof) {
       return;
     }
     just.classList.add('focused');
-    // Remember last focused proof editor so we can restore it after Alt+Tab
     window.__ndLastFocus = {
       kind: 'proof',
       index: idx,
@@ -358,6 +312,12 @@ function createJustificationCell(line, idx, lineId, state, renderProof) {
       return;
     }
     
+    if (state.lines[i].justText === processed) {
+      justInput.value = processed;
+      updateProofDimensions(state);
+      return;
+    }
+    
     handleInputBlur(
       justInput,
       processed,
@@ -370,19 +330,15 @@ function createJustificationCell(line, idx, lineId, state, renderProof) {
         }
       }
     );
+    
+    updateProofDimensions(state);
   });
 
-  // Cell click handler for disabled cells only
-  // Disabled inputs don't blur other elements when clicked, so we need to handle it
-  if (!editable) {
-    just.addEventListener('pointerup', (e) => {
-      e.preventDefault();
-      const ae = document.activeElement;
-      if (ae && typeof ae.blur === 'function') {
-        ae.blur();
-      }
-    });
-  }
+  // Note: When clicking on a disabled input, the click event bubbles up to the cell container.
+  // The browser automatically blurs the currently focused element when clicking on a non-focusable
+  // element (the cell div), so no manual blur handler is needed here. The pointer-events: none
+  // on disabled inputs is useful for preventing the input from being the event target and for
+  // cursor behavior, but blur happens regardless due to event bubbling.
 
   just.appendChild(justInput);
   return just;
@@ -426,6 +382,7 @@ function createActionButtons(
   btnDel.addEventListener('pointerup', (e) => {
     e.preventDefault();
     e.stopPropagation();
+    btnDel.blur();
     deleteLineAt(idx);
   });
 
@@ -439,6 +396,7 @@ function createActionButtons(
   btnAdd.addEventListener('pointerup', (e) => {
     e.preventDefault();
     e.stopPropagation();
+    btnAdd.blur();
     addLineAfterSame(idx);
   });
 
@@ -452,6 +410,7 @@ function createActionButtons(
   btnSub.addEventListener('pointerup', (e) => {
     e.preventDefault();
     e.stopPropagation();
+    btnSub.blur();
     beginSubproofBelow(idx);
   });
 
@@ -465,6 +424,7 @@ function createActionButtons(
   btnEnd.addEventListener('pointerup', (e) => {
     e.preventDefault();
     e.stopPropagation();
+    btnEnd.blur();
     endSubproofAt(idx);
   });
 
@@ -478,6 +438,7 @@ function createActionButtons(
   btnEndBegin.addEventListener('pointerup', (e) => {
     e.preventDefault();
     e.stopPropagation();
+    btnEndBegin.blur();
     endAndBeginAnotherAt(idx);
   });
 
@@ -507,7 +468,6 @@ function createActionButtons(
  * @param {number} idx - Line index
  * @param {number} lastPremiseIndex - Index of the last premise
  * @param {Object} state - Application state object
- * @param {Function} renderProof - Function to trigger full re-render
  * @param {Function} deleteLineAt - Function to delete a line
  * @param {Function} addLineAfterSame - Function to add line after index
  * @param {Function} beginSubproofBelow - Function to begin subproof
@@ -515,12 +475,11 @@ function createActionButtons(
  * @param {Function} endAndBeginAnotherAt - Function to end and begin subproof
  * @returns {HTMLElement} Proof line row element
  */
-function createProofLine(
+export function createProofLine(
   line,
   idx,
   lastPremiseIndex,
   state,
-  renderProof,
   deleteLineAt,
   addLineAfterSame,
   beginSubproofBelow,
@@ -539,7 +498,7 @@ function createProofLine(
   ln.textContent = String(idx + 1);
 
   // Formula cell
-  const cell = createFormulaCell(line, idx, lineId, state, renderProof);
+  const cell = createFormulaCell(line, idx, lineId, state);
 
   // Horizontal bars for assumptions and premise separator
   if (line.isAssumption) {
@@ -550,7 +509,7 @@ function createProofLine(
   }
 
   // Justification column
-  const just = createJustificationCell(line, idx, lineId, state, renderProof);
+  const just = createJustificationCell(line, idx, lineId, state);
 
   // Actions column
   const actions = createActionButtons(
@@ -574,7 +533,7 @@ function createProofLine(
  * 
  * @param {Object} state - Application state object
  */
-function updateProofDimensions(state) {
+export function updateProofDimensions(state) {
   const justW = computeJustWidth(state);
   document.documentElement.style.setProperty('--justification-width', justW + 'px');
 
@@ -583,13 +542,167 @@ function updateProofDimensions(state) {
 }
 
 /**
+ * Removes a proof line element from the DOM.
+ * 
+ * @param {HTMLElement} row - The proof line row element to remove
+ * @param {HTMLElement} proofRoot - Root element containing proof lines
+ */
+export function removeLineFromDOM(row, proofRoot) {
+  if (row && row.parentNode === proofRoot) {
+    row.remove();
+  }
+}
+
+/**
+ * Updates line number displays and dataset.index for all proof lines to match state.
+ * 
+ * @param {HTMLElement} proofRoot - Root element containing proof lines
+ * @param {Object} state - Application state object
+ */
+export function updateLineNumbers(proofRoot, state) {
+  const rows = Array.from(proofRoot.querySelectorAll('.proof-line'));
+  
+  // Create a map of line IDs to state indices
+  const lineIdToIndex = new Map();
+  state.lines.forEach((line, idx) => {
+    lineIdToIndex.set(line.id, idx);
+  });
+  
+  const activeElement = document.activeElement;
+  if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+    const activeRow = activeElement.closest('.proof-line');
+    if (activeRow) {
+      activeElement.blur();
+    }
+  }
+  
+  // Update each row based on its line ID
+  rows.forEach((row) => {
+    const lineId = Number(row.dataset.id);
+    const idx = lineIdToIndex.get(lineId);
+    
+    if (idx !== undefined) {
+      row.dataset.index = String(idx);
+      const lineNumber = row.querySelector('.line-number');
+      if (lineNumber) {
+        lineNumber.textContent = String(idx + 1);
+      }
+    }
+  });
+  
+  // Reorder rows in DOM to match state order
+  const sortedRows = rows.sort((a, b) => {
+    const idxA = parseInt(a.dataset.index, 10);
+    const idxB = parseInt(b.dataset.index, 10);
+    return idxA - idxB;
+  });
+  
+  sortedRows.forEach((row) => {
+    proofRoot.appendChild(row);
+  });
+  
+}
+
+/**
+ * Updates action button visibility for all proof lines based on current state.
+ * 
+ * @param {HTMLElement} proofRoot - Root element containing proof lines
+ * @param {Object} state - Application state object
+ * @param {Function} deleteLineAt - Function to delete a line
+ * @param {Function} addLineAfterSame - Function to add line after index
+ * @param {Function} beginSubproofBelow - Function to begin subproof
+ * @param {Function} endSubproofAt - Function to end subproof
+ * @param {Function} endAndBeginAnotherAt - Function to end and begin subproof
+ */
+export function updateActionButtons(proofRoot, state, deleteLineAt, addLineAfterSame, beginSubproofBelow, endSubproofAt, endAndBeginAnotherAt) {
+  const lastPremiseIndex = state.lines.reduce((acc, l, i) => l.isPremise ? i : acc, -1);
+  const rows = proofRoot.querySelectorAll('.proof-line');
+  
+  rows.forEach((row) => {
+    const idx = parseInt(row.dataset.index, 10);
+    const line = state.lines[idx];
+    if (!line) {
+      return;
+    }
+    
+    // Remove existing actions
+    const oldActions = row.querySelector('.line-actions');
+    if (oldActions) {
+      oldActions.remove();
+    }
+    
+    // Create new actions with updated state
+    const actions = createActionButtons(
+      line,
+      idx,
+      lastPremiseIndex,
+      state,
+      deleteLineAt,
+      addLineAfterSame,
+      beginSubproofBelow,
+      endSubproofAt,
+      endAndBeginAnotherAt
+    );
+    
+    row.appendChild(actions);
+  });
+}
+
+/**
+ * Inserts a new proof line element into the DOM at the specified index.
+ * 
+ * @param {Object} state - Application state object
+ * @param {number} idx - Index where to insert the line
+ * @param {HTMLElement} proofRoot - Root element containing proof lines
+ * @param {Function} deleteLineAt - Function to delete a line
+ * @param {Function} addLineAfterSame - Function to add line after index
+ * @param {Function} beginSubproofBelow - Function to begin subproof
+ * @param {Function} endSubproofAt - Function to end subproof
+ * @param {Function} endAndBeginAnotherAt - Function to end and begin subproof
+ * @returns {HTMLElement} The newly created proof line row element
+ */
+export function insertLineInDOM(state, idx, proofRoot, deleteLineAt, addLineAfterSame, beginSubproofBelow, endSubproofAt, endAndBeginAnotherAt) {
+  const line = state.lines[idx];
+  if (!line) {
+    return null;
+  }
+  
+  const lastPremiseIndex = state.lines.reduce((acc, l, i) => l.isPremise ? i : acc, -1);
+  const row = createProofLine(
+    line,
+    idx,
+    lastPremiseIndex,
+    state,
+    deleteLineAt,
+    addLineAfterSame,
+    beginSubproofBelow,
+    endSubproofAt,
+    endAndBeginAnotherAt
+  );
+  
+  // Insert at correct position - find the row that should come after this one
+  const existingRows = Array.from(proofRoot.querySelectorAll('.proof-line'));
+  const nextRow = existingRows.find(r => {
+    const rIdx = parseInt(r.dataset.index, 10);
+    return rIdx >= idx;
+  });
+  
+  if (nextRow) {
+    proofRoot.insertBefore(row, nextRow);
+  } else {
+    proofRoot.appendChild(row);
+  }
+  
+  return row;
+}
+
+/**
  * Renders the entire proof by creating DOM elements for each line.
- * This is the main rendering function that updates the proof display.
+ * This is only used for initial render and when creating a new problem.
  * 
  * @param {Object} state - Application state object
  * @param {HTMLElement} proofRoot - Root element for proof lines
  * @param {HTMLElement} toolbar - Toolbar element
- * @param {Function} renderProof - Reference to renderProof for recursive calls
  * @param {Function} deleteLineAt - Function to delete a line
  * @param {Function} addLineAfterSame - Function to add line after index
  * @param {Function} beginSubproofBelow - Function to begin subproof
@@ -600,7 +713,6 @@ export function renderProof(
   state,
   proofRoot,
   toolbar,
-  renderProof,
   deleteLineAt,
   addLineAfterSame,
   beginSubproofBelow,
@@ -622,7 +734,6 @@ export function renderProof(
       idx,
       lastPremiseIndex,
       state,
-      renderProof,
       deleteLineAt,
       addLineAfterSame,
       beginSubproofBelow,

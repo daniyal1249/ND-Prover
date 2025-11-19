@@ -107,6 +107,7 @@
 .formula-input:disabled {
   opacity: 1;
   cursor: default;
+  pointer-events: none;
 }
 
 /* === Justification Column === */
@@ -151,10 +152,6 @@
   background: var(--hover-background);
 }
 
-.justification-cell.disabled .justification-input {
-  pointer-events: none;
-}
-
 .justification-cell.filled .justification-input:not(:focus) {
   background: transparent;
 }
@@ -180,6 +177,7 @@
 .justification-input:disabled {
   opacity: 1;
   cursor: default;
+  pointer-events: none;
 }
 
 /* === Line Actions === */

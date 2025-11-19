@@ -5,11 +5,9 @@
  * Shift+Enter, and Shift+Tab combinations, as well as arrow-key navigation
  * between editable cells.
  * 
- * Dependencies: proof/line-operations.js, utils/input-processing.js,
- *               proof/focus-management.js
+ * Dependencies: proof/focus-management.js
  */
 
-import { processFormula, processJustification } from '../utils/input-processing.js';
 
 /**
  * Finds the next editable line index in the given column above or below a start index.
@@ -48,9 +46,7 @@ function findNextEditableIndex(state, startIdx, direction, field) {
  * 
  * @param {HTMLElement} input - The input element to attach handlers to
  * @param {Object} state - Application state object
- * @param {number} idx - Index of the line
  * @param {number} lineId - Stable ID of the line
- * @param {Function} renderProof - Function to re-render the proof
  * @param {Function} addLineAfterSame - Function to add line after index (takes idx, calls render and focus)
  * @param {Function} beginSubproofBelow - Function to begin subproof (takes idx, calls render and focus)
  * @param {Function} endSubproofAt - Function to end subproof (takes idx, calls render and focus if needed)
@@ -60,9 +56,7 @@ function findNextEditableIndex(state, startIdx, direction, field) {
 export function attachKeyboardHandlers(
   input,
   state,
-  idx,
   lineId,
-  renderProof,
   addLineAfterSame,
   beginSubproofBelow,
   endSubproofAt,
@@ -72,70 +66,59 @@ export function attachKeyboardHandlers(
   input.addEventListener('keydown', (e) => {
     const noMods = !e.metaKey && !e.ctrlKey && !e.altKey;
 
-    const commitLineText = () => {
-      const processed = processFormula(input.value || '');
-      const i = state.lines.findIndex((l) => l.id === lineId);
-      if (i !== -1) {
-        state.lines[i].text = processed;
-      }
+    const getCurrentIdx = () => {
+      return state.lines.findIndex((l) => l.id === lineId);
     };
-
-    // Arrow up/down => move within the formula column
     if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && noMods && !e.shiftKey) {
+      const currentIdx = getCurrentIdx();
+      if (currentIdx === -1) {
+        return;
+      }
       const direction = e.key === 'ArrowDown' ? 1 : -1;
-      const nextIdx = findNextEditableIndex(state, idx, direction, 'formula-input');
+      const nextIdx = findNextEditableIndex(state, currentIdx, direction, 'formula-input');
       if (nextIdx !== null) {
         e.preventDefault();
-        // Focus new cell - blur handler will automatically commit and update in place
-        focusLineAt(nextIdx, 'formula-input');
+        focusLineAt(nextIdx, 'formula-input', state);
       }
       return;
     }
 
     // Determine whether this line can "end" its subproof
-    const line = state.lines[idx];
-    const next = state.lines[idx + 1];
+    const currentIdx = getCurrentIdx();
+    if (currentIdx === -1) {
+      return;
+    }
+    const line = state.lines[currentIdx];
+    const next = state.lines[currentIdx + 1];
     const canEndHere =
       line &&
       (!next || next.indent < line.indent || (next.indent === line.indent && next.isAssumption));
 
-    // Shift+Enter => "End subproof" (only if allowed)
     if (e.key === 'Enter' && e.shiftKey && noMods) {
-      e.preventDefault(); // Never insert a newline
+      e.preventDefault();
       if (line && line.indent >= 1 && canEndHere) {
-        commitLineText();
-        // endSubproofAt is a wrapper function that handles render and focus
-        endSubproofAt(idx);
+        endSubproofAt(currentIdx);
       }
       return;
     }
 
-    // Shift+Tab => "End subproof and begin another" (only if allowed)
     if (e.key === 'Tab' && e.shiftKey && noMods) {
-      e.preventDefault(); // Don't move focus
+      e.preventDefault();
       if (line && line.indent >= 1 && canEndHere) {
-        commitLineText();
-        // endAndBeginAnotherAt is a wrapper function that handles render and focus
-        endAndBeginAnotherAt(idx);
+        endAndBeginAnotherAt(currentIdx);
       }
       return;
     }
 
-    // Enter => "Add line"
     if (e.key === 'Enter' && !e.shiftKey && noMods) {
-      e.preventDefault(); // Don't insert a newline
-      commitLineText(); // Store the latest edits
-      // addLineAfterSame is a wrapper function that handles render and focus
-      addLineAfterSame(idx);
+      e.preventDefault();
+      addLineAfterSame(currentIdx);
       return;
     }
 
-    // Tab => "Begin subproof"
     if (e.key === 'Tab' && !e.shiftKey && noMods) {
-      e.preventDefault(); // Don't move focus out of the editor
-      commitLineText();
-      // beginSubproofBelow is a wrapper function that handles render and focus
-      beginSubproofBelow(idx);
+      e.preventDefault();
+      beginSubproofBelow(currentIdx);
       return;
     }
   });
@@ -146,43 +129,47 @@ export function attachKeyboardHandlers(
  * 
  * @param {HTMLElement} justInput - The justification input element
  * @param {Object} state - Application state object
- * @param {number} idx - Index of the line
- * @param {Function} renderProof - Function to re-render the proof
  * @param {Function} focusLineAt - Function to focus a line
  */
 export function attachJustificationKeyboardHandlers(
   justInput,
   state,
-  idx,
-  renderProof,
   focusLineAt
 ) {
   justInput.addEventListener('keydown', (e) => {
     const noMods = !e.metaKey && !e.ctrlKey && !e.altKey;
 
-    // Arrow up/down => move within the justification column
+    const getCurrentIdx = () => {
+      const row = justInput.closest('.proof-line');
+      if (!row) return -1;
+      const lineId = Number(row.dataset.id);
+      return state.lines.findIndex((l) => l.id === lineId);
+    };
     if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && noMods && !e.shiftKey) {
+      const currentIdx = getCurrentIdx();
+      if (currentIdx === -1) {
+        return;
+      }
       const direction = e.key === 'ArrowDown' ? 1 : -1;
-      const nextIdx = findNextEditableIndex(state, idx, direction, 'justification-input');
+      const nextIdx = findNextEditableIndex(state, currentIdx, direction, 'justification-input');
       if (nextIdx !== null) {
         e.preventDefault();
-        // Focus new cell - blur handler will automatically commit and update in place
-        focusLineAt(nextIdx, 'justification-input');
+        focusLineAt(nextIdx, 'justification-input', state);
       }
       return;
     }
 
-    // Enter => same as ArrowDown (move to next editable justification cell)
     if (e.key === 'Enter' && !e.shiftKey && noMods) {
-      const nextIdx = findNextEditableIndex(state, idx, 1, 'justification-input');
+      const currentIdx = getCurrentIdx();
+      if (currentIdx === -1) {
+        return;
+      }
+      const nextIdx = findNextEditableIndex(state, currentIdx, 1, 'justification-input');
 
       if (nextIdx !== null) {
-        e.preventDefault(); // Prevent newlines when we actually move
-        // Focus new cell - blur handler will automatically commit and update in place
-        focusLineAt(nextIdx, 'justification-input');
+        e.preventDefault();
+        focusLineAt(nextIdx, 'justification-input', state);
       } else {
-        // No editable justification below: behave like ArrowDown would
-        // on the last editable cell — just prevent newline.
         e.preventDefault();
       }
       return;
