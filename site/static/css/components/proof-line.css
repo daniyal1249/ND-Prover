@@ -10,17 +10,30 @@
 .proof-line {
   display: grid;
   /* line-number | proof | justification-cell | actions */
-  grid-template-columns: var(--line-number-width) var(--proof-formula-width) var(--justification-width) var(--actions-width);
+  grid-template-columns:
+    var(--line-number-width)
+    var(--proof-formula-width)
+    var(--justification-width)
+    var(--actions-width);
   column-gap: var(--justification-gap);
   align-items: stretch;
   position: relative;
   /* Ensure proof lines maintain their full width for hover region to work */
-  min-width: calc(var(--line-number-width) + var(--proof-formula-width) + var(--justification-width) + var(--actions-width));
+  min-width: calc(
+    var(--line-number-width) +
+    var(--proof-formula-width) +
+    var(--justification-width) +
+    var(--actions-width)
+  );
 }
 
 /* === Line Number === */
 .line-number {
-  padding: var(--line-number-padding-vertical) var(--spacing-md) var(--line-number-padding-vertical) 0;
+  padding:
+    var(--line-number-padding-vertical)
+    var(--spacing-md)
+    var(--line-number-padding-vertical)
+    0;
   text-align: right;
   color: var(--bar-color);
   background: var(--background);

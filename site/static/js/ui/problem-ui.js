@@ -151,7 +151,9 @@ export function initProblemUI(state, renderProof) {
     const problemSummary = document.getElementById('problem-summary');
     if (problemSummary) {
       // Split text: regular font before colon, math font after
-      problemSummary.innerHTML = `Prove the following argument in ${logicLabel}:&nbsp;&nbsp;<span class="math-content">${mathContent}</span>`;
+      problemSummary.innerHTML =
+        `Prove the following argument in ${logicLabel}:&nbsp;&nbsp;` +
+        `<span class="math-content">${mathContent}</span>`;
     }
 
     // Create premise lines

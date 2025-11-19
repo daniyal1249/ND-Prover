@@ -8,11 +8,29 @@
  */
 
 import { state } from './state.js';
-import { renderProof as renderProofFn, updateToolbarVisibility, updateProofDimensions, removeLineFromDOM, insertLineInDOM, updateLineNumbers, updateActionButtons, createProofLine } from './proof/rendering.js';
-import { deleteLineAt, addLineAfterSame, beginSubproofBelow, endSubproofAt, endAndBeginAnotherAt } from './proof/line-operations.js';
+import {
+  renderProof as renderProofFn,
+  updateToolbarVisibility,
+  updateProofDimensions,
+  removeLineFromDOM,
+  insertLineInDOM,
+  updateLineNumbers,
+  updateActionButtons,
+  createProofLine
+} from './proof/rendering.js';
+import {
+  deleteLineAt,
+  addLineAfterSame,
+  beginSubproofBelow,
+  endSubproofAt,
+  endAndBeginAnotherAt
+} from './proof/line-operations.js';
 import { focusLineAt, commitActiveEditor } from './proof/focus-management.js';
 import { processFormula, processJustification } from './utils/input-processing.js';
-import { attachKeyboardHandlers, attachJustificationKeyboardHandlers } from './ui/keyboard-shortcuts.js';
+import {
+  attachKeyboardHandlers,
+  attachJustificationKeyboardHandlers
+} from './ui/keyboard-shortcuts.js';
 import { initProblemUI } from './ui/problem-ui.js';
 import { initProofUI } from './ui/proof-ui.js';
 
@@ -64,7 +82,15 @@ function createRenderFunction() {
     
     // Update line numbers and action buttons
     updateLineNumbers(proofRoot, state);
-    updateActionButtons(proofRoot, state, wrappedDeleteLineAt, wrappedAddLineAfterSame, wrappedBeginSubproofBelow, wrappedEndSubproofAt, wrappedEndAndBeginAnotherAt);
+    updateActionButtons(
+      proofRoot,
+      state,
+      wrappedDeleteLineAt,
+      wrappedAddLineAfterSame,
+      wrappedBeginSubproofBelow,
+      wrappedEndSubproofAt,
+      wrappedEndAndBeginAnotherAt
+    );
     
     // Update dimensions and toolbar
     updateProofDimensions(state);
@@ -78,7 +104,16 @@ function createRenderFunction() {
     const newIdx = addLineAfterSame(state, i);
     
     // Insert new line in DOM
-    const newRow = insertLineInDOM(state, newIdx, proofRoot, wrappedDeleteLineAt, wrappedAddLineAfterSame, wrappedBeginSubproofBelow, wrappedEndSubproofAt, wrappedEndAndBeginAnotherAt);
+    const newRow = insertLineInDOM(
+      state,
+      newIdx,
+      proofRoot,
+      wrappedDeleteLineAt,
+      wrappedAddLineAfterSame,
+      wrappedBeginSubproofBelow,
+      wrappedEndSubproofAt,
+      wrappedEndAndBeginAnotherAt
+    );
     
     // Attach keyboard handlers to new line
     if (newRow) {
@@ -87,7 +122,16 @@ function createRenderFunction() {
       const lineId = Number(newRow.dataset.id);
       
       if (input) {
-        attachKeyboardHandlers(input, state, lineId, wrappedAddLineAfterSame, wrappedBeginSubproofBelow, wrappedEndSubproofAt, wrappedEndAndBeginAnotherAt, focusLineAt);
+        attachKeyboardHandlers(
+          input,
+          state,
+          lineId,
+          wrappedAddLineAfterSame,
+          wrappedBeginSubproofBelow,
+          wrappedEndSubproofAt,
+          wrappedEndAndBeginAnotherAt,
+          focusLineAt
+        );
       }
       if (justInput) {
         attachJustificationKeyboardHandlers(justInput, state, focusLineAt);
@@ -96,7 +140,15 @@ function createRenderFunction() {
     
     // Update line numbers and action buttons
     updateLineNumbers(proofRoot, state);
-    updateActionButtons(proofRoot, state, wrappedDeleteLineAt, wrappedAddLineAfterSame, wrappedBeginSubproofBelow, wrappedEndSubproofAt, wrappedEndAndBeginAnotherAt);
+    updateActionButtons(
+      proofRoot,
+      state,
+      wrappedDeleteLineAt,
+      wrappedAddLineAfterSame,
+      wrappedBeginSubproofBelow,
+      wrappedEndSubproofAt,
+      wrappedEndAndBeginAnotherAt
+    );
     
     // Update dimensions
     updateProofDimensions(state);
@@ -112,7 +164,16 @@ function createRenderFunction() {
     const newIdx = beginSubproofBelow(state, i);
     
     // Insert new line in DOM
-    const newRow = insertLineInDOM(state, newIdx, proofRoot, wrappedDeleteLineAt, wrappedAddLineAfterSame, wrappedBeginSubproofBelow, wrappedEndSubproofAt, wrappedEndAndBeginAnotherAt);
+    const newRow = insertLineInDOM(
+      state,
+      newIdx,
+      proofRoot,
+      wrappedDeleteLineAt,
+      wrappedAddLineAfterSame,
+      wrappedBeginSubproofBelow,
+      wrappedEndSubproofAt,
+      wrappedEndAndBeginAnotherAt
+    );
     
     // Attach keyboard handlers to new line
     if (newRow) {
@@ -121,7 +182,16 @@ function createRenderFunction() {
       const lineId = Number(newRow.dataset.id);
       
       if (input) {
-        attachKeyboardHandlers(input, state, lineId, wrappedAddLineAfterSame, wrappedBeginSubproofBelow, wrappedEndSubproofAt, wrappedEndAndBeginAnotherAt, focusLineAt);
+        attachKeyboardHandlers(
+          input,
+          state,
+          lineId,
+          wrappedAddLineAfterSame,
+          wrappedBeginSubproofBelow,
+          wrappedEndSubproofAt,
+          wrappedEndAndBeginAnotherAt,
+          focusLineAt
+        );
       }
       if (justInput) {
         attachJustificationKeyboardHandlers(justInput, state, focusLineAt);
@@ -130,7 +200,15 @@ function createRenderFunction() {
     
     // Update line numbers and action buttons
     updateLineNumbers(proofRoot, state);
-    updateActionButtons(proofRoot, state, wrappedDeleteLineAt, wrappedAddLineAfterSame, wrappedBeginSubproofBelow, wrappedEndSubproofAt, wrappedEndAndBeginAnotherAt);
+    updateActionButtons(
+      proofRoot,
+      state,
+      wrappedDeleteLineAt,
+      wrappedAddLineAfterSame,
+      wrappedBeginSubproofBelow,
+      wrappedEndSubproofAt,
+      wrappedEndAndBeginAnotherAt
+    );
     
     // Update dimensions
     updateProofDimensions(state);
@@ -149,7 +227,16 @@ function createRenderFunction() {
     }
     
     // Insert new line in DOM
-    const newRow = insertLineInDOM(state, newIdx, proofRoot, wrappedDeleteLineAt, wrappedAddLineAfterSame, wrappedBeginSubproofBelow, wrappedEndSubproofAt, wrappedEndAndBeginAnotherAt);
+    const newRow = insertLineInDOM(
+      state,
+      newIdx,
+      proofRoot,
+      wrappedDeleteLineAt,
+      wrappedAddLineAfterSame,
+      wrappedBeginSubproofBelow,
+      wrappedEndSubproofAt,
+      wrappedEndAndBeginAnotherAt
+    );
     
     // Attach keyboard handlers to new line
     if (newRow) {
@@ -158,7 +245,16 @@ function createRenderFunction() {
       const lineId = Number(newRow.dataset.id);
       
       if (input) {
-        attachKeyboardHandlers(input, state, lineId, wrappedAddLineAfterSame, wrappedBeginSubproofBelow, wrappedEndSubproofAt, wrappedEndAndBeginAnotherAt, focusLineAt);
+        attachKeyboardHandlers(
+          input,
+          state,
+          lineId,
+          wrappedAddLineAfterSame,
+          wrappedBeginSubproofBelow,
+          wrappedEndSubproofAt,
+          wrappedEndAndBeginAnotherAt,
+          focusLineAt
+        );
       }
       if (justInput) {
         attachJustificationKeyboardHandlers(justInput, state, focusLineAt);
@@ -167,7 +263,15 @@ function createRenderFunction() {
     
     // Update line numbers and action buttons
     updateLineNumbers(proofRoot, state);
-    updateActionButtons(proofRoot, state, wrappedDeleteLineAt, wrappedAddLineAfterSame, wrappedBeginSubproofBelow, wrappedEndSubproofAt, wrappedEndAndBeginAnotherAt);
+    updateActionButtons(
+      proofRoot,
+      state,
+      wrappedDeleteLineAt,
+      wrappedAddLineAfterSame,
+      wrappedBeginSubproofBelow,
+      wrappedEndSubproofAt,
+      wrappedEndAndBeginAnotherAt
+    );
     
     // Update dimensions
     updateProofDimensions(state);
@@ -186,7 +290,16 @@ function createRenderFunction() {
     }
     
     // Insert new line in DOM
-    const newRow = insertLineInDOM(state, newIdx, proofRoot, wrappedDeleteLineAt, wrappedAddLineAfterSame, wrappedBeginSubproofBelow, wrappedEndSubproofAt, wrappedEndAndBeginAnotherAt);
+    const newRow = insertLineInDOM(
+      state,
+      newIdx,
+      proofRoot,
+      wrappedDeleteLineAt,
+      wrappedAddLineAfterSame,
+      wrappedBeginSubproofBelow,
+      wrappedEndSubproofAt,
+      wrappedEndAndBeginAnotherAt
+    );
     
     // Attach keyboard handlers to new line
     if (newRow) {
@@ -195,7 +308,16 @@ function createRenderFunction() {
       const lineId = Number(newRow.dataset.id);
       
       if (input) {
-        attachKeyboardHandlers(input, state, lineId, wrappedAddLineAfterSame, wrappedBeginSubproofBelow, wrappedEndSubproofAt, wrappedEndAndBeginAnotherAt, focusLineAt);
+        attachKeyboardHandlers(
+          input,
+          state,
+          lineId,
+          wrappedAddLineAfterSame,
+          wrappedBeginSubproofBelow,
+          wrappedEndSubproofAt,
+          wrappedEndAndBeginAnotherAt,
+          focusLineAt
+        );
       }
       if (justInput) {
         attachJustificationKeyboardHandlers(justInput, state, focusLineAt);
@@ -204,7 +326,15 @@ function createRenderFunction() {
     
     // Update line numbers and action buttons
     updateLineNumbers(proofRoot, state);
-    updateActionButtons(proofRoot, state, wrappedDeleteLineAt, wrappedAddLineAfterSame, wrappedBeginSubproofBelow, wrappedEndSubproofAt, wrappedEndAndBeginAnotherAt);
+    updateActionButtons(
+      proofRoot,
+      state,
+      wrappedDeleteLineAt,
+      wrappedAddLineAfterSame,
+      wrappedBeginSubproofBelow,
+      wrappedEndSubproofAt,
+      wrappedEndAndBeginAnotherAt
+    );
     
     // Update dimensions
     updateProofDimensions(state);
@@ -226,7 +356,12 @@ function createRenderFunction() {
     );
     
     // Attach keyboard handlers after rendering
-    enhanceRenderedLines(wrappedAddLineAfterSame, wrappedBeginSubproofBelow, wrappedEndSubproofAt, wrappedEndAndBeginAnotherAt);
+    enhanceRenderedLines(
+      wrappedAddLineAfterSame,
+      wrappedBeginSubproofBelow,
+      wrappedEndSubproofAt,
+      wrappedEndAndBeginAnotherAt
+    );
   }
   
   return render;
@@ -241,7 +376,12 @@ function createRenderFunction() {
  * @param {Function} wrappedEndSubproofAt - Wrapper function for endSubproofAt
  * @param {Function} wrappedEndAndBeginAnotherAt - Wrapper function for endAndBeginAnotherAt
  */
-function enhanceRenderedLines(wrappedAddLineAfterSame, wrappedBeginSubproofBelow, wrappedEndSubproofAt, wrappedEndAndBeginAnotherAt) {
+  function enhanceRenderedLines(
+    wrappedAddLineAfterSame,
+    wrappedBeginSubproofBelow,
+    wrappedEndSubproofAt,
+    wrappedEndAndBeginAnotherAt
+  ) {
   const proofRoot = document.getElementById('proof');
   const lines = proofRoot.querySelectorAll('.proof-line');
   

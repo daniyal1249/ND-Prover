@@ -614,7 +614,15 @@ export function updateLineNumbers(proofRoot, state) {
  * @param {Function} endSubproofAt - Function to end subproof
  * @param {Function} endAndBeginAnotherAt - Function to end and begin subproof
  */
-export function updateActionButtons(proofRoot, state, deleteLineAt, addLineAfterSame, beginSubproofBelow, endSubproofAt, endAndBeginAnotherAt) {
+export function updateActionButtons(
+  proofRoot,
+  state,
+  deleteLineAt,
+  addLineAfterSame,
+  beginSubproofBelow,
+  endSubproofAt,
+  endAndBeginAnotherAt
+) {
   const lastPremiseIndex = state.lines.reduce((acc, l, i) => l.isPremise ? i : acc, -1);
   const rows = proofRoot.querySelectorAll('.proof-line');
   
@@ -661,7 +669,16 @@ export function updateActionButtons(proofRoot, state, deleteLineAt, addLineAfter
  * @param {Function} endAndBeginAnotherAt - Function to end and begin subproof
  * @returns {HTMLElement} The newly created proof line row element
  */
-export function insertLineInDOM(state, idx, proofRoot, deleteLineAt, addLineAfterSame, beginSubproofBelow, endSubproofAt, endAndBeginAnotherAt) {
+export function insertLineInDOM(
+  state,
+  idx,
+  proofRoot,
+  deleteLineAt,
+  addLineAfterSame,
+  beginSubproofBelow,
+  endSubproofAt,
+  endAndBeginAnotherAt
+) {
   const line = state.lines[idx];
   if (!line) {
     return null;
