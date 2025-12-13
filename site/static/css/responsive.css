@@ -40,7 +40,14 @@
   }
 
   .problem-setup label {
-    margin-bottom: var(--spacing-xs);
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-lg);
+  }
+
+  .text-input,
+  select.logic {
+    padding: var(--spacing-md);
+    font-size: var(--font-size-md);
   }
 
   select.logic {
@@ -51,6 +58,7 @@
   .ui-btn {
     min-height: 44px;
     padding: var(--spacing-lg) var(--spacing-xl);
+    font-size: var(--font-size-xs);
   }
 
   /* === Table Adjustments === */
@@ -62,12 +70,12 @@
 
   .table-like td {
     padding: var(--spacing-md);
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-md);
   }
 
   .table-like th {
     padding: 0 var(--spacing-md) var(--spacing-xl);
-    font-size: var(--font-size);
+    font-size: var(--font-size-xl);
   }
 
   .actions-help-table col:nth-child(1) {
@@ -82,6 +90,14 @@
   .proof-pane,
   .results-pane {
     padding: var(--spacing-xl);
+  }
+
+  .problem-summary {
+    font-size: var(--font-size-lg);
+  }
+
+  .results {
+    font-size: var(--font-size-lg);
   }
 
   /* === Proof Editor Scaling === */
@@ -100,13 +116,6 @@
   /* === Toolbar Adjustments === */
   .toolbar {
     gap: var(--spacing-sm);
-  }
-
-  /* === Input Adjustments === */
-  .text-input,
-  select.logic {
-    font-size: var(--font-size-lg);
-    padding: var(--spacing-md);
   }
 
   /* === Spacing Adjustments === */
