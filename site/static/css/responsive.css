@@ -1,0 +1,132 @@
+/**
+ * Responsive Design
+ * 
+ * Mobile and responsive adjustments to improve usability on smaller screens.
+ * Dependencies: variables.css, layout.css, base.css, and component CSS files
+ */
+
+/* === Mobile Breakpoint === */
+@media (max-width: 767px) {
+  /* === Layout Adjustments === */
+  .main-grid {
+    grid-template-columns: 1fr;
+    column-gap: 0;
+    row-gap: var(--grid-row-gap);
+  }
+
+  body {
+    padding-left: var(--spacing-lg);
+    padding-right: var(--spacing-lg);
+  }
+
+  /* === Header Adjustments === */
+  .site-header {
+    padding: var(--spacing-xl) var(--spacing-md);
+  }
+
+  .site-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .site-header p {
+    font-size: var(--font-size-lg);
+    line-height: 1.5;
+  }
+
+  /* === Problem Setup Adjustments === */
+  .problem-setup {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .problem-setup label {
+    margin-bottom: var(--spacing-xs);
+  }
+
+  select.logic {
+    width: 100%;
+  }
+
+  /* === Touch Target Improvements === */
+  .ui-btn {
+    min-height: 44px;
+    padding: var(--spacing-lg) var(--spacing-xl);
+  }
+
+  /* === Table Adjustments === */
+  .table-card {
+    padding: var(--spacing-xl);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-like td {
+    padding: var(--spacing-md);
+    font-size: var(--font-size-lg);
+  }
+
+  .table-like th {
+    padding: 0 var(--spacing-md) var(--spacing-xl);
+    font-size: var(--font-size);
+  }
+
+  .actions-help-table col:nth-child(1) {
+    width: 20%;
+  }
+
+  .actions-help-table col:nth-child(2) {
+    width: 80%;
+  }
+
+  /* === Proof Pane Adjustments === */
+  .proof-pane,
+  .results-pane {
+    padding: var(--spacing-xl);
+  }
+
+  /* === Proof Editor Scaling === */
+  /* Scale proof editor proportionally while preserving internal proportions */
+  :root {
+    --proof-mobile-scale: 0.85;
+  }
+
+  .proof {
+    transform: scale(var(--proof-mobile-scale));
+    transform-origin: top left;
+    width: calc(100% / var(--proof-mobile-scale));
+    max-width: calc(100% / var(--proof-mobile-scale));
+  }
+
+  /* === Toolbar Adjustments === */
+  .toolbar {
+    gap: var(--spacing-sm);
+  }
+
+  /* === Input Adjustments === */
+  .text-input,
+  select.logic {
+    font-size: var(--font-size-lg);
+    padding: var(--spacing-md);
+  }
+
+  /* === Spacing Adjustments === */
+  .main-grid {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .editor-actions {
+    margin-top: var(--spacing-lg);
+  }
+}
+
+/* === Tablet Breakpoint === */
+@media (min-width: 768px) and (max-width: 1023px) {
+  body {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+
+  .site-header {
+    padding: var(--spacing-xxl) var(--spacing-lg);
+  }
+}

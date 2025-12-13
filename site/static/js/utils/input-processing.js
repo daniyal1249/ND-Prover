@@ -28,6 +28,10 @@ export function processFormula(raw) {
     t = t.replace(new RegExp(escapeRegex(op), 'g'), ` ${op} `);
   }
   
+  // Add space after commas and semicolons
+  t = t.replace(/,/g, ', ');
+  t = t.replace(/;/g, '; ');
+  
   t = t.replace(/ +/g, ' ');
   t = t.trim();
   return t;
