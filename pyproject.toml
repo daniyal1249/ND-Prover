@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "nd-prover"
 version = "2.0.0"
-description = "A natural deduction proof generator and checker"
+description = "Natural deduction proof generator & checker"
 authors = [{ name = "Daniyal Akif", email = "daniyalakif@gmail.com" }]
 readme = "README.md"
 license = { text = "MIT" }
