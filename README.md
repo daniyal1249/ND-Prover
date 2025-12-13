@@ -1,6 +1,6 @@
 # ND-Prover
 
-An interactive Fitch-style natural deduction proof checker, implemented in Python.
+A natural deduction proof generator and checker, implemented in Python.
 
 Supports propositional, first-order, and modal logics (K, T, S4, S5) via a command-line interface.
 
