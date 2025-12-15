@@ -601,16 +601,16 @@ class MLS5(MLS4):
         return [a]
 
 
-def is_tfl_sentence(formula):
+def is_tfl_formula(formula):
     match formula:
         case Pred(_, args):
             return not args
         case Bot():
             return True
         case Not(a):
-            return is_tfl_sentence(a)
+            return is_tfl_formula(a)
         case And(a, b) | Or(a, b) | Imp(a, b) | Iff(a, b):
-            return is_tfl_sentence(a) and is_tfl_sentence(b)
+            return is_tfl_formula(a) and is_tfl_formula(b)
         case _:
             return False
 
@@ -631,16 +631,16 @@ def is_fol_sentence(formula):
     return is_fol_formula(formula) and not free_vars(formula)
 
 
-def is_ml_sentence(formula):
+def is_ml_formula(formula):
     match formula:
         case Pred(_, args):
             return not args
         case Bot():
             return True
         case Not(a) | Box(a) | Dia(a):
-            return is_ml_sentence(a)
+            return is_ml_formula(a)
         case And(a, b) | Or(a, b) | Imp(a, b) | Iff(a, b):
-            return is_ml_sentence(a) and is_ml_sentence(b)
+            return is_ml_formula(a) and is_ml_formula(b)
         case _:
             return False
 
@@ -911,14 +911,14 @@ class Proof:
         self.proof.delete_line()
 
     def verify_formula(self, formula):
-        if self.logic is TFL and is_tfl_sentence(formula):
+        if self.logic is TFL and is_tfl_formula(formula):
             return
-        if self.logic is FOL and is_fol_sentence(formula):
+        if self.logic is FOL and is_fol_formula(formula):
             return
-        if issubclass(self.logic, MLK) and is_ml_sentence(formula):
+        if issubclass(self.logic, MLK) and is_ml_formula(formula):
             return
         raise Exception(
-            f'"{formula}" is not a valid {self.logic.__name__} sentence.'
+            f'"{formula}" is not a valid {self.logic.__name__} formula.'
         )
 
     def verify_rule(self, rule):

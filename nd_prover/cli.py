@@ -13,13 +13,13 @@ logics = {
 
 def parse_and_verify_formula(f, logic):
     f = parse_formula(f)
-    if logic is TFL and is_tfl_sentence(f):
+    if logic is TFL and is_tfl_formula(f):
         return f
-    if logic is FOL and is_fol_sentence(f):
+    if logic is FOL and is_fol_formula(f):
         return f
-    if issubclass(logic, MLK) and is_ml_sentence(f):
+    if issubclass(logic, MLK) and is_ml_formula(f):
         return f
-    raise ParsingError(f'"{f}" is not a valid {logic.__name__} sentence.')
+    raise ParsingError(f'"{f}" is not a valid {logic.__name__} formula.')
 
 
 def parse_and_verify_premises(s, logic):
