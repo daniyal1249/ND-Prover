@@ -94,8 +94,65 @@ def find_main_connective(s, symbol):
     return -1
 
 
+def split_args(s):
+    if not s:
+        return []
+    args, depth, start = [], 0, 0
+    for i, c in enumerate(s):
+        if c == "(":
+            depth += 1
+        elif c == ")":
+            depth -= 1
+        elif c == "," and depth == 0:
+            args.append(s[start:i].strip())
+            start = i + 1
+    args.append(s[start:].strip())
+    return args
+
+
+def parse_args_from_parens(s, start_idx, error_context):
+    if s[start_idx] != "(":
+        raise ParsingError(f'Missing "(" in {error_context}: "{s}".')
+    
+    depth, i = 1, start_idx + 1
+    while i < len(s) and depth > 0:
+        if s[i] == "(":
+            depth += 1
+        elif s[i] == ")":
+            depth -= 1
+        i += 1
+    
+    if depth != 0:
+        raise ParsingError(f'Missing ")" in {error_context}: "{s}".')
+    args_str = s[start_idx + 1:i - 1]
+    return args_str, i
+
+
 def parse_term(t):
-    return Const(t) if t in Const.names else Var(t)
+    t = t.strip()
+    
+    # Variables
+    if len(t) == 1 and t in Var.names:
+        return Var(t)
+    
+    # Functions
+    if len(t) > 0 and t[0] in Func.names:
+        name = t[0]
+        # Check if there are parentheses
+        if len(t) == 1:
+            return Func(name, ())
+        elif t[1] == "(":
+            args_str, end_idx = parse_args_from_parens(t, 1, "term")
+            if end_idx != len(t):
+                raise ParsingError(f'Unexpected trailing characters in "{t}".')
+            args = ()
+            if args_str.strip():
+                args = tuple(parse_term(arg) for arg in split_args(args_str))
+            return Func(name, args)
+        else:
+            raise ParsingError(f'Invalid function syntax: "{t}".')
+    
+    raise ParsingError(f'Could not parse term: "{t}".')
 
 
 def _parse_formula(f):
@@ -104,36 +161,17 @@ def _parse_formula(f):
     # Bottom
     if f == "⊥":
         return Bot()
-    
-    # Prop vars
-    m = re.fullmatch(r"[A-Z]", f)
-    if m:
-        return PropVar(f)
-    
-    # Predicates
-    m = re.fullmatch(r"([A-Z])([a-z]+)", f)
-    if m:
-        args = tuple(parse_term(t) for t in m.group(2))
-        return Pred(m.group(1), args)
-
-    # Equality
-    m = re.fullmatch(r"([a-z])=([a-z])", f)
-    if m:
-        left = parse_term(m.group(1))
-        right = parse_term(m.group(2))
-        return Eq(left, right)
 
     # Binary connectives
     connectives = [("↔", Iff), ("→", Imp), ("∨", Or), ("∧", And)]
 
     for sym, cls in connectives:
         idx = find_main_connective(f, sym)
-        if idx == -1:
-            continue
-        left = _parse_formula(f[:idx])
-        right = _parse_formula(f[idx + 1:])
-        return cls(left, right)
-    
+        if idx != -1:
+            left = _parse_formula(f[:idx])
+            right = _parse_formula(f[idx + 1:])
+            return cls(left, right)
+
     # Negation
     if f.startswith("¬"):
         return Not(_parse_formula(f[1:]))
@@ -153,6 +191,28 @@ def _parse_formula(f):
         return Box(_parse_formula(f[1:]))
     if f.startswith("♢"):
         return Dia(_parse_formula(f[1:]))
+
+    # Equality
+    idx = find_main_connective(f, "=")
+    if idx != -1:
+        left = parse_term(f[:idx])
+        right = parse_term(f[idx + 1:])
+        return Eq(left, right)
+
+    # Predicates
+    if len(f) > 0 and f[0].isalpha() and f[0].isupper():
+        name = f[0]
+        # Check if there are parentheses
+        if len(f) == 1:
+            return Pred(name, ())
+        elif f[1] == "(":
+            args_str, end_idx = parse_args_from_parens(f, 1, "predicate")
+            if end_idx != len(f):
+                raise ParsingError(f'Unexpected trailing characters in "{f}".')
+            args = ()
+            if args_str.strip():
+                args = tuple(parse_term(arg) for arg in split_args(args_str))
+            return Pred(name, args)
 
     raise ParsingError(f'Could not parse formula: "{f}".')
 

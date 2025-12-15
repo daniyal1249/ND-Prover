@@ -11,7 +11,6 @@ import { symbolize } from './symbolization.js';
 
 /**
  * Processes formula text by symbolizing and normalizing spacing.
- * Removes all whitespace, adds spaces around binary operators, then normalizes spacing.
  * 
  * @param {string} raw - Raw input text to process
  * @returns {string} Processed formula text
@@ -28,9 +27,11 @@ export function processFormula(raw) {
     t = t.replace(new RegExp(escapeRegex(op), 'g'), ` ${op} `);
   }
   
+  // Add space after forall x or exists x
+  t = t.replace(/([∀∃][a-zA-Z])/g, '$1 ');
+  
   // Add space after commas and semicolons
-  t = t.replace(/,/g, ', ');
-  t = t.replace(/;/g, '; ');
+  t = t.replace(/[,;]/g, '$& ');
   
   t = t.replace(/ +/g, ' ');
   t = t.trim();

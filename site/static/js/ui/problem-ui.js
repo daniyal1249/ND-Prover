@@ -140,8 +140,8 @@ export function initProblemUI(state, renderProof) {
     state.lines = [];
     state.nextId = 1;
 
-    // Split premises on , or ; and add as PR lines
-    const parts = premisesText.split(/[;,]/).map((s) => s.trim()).filter(Boolean);
+    // Split premises on ; and add as PR lines
+    const parts = premisesText.split(/;/).map((s) => s.trim()).filter(Boolean);
 
     // Build and show the summary line with mixed fonts
     const premStr = parts.join(', ');

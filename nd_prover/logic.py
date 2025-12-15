@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from string import ascii_lowercase
 
 
 class ProofActionError(Exception):
@@ -53,13 +52,6 @@ class Bot(Formula):
         return "⊥"
 
 @dataclass(frozen=True)
-class PropVar(Formula):
-    name: str
-
-    def _str(self):
-        return self.name
-
-@dataclass(frozen=True)
 class Not(Formula):
     inner: Formula
 
@@ -99,20 +91,31 @@ class Iff(Formula):
         return f"({self.left._str()} ↔ {self.right._str()})"
 
 # FOL
-@dataclass(frozen=True)
 class Term:
-    name: str
-
-    names = list(ascii_lowercase)
 
     def __str__(self):
-        return self.name
+        return self._str()
 
-class Const(Term):
-    names = [t for t in Term.names if "a" <= t <= "r"]
+@dataclass(frozen=True)
+class Func(Term):
+    name: str
+    args: tuple[Term]
 
+    names = "abcdefghijklmnopqr"
+
+    def _str(self):
+        if not self.args:
+            return self.name
+        return f"{self.name}({', '.join(str(t) for t in self.args)})"
+
+@dataclass(frozen=True)
 class Var(Term):
-    names = [t for t in Term.names if "s" <= t <= "z"]
+    name: str
+
+    names = "stuvwxyz"
+
+    def _str(self):
+        return self.name
 
 @dataclass(frozen=True)
 class Pred(Formula):
@@ -120,7 +123,9 @@ class Pred(Formula):
     args: tuple[Term]
 
     def _str(self):
-        return self.name + "".join(str(t) for t in self.args)
+        if not self.args:
+            return self.name
+        return f"{self.name}({', '.join(str(t) for t in self.args)})"
 
 @dataclass(frozen=True)
 class Eq(Formula):
@@ -136,7 +141,7 @@ class Forall(Formula):
     inner: Formula
 
     def _str(self):
-        return f"∀{self.var}{self.inner._str()}"
+        return f"∀{self.var} {self.inner._str()}"
 
 @dataclass(frozen=True)
 class Exists(Formula):
@@ -144,7 +149,7 @@ class Exists(Formula):
     inner: Formula
 
     def _str(self):
-        return f"∃{self.var}{self.inner._str()}"
+        return f"∃{self.var} {self.inner._str()}"
 
 # ML
 @dataclass(frozen=True)
@@ -421,7 +426,7 @@ class FOL(TFL):
             raise JustificationError('Invalid application of "=E".')
         terms = {a.left, a.right}
         def gen(): return Metavar(lambda obj: obj in terms)
-        return [sub_terms(b.formula, terms, gen)]
+        return [sub_term(b.formula, t, gen) for t in terms]
 
     @Rules.add("∀I")
     def ForallI(premises, conclusion, scope, **kwargs):
@@ -436,7 +441,7 @@ class FOL(TFL):
         for c in constants(a.formula):
             if c in a_constants:
                 continue
-            inner = sub_terms(a.formula, {c}, lambda: var, ignore)
+            inner = sub_term(a.formula, c, lambda: var, ignore)
             schemas.append(Forall(var, inner))
         return schemas
     
@@ -446,7 +451,7 @@ class FOL(TFL):
         if not (a.is_line() and isinstance(a := a.formula, Forall)):
             raise JustificationError('Invalid application of "∀E".')
         m = Metavar()  # restrict to constants
-        return [sub_terms(a.inner, {a.var}, lambda: m)]
+        return [sub_term(a.inner, a.var, lambda: m)]
 
     @Rules.add("∃I")
     def ExistsI(premises, conclusion, **kwargs):
@@ -459,7 +464,7 @@ class FOL(TFL):
         schemas = [Exists(var, a.formula)]
         for c in constants(a.formula):
             def gen(): return Metavar(lambda obj: obj in {c, var})
-            inner = sub_terms(a.formula, {c}, gen, ignore)
+            inner = sub_term(a.formula, c, gen, ignore)
             schemas.append(Exists(var, inner))
         return schemas
     
@@ -470,7 +475,7 @@ class FOL(TFL):
                 and b.is_subproof() and b.conclusion):
             raise JustificationError('Invalid application of "∃E".')
         m = Metavar()  # restrict to constants
-        schema = sub_terms(a.inner, {a.var}, lambda: m)
+        schema = sub_term(a.inner, a.var, lambda: m)
         if b.assumption != schema:
             raise JustificationError('Invalid application of "∃E".')
         
@@ -598,7 +603,9 @@ class MLS5(MLS4):
 
 def is_tfl_sentence(formula):
     match formula:
-        case Bot() | PropVar():
+        case Pred(_, args):
+            return not args
+        case Bot():
             return True
         case Not(a):
             return is_tfl_sentence(a)
@@ -609,9 +616,8 @@ def is_tfl_sentence(formula):
 
 
 def is_fol_formula(formula):
-    # For now, not including prop vars
     match formula:
-        case Bot() | Pred() | Eq():
+        case Pred() | Bot() | Eq():
             return True
         case Not(a) | Forall(_, a) | Exists(_, a):
             return is_fol_formula(a)
@@ -627,7 +633,9 @@ def is_fol_sentence(formula):
 
 def is_ml_sentence(formula):
     match formula:
-        case Bot() | PropVar():
+        case Pred(_, args):
+            return not args
+        case Bot():
             return True
         case Not(a) | Box(a) | Dia(a):
             return is_ml_sentence(a)
@@ -637,52 +645,60 @@ def is_ml_sentence(formula):
             return False
 
 
-def terms(formula, free):
+def atomic_terms(formula, free):
     match formula:
-        case Pred(_, args):
-            return set(args)
-        case Eq(a, b):
-            return {a, b}
         case Not(a) | Box(a) | Dia(a):
-            return terms(a, free)
-        case And(a, b) | Or(a, b) | Imp(a, b) | Iff(a, b):
-            return terms(a, free) | terms(b, free)
+            return atomic_terms(a, free)
+        case And(a, b) | Or(a, b) | Imp(a, b) | Iff(a, b) | Eq(a, b):
+            return atomic_terms(a, free) | atomic_terms(b, free)
+        case Func(_, args) as f:
+            if not args:
+                return {f}
+            return set().union(*(atomic_terms(t, free) for t in args))
+        case Var() as v:
+            return {v}
+        case Pred(_, args):
+            return set().union(*(atomic_terms(t, free) for t in args))
         case Forall(v, a) | Exists(v, a):
-            return terms(a, free) - {v} if free else terms(a, free)
+            return atomic_terms(a, free) - ({v} if free else set())
         case _:
             return set()
 
 
 def constants(formula):
-    all_terms = terms(formula, free=False)
-    return {t for t in all_terms if t.name in Const.names}
+    all_terms = atomic_terms(formula, free=False)
+    return {t for t in all_terms if isinstance(t, Func)}
 
 
 def free_vars(formula):
-    free_terms = terms(formula, free=True)
-    return {t for t in free_terms if t.name in Var.names}
+    free_terms = atomic_terms(formula, free=True)
+    return {t for t in free_terms if isinstance(t, Var)}
 
 
-def sub_terms(formula, terms, gen, ignore=lambda v: False):
+def sub_term(formula, term, gen, ignore=lambda v: False):
     match formula:
         case Bot():
             return Bot()
         case Not(a):
-            return Not(sub_terms(a, terms, gen, ignore))
-        case And(a, b) | Or(a, b) | Imp(a, b) | Iff(a, b):
-            a = sub_terms(a, terms, gen, ignore)
-            b = sub_terms(b, terms, gen, ignore)
+            return Not(sub_term(a, term, gen, ignore))
+        case And(a, b) | Or(a, b) | Imp(a, b) | Iff(a, b) | Eq(a, b):
+            a = sub_term(a, term, gen, ignore)
+            b = sub_term(b, term, gen, ignore)
             return type(formula)(a, b)
-        case Forall(v, a) | Exists(v, a):
-            a = a if ignore(v) else sub_terms(a, terms - {v}, gen, ignore)
-            return type(formula)(v, a)
+        case Func(s, args) as f:
+            if f == term:
+                return gen()
+            args = tuple(sub_term(t, term, gen, ignore) for t in args)
+            return Func(s, args)
+        case Var() as v:
+            return gen() if v == term else v
         case Pred(s, args):
-            args = tuple(gen() if arg in terms else arg for arg in args)
+            args = tuple(sub_term(t, term, gen, ignore) for t in args)
             return Pred(s, args)
-        case Eq(a, b):
-            a = gen() if a in terms else a
-            b = gen() if b in terms else b
-            return Eq(a, b)
+        case Forall(v, a) | Exists(v, a):
+            if not (v == term or ignore(v)):
+                a = sub_term(a, term, gen, ignore)
+            return type(formula)(v, a)
 
 
 class ProofObject:

@@ -6,6 +6,8 @@ build/
 *.egg-info/
 .null-ls*
 
+old_checker/
+
 discord_app.py
 test.py
 test2.py

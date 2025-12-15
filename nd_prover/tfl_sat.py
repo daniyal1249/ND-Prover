@@ -3,8 +3,8 @@ from .logic import *
 
 def prop_vars(formula):
     match formula:
-        case PropVar(s):
-            return {s}
+        case Pred(s, args):
+            return set() if args else {s}
         case Bot():
             return set()
         case Not(a):
@@ -17,10 +17,10 @@ def prop_vars(formula):
 
 def evaluate(formula, model):
     match formula:
+        case Pred(s, args):
+            return not args and model[s]
         case Bot():
             return False
-        case PropVar(s):
-            return model[s]
         case Not(a):
             return not evaluate(a, model)
         case And(a, b):
@@ -30,7 +30,7 @@ def evaluate(formula, model):
         case Imp(a, b):
             return not evaluate(a, model) or evaluate(b, model)
         case Iff(a, b):
-            return evaluate(a, model) == evaluate(b, model)
+            return evaluate(a, model) is evaluate(b, model)
         case _:
             return False
 

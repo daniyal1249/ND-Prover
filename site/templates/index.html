@@ -71,7 +71,7 @@
           </select>
 
           <label for="premises">Premises</label>
-          <input id="premises" class="text-input" type="text" placeholder="comma- or semicolon-separated" />
+          <input id="premises" class="text-input" type="text" placeholder="semicolon-separated" />
 
           <label for="conclusion">Conclusion</label>
           <input id="conclusion" class="text-input" type="text" />
@@ -205,15 +205,19 @@
               <th colspan="2" class="instruction-section">FOL</th>
             </tr>
             <tr>
-              <td>Atomic sentences</td>
-              <td>predicates followed by names, or identities (Pa, Fcdc, a = d, etc.)</td>
+              <td>Atomic formulas</td>
+              <td>predicates applied to terms, or identities (P(a), L(c, d), a = b, etc.)</td>
             </tr>
             <tr>
               <td>Predicates</td>
-              <td>single uppercase letters except A and E</td>
+              <td>single uppercase letters (A-Z)</td>
             </tr>
             <tr>
-              <td>Names</td>
+              <td>Terms</td>
+              <td>constants, variables, or functions applied to terms (a, x, f(c), etc.)</td>
+            </tr>
+            <tr>
+              <td>Constants / Functions</td>
               <td>single lowercase letters (a-r)</td>
             </tr>
             <tr>
