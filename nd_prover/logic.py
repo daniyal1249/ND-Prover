@@ -601,6 +601,37 @@ class MLS5(MLS4):
         return [a]
 
 
+class FOMLK(FOL, MLK):
+
+    @Rules.add("BF")
+    def BF(premises, **kwargs):
+        a = verify_arity(premises, 1)
+        if not (a.is_line() and isinstance(a := a.formula, Forall) 
+                and isinstance(a.inner, Box)):
+            raise JustificationError('Invalid application of "BF".')
+        return [Box(Forall(a.var, a.inner.inner))]
+
+    @Rules.add("CBF")
+    def CBF(premises, **kwargs):
+        a = verify_arity(premises, 1)
+        if not (a.is_line() and isinstance(a := a.formula, Box) 
+                and isinstance(a.inner, Forall)):
+            raise JustificationError('Invalid application of "CBF".')
+        return [Forall(a.inner.var, Box(a.inner.inner))]
+
+
+class FOMLT(FOMLK, MLT):
+    pass
+
+
+class FOMLS4(FOMLK, MLS4):
+    pass
+
+
+class FOMLS5(FOMLK, MLS5):
+    pass
+
+
 def is_tfl_formula(formula):
     match formula:
         case Pred(_, args):
@@ -914,11 +945,13 @@ class Proof:
         if self.logic is TFL and is_tfl_formula(formula):
             return
         if self.logic is FOL and is_fol_formula(formula):
+            return   
+        if self.logic in (MLK, MLT, MLS4, MLS5) and is_ml_formula(formula):
             return
-        if issubclass(self.logic, MLK) and is_ml_formula(formula):
+        if self.logic in (FOMLK, FOMLT, FOMLS4, FOMLS5):
             return
         raise Exception(
-            f'"{formula}" is not a valid {self.logic.__name__} formula.'
+            f'"{formula}" is not a well-formed {self.logic.__name__} formula.'
         )
 
     def verify_rule(self, rule):

@@ -136,7 +136,7 @@ def parse_term(t):
         return Var(t)
     
     # Functions
-    if len(t) > 0 and t[0] in Func.names:
+    if t and t[0] in Func.names:
         name = t[0]
         # Check if there are parentheses
         if len(t) == 1:
@@ -150,9 +150,9 @@ def parse_term(t):
                 args = tuple(parse_term(arg) for arg in split_args(args_str))
             return Func(name, args)
         else:
-            raise ParsingError(f'Invalid function syntax: "{t}".')
+            raise ParsingError(f'Function "{t}" is not well-formed.')
     
-    raise ParsingError(f'Could not parse term: "{t}".')
+    raise ParsingError(f'Term "{t}" is not well-formed.')
 
 
 def _parse_formula(f):
@@ -200,7 +200,7 @@ def _parse_formula(f):
         return Eq(left, right)
 
     # Predicates
-    if len(f) > 0 and f[0].isalpha() and f[0].isupper():
+    if f and f[0].isalpha() and f[0].isupper():
         name = f[0]
         # Check if there are parentheses
         if len(f) == 1:
@@ -214,7 +214,7 @@ def _parse_formula(f):
                 args = tuple(parse_term(arg) for arg in split_args(args_str))
             return Pred(name, args)
 
-    raise ParsingError(f'Could not parse formula: "{f}".')
+    raise ParsingError(f'Formula "{f}" is not well-formed.')
 
 
 def parse_formula(f):
@@ -234,7 +234,7 @@ def parse_rule(rule):
     for r in Rules.rules:
         if r.name == rule:
             return r
-    raise ParsingError(f'Could not parse rule of inference: "{rule}".')
+    raise ParsingError(f'Rule of inference "{rule}" not recognized.')
 
 
 def parse_citations(citations):
@@ -250,7 +250,7 @@ def parse_citations(citations):
         try:
             c_list.append(int(c))
         except ValueError:
-            raise ParsingError(f'Could not parse citations: "{citations}".')
+            raise ParsingError(f'Invalid citations syntax: "{citations}".')
     return tuple(c_list)
 
 

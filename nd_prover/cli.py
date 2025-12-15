@@ -8,6 +8,10 @@ logics = {
     "MLT": MLT,
     "MLS4": MLS4,
     "MLS5": MLS5,
+    "FOMLK": FOMLK,
+    "FOMLT": FOMLT,
+    "FOMLS4": FOMLS4,
+    "FOMLS5": FOMLS5,
 }
 
 
@@ -16,10 +20,12 @@ def parse_and_verify_formula(f, logic):
     if logic is TFL and is_tfl_formula(f):
         return f
     if logic is FOL and is_fol_formula(f):
+        return f   
+    if logic in (MLK, MLT, MLS4, MLS5) and is_ml_formula(f):
         return f
-    if issubclass(logic, MLK) and is_ml_formula(f):
+    if logic in (FOMLK, FOMLT, FOMLS4, FOMLS5):
         return f
-    raise ParsingError(f'"{f}" is not a valid {logic.__name__} formula.')
+    raise ParsingError(f'"{f}" is not a well-formed {logic.__name__} formula.')
 
 
 def parse_and_verify_premises(s, logic):
@@ -36,7 +42,7 @@ def select_logic():
         logic = logics.get(raw.strip().upper())
         if logic is not None:
             return logic
-        print("Invalid logic. Please try again.")
+        print("Logic not recognized. Please try again.")
 
 
 def input_premises(logic):
