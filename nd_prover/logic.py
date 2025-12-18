@@ -710,8 +710,9 @@ def sub_term(formula, term, gen, ignore=lambda v: False):
     match formula:
         case Bot():
             return Bot()
-        case Not(a):
-            return Not(sub_term(a, term, gen, ignore))
+        case Not(a) | Box(a) | Dia(a):
+            a = sub_term(a, term, gen, ignore)
+            return type(formula)(a)
         case And(a, b) | Or(a, b) | Imp(a, b) | Iff(a, b) | Eq(a, b):
             a = sub_term(a, term, gen, ignore)
             b = sub_term(b, term, gen, ignore)
