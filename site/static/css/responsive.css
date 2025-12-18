@@ -6,7 +6,7 @@
  */
 
 /* === Mobile Breakpoint === */
-@media (max-width: 767px) {
+@media (max-width: 991px) {
   /* === Layout Adjustments === */
   .main-grid {
     grid-template-columns: 1fr;
@@ -51,7 +51,12 @@
   }
 
   select.logic {
-    width: 100%;
+    width: 60%;
+  }
+
+  .first-order-container label {
+    margin-top: 0;
+    font-size: var(--font-size-md);
   }
 
   /* === Touch Target Improvements === */
@@ -129,7 +134,7 @@
 }
 
 /* === Tablet Breakpoint === */
-@media (min-width: 768px) and (max-width: 1023px) {
+@media (min-width: 992px) and (max-width: 1199px) {
   body {
     padding-left: 5%;
     padding-right: 5%;

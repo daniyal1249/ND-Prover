@@ -25,14 +25,39 @@ export function commitInputBox(el, target, state) {
 }
 
 /**
+ * Maps a base logic to its first-order version if the checkbox is checked.
+ * 
+ * @param {string} baseLogic - Base logic value (TFL, MLK, MLT, MLS4, MLS5)
+ * @param {boolean} isFirstOrder - Whether first-order checkbox is checked
+ * @returns {string} Logic value to use
+ */
+function getLogicValue(baseLogic, isFirstOrder) {
+  if (!isFirstOrder) {
+    return baseLogic;
+  }
+  
+  const firstOrderMap = {
+    'TFL': 'FOL',
+    'MLK': 'FOMLK',
+    'MLT': 'FOMLT',
+    'MLS4': 'FOMLS4',
+    'MLS5': 'FOMLS5'
+  };
+  
+  return firstOrderMap[baseLogic] || baseLogic;
+}
+
+/**
  * Initializes problem UI handlers.
  * 
  * @param {Object} state - Application state object
  * @param {Function} renderProof - Function to render the proof
  * @returns {Object} Object containing DOM element references
  */
+
 export function initProblemUI(state, renderProof) {
   const logicSelect = document.getElementById('logic');
+  const firstOrderCheckbox = document.getElementById('first-order');
   const premisesBox = document.getElementById('premises');
   const conclusionBox = document.getElementById('conclusion');
 
@@ -59,19 +84,26 @@ export function initProblemUI(state, renderProof) {
     commitInputBox(conclusionBox, 'conclusionText', state);
   });
   
-  // Logic select change handler
-  logicSelect.addEventListener('change', () => {
-    state.problem.logic = logicSelect.value;
-  });
+  // Logic select and first-order checkbox change handlers
+  function updateLogic() {
+    const baseLogic = logicSelect.value;
+    const isFirstOrder = firstOrderCheckbox.checked;
+    state.problem.logic = getLogicValue(baseLogic, isFirstOrder);
+  }
+  
+  logicSelect.addEventListener('change', updateLogic);
+  firstOrderCheckbox.addEventListener('change', updateLogic);
 
   // Create problem button handler
   const createBtn = document.getElementById('create-problem');
   createBtn.addEventListener('click', async () => {
     commitInputBox(premisesBox, 'premisesText', state);
     commitInputBox(conclusionBox, 'conclusionText', state);
-    state.problem.logic = logicSelect.value;
-
-    const logicLabel = state.problem.logic;
+    
+    const baseLogic = logicSelect.value;
+    const isFirstOrder = firstOrderCheckbox.checked;
+    const logicLabel = getLogicValue(baseLogic, isFirstOrder);
+    state.problem.logic = logicLabel;
     const premisesText = state.problem.premisesText || '';
     const conclusionText = state.problem.conclusionText || '';
 
@@ -174,6 +206,7 @@ export function initProblemUI(state, renderProof) {
 
   return {
     logicSelect,
+    firstOrderCheckbox,
     premisesBox,
     conclusionBox
   };

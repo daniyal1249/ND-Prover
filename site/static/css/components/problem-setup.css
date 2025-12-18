@@ -26,6 +26,13 @@
 }
 
 /* === Form Inputs === */
+/* Logic container with select and checkbox */
+.logic-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
 /* Logic select (width 50% of its field column) */
 select.logic {
   font-family: var(--sans);
@@ -35,6 +42,29 @@ select.logic {
   border-radius: var(--border-radius-md);
   background: var(--background);
   width: var(--logic-select-width);
+}
+
+/* First-order checkbox container */
+.first-order-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+/* First-order checkbox */
+#first-order {
+  width: 1.25em;
+  height: 1.25em;
+  cursor: pointer;
+  accent-color: var(--ink);
+}
+
+/* First-order label */
+.first-order-container label {
+  font-size: var(--font-size-md);
+  color: var(--text-color-secondary);
+  cursor: pointer;
+  margin: 0;
 }
 
 /* Single-line inputs for Premises/Conclusion */

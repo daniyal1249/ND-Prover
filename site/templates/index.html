@@ -61,14 +61,19 @@
       <section class="problem-creation-section">
         <section class="problem-setup" aria-label="Create problem">
           <label for="logic">Logic</label>
-          <select id="logic" class="logic">
-            <option value="TFL">Propositional logic (TFL)</option>
-            <option value="FOL">First-order logic (FOL)</option>
-            <option value="MLK">Modal logic K (MLK)</option>
-            <option value="MLT">Modal logic T (MLT)</option>
-            <option value="MLS4">Modal logic S4 (MLS4)</option>
-            <option value="MLS5">Modal logic S5 (MLS5)</option>
-          </select>
+          <div class="logic-container">
+            <select id="logic" class="logic">
+              <option value="TFL">Propositional logic (TFL)</option>
+              <option value="MLK">Modal logic K (MLK)</option>
+              <option value="MLT">Modal logic T (MLT)</option>
+              <option value="MLS4">Modal logic S4 (MLS4)</option>
+              <option value="MLS5">Modal logic S5 (MLS5)</option>
+            </select>
+            <div class="first-order-container">
+              <input id="first-order" type="checkbox" />
+              <label for="first-order">First-order</label>
+            </div>
+          </div>
 
           <label for="premises">Premises</label>
           <input id="premises" class="text-input" type="text" placeholder="semicolon-separated" />
