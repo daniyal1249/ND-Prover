@@ -339,13 +339,13 @@ class Introducer:
 
         for conjunct1, conjunct2 in [(left, right), (right, left)]:
             branch1 = _Proof(proof.seq, conjunct1)
-            p1 = Prover(branch1, prover.seen)
+            p1 = Prover(branch1, prover.seen.copy())
             if not p1.prove():
                 continue
             conjunct1_id = branch1.pop_reiteration()
 
             branch2 = _Proof(branch1.seq, conjunct2)
-            p2 = Prover(branch2, prover.seen)
+            p2 = Prover(branch2, prover.seen.copy())
             if not p2.prove():
                 continue
             conjunct2_id = branch2.pop_reiteration()
