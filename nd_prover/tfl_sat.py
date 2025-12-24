@@ -67,8 +67,7 @@ def is_valid(premises, conclusion):
                 break
         
         if all_premises_true:
-            conclusion_value = evaluate(conclusion, model)
-            if not conclusion_value:
+            if not evaluate(conclusion, model):
                 return False
 
     return True

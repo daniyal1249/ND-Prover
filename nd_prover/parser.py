@@ -231,10 +231,10 @@ def parse_assumption(a):
 
 def parse_rule(rule):
     rule = "".join(Symbols.sub(rule).split())
-    for r in Rules.rules:
-        if r.name == rule:
-            return r
-    raise ParsingError(f'Rule of inference "{rule}" not recognized.')
+    r = Rules.rules.get(rule)
+    if r is None:
+        raise ParsingError(f'Rule of inference "{rule}" not recognized.')
+    return r
 
 
 def parse_citations(citations):

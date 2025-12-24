@@ -67,23 +67,23 @@ def create_problem():
     logic = select_logic()
     premises = input_premises(logic)
     conclusion = input_conclusion(logic)
-    return Proof(logic, premises, conclusion)
+    return Problem(logic, premises, conclusion)
 
 
-def select_action():
-    actions = [
+def select_edit():
+    edits = (
         "1 - Add a new line",
         "2 - Begin a new subproof",
         "3 - End the current subproof",
         "4 - End the current subproof and begin a new one",
         "5 - Delete the last line",
-    ]
+    )
 
     while True:
-        raw = input("\n".join(actions) + "\n\nSelect action: ")
+        raw = input("\n".join(edits) + "\n\nSelect edit: ")
         if raw.strip().isdecimal() and 1 <= int(raw) <= 5:
             return int(raw)
-        print("Invalid action. Please try again.\n")
+        print("Invalid edit. Please try again.\n")
 
 
 def input_line():
@@ -96,35 +96,41 @@ def input_assumption():
     return parse_assumption(raw)
 
 
-def perform_action(proof, action):
+def perform_edit(problem, edit):
     try:
-        match action:
+        match edit:
             case 1:
                 f, j = input_line()
-                proof.add_line(f, j)
+                problem.add_line(f, j)
             case 2:
                 a = input_assumption()
-                proof.begin_subproof(a)
+                problem.begin_subproof(a)
             case 3:
                 f, j = input_line()
-                proof.end_subproof(f, j)
+                problem.end_subproof(f, j)
             case 4:
                 a = input_assumption()
-                proof.end_and_begin_subproof(a)
+                problem.end_and_begin_subproof(a)
             case 5:
-                proof.delete_line()
+                problem.delete_line()
+
+        if errors := problem.proof.errors():
+            problem.delete_line()
+            error = errors[0].split(": ", 1)[-1]
+            raise InferenceError(error)
+
     except Exception as e:
         print(f"{e} Please try again.")
 
 
 def main():
-    p = create_problem()
-    while not p.is_complete():
+    problem = create_problem()
+    while not problem.conclusion_reached():
         print()
-        if p_str := str(p):
-            print(f"{p_str}\n")
-        action = select_action()
-        perform_action(p, action)
+        if problem_str := str(problem):
+            print(f"{problem_str}\n")
+        edit = select_edit()
+        perform_edit(problem, edit)
 
-    print(f"\n{p}\n")
+    print(f"\n{problem}\n")
     print("Proof complete! 🎉")
