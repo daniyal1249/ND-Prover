@@ -91,19 +91,20 @@ class Eliminator:
 
     @staticmethod
     def elim(prover):
-        if Eliminator.R(prover):
-            return True
-        if Eliminator.X(prover):
-            return True
-        if Eliminator.NotE(prover):
-            return Eliminator.elim(prover)
-        if Eliminator.AndE(prover):
-            return Eliminator.elim(prover)
-        if Eliminator.ImpE(prover):
-            return Eliminator.elim(prover)
-        if Eliminator.IffE(prover):
-            return Eliminator.elim(prover)
-        return False
+        while True:
+            if Eliminator.R(prover):
+                return True
+            if Eliminator.X(prover):
+                return True
+            if Eliminator.NotE(prover):
+                continue
+            if Eliminator.AndE(prover):
+                continue
+            if Eliminator.ImpE(prover):
+                continue
+            if Eliminator.IffE(prover):
+                continue
+            return False
 
     @staticmethod
     def R(prover):
@@ -270,7 +271,7 @@ class Eliminator:
                         proof.seq = branch.seq
                         return True
         return False
-    
+
     @staticmethod
     def IffE_force(prover):
         proof = prover.proof
@@ -516,20 +517,23 @@ class Processor:
         if citations is None:
             citations = proof.citations()
 
-        seq, n = [], len(proof.seq)
-        for idx, obj in enumerate(proof.seq):
-            if obj.id in citations or idx == n - 1:
-                if obj.is_subproof():
-                    Processor.remove_uncited(obj, citations)
-                seq.append(obj)
-                continue
+        while True:
+            seq, n = [], len(proof.seq)
 
-            if obj.is_line() and obj.rule in ("PR", "AS"):
-                seq.append(obj)
+            for idx, obj in enumerate(proof.seq):
+                if obj.id in citations or idx == n - 1:
+                    if obj.is_subproof():
+                        Processor.remove_uncited(obj, citations)
+                    seq.append(obj)
+                    continue
 
-        if len(seq) != n:
+                if obj.is_line() and obj.rule in ("PR", "AS"):
+                    seq.append(obj)
+
             proof.seq = seq
-            Processor.remove_uncited(proof)
+            if len(seq) == n:
+                break
+            citations = proof.citations()
 
     @staticmethod
     def translate(proof, start_idx=1, context=None, id_to_idx=None):
@@ -566,7 +570,7 @@ def prove(premises, conclusion):
     p = Prover(_proof)
 
     if not p.prove():
-        raise ProverError("Argument is valid, but unable to find proof.")
+        raise ProverError("Argument is valid, but no proof was found.")
 
     problem = Problem(TFL, premises, conclusion)
     proof = Processor.process(_proof)
