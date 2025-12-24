@@ -9,6 +9,7 @@
 
 import { processFormula } from '../utils/input-processing.js';
 import { addLine } from '../proof/line-operations.js';
+import { updateGenerateButtonVisibility } from './proof-ui.js';
 
 /**
  * Commits an input box value to state, processing the text.
@@ -86,9 +87,6 @@ export function initProblemUI(state, renderProof) {
   
   // Logic select and first-order checkbox change handlers
   function updateLogic() {
-    const baseLogic = logicSelect.value;
-    const isFirstOrder = firstOrderCheckbox.checked;
-    state.problem.logic = getLogicValue(baseLogic, isFirstOrder);
   }
   
   logicSelect.addEventListener('change', updateLogic);
@@ -200,6 +198,9 @@ export function initProblemUI(state, renderProof) {
     if (proofPane && proofPane.classList.contains('hidden')) {
       proofPane.classList.remove('hidden');
     }
+
+    // Update GENERATE button visibility based on logic
+    updateGenerateButtonVisibility(state);
 
     renderProof();
   });

@@ -2,9 +2,7 @@ from __future__ import annotations
 
 from flask import Flask, jsonify, render_template, request
 
-from nd_prover import Proof
-from nd_prover.cli import logics, parse_and_verify_formula, parse_and_verify_premises
-from nd_prover.parser import ParsingError, parse_assumption, parse_line
+from nd_prover import *
 
 
 app = Flask(
@@ -47,9 +45,72 @@ def _resolve_logic(logic_name):
     """Resolve the logic implementation from its label, or return an error message."""
     logic = logics.get(logic_name)
     if logic is None:
-        message = f'Unknown logic: "{logic_name}".'
+        message = f'Logic not recognized: "{logic_name}".'
         return None, message
     return logic, None
+
+
+def _serialize_proof(proof):
+    """Serialize a Proof object to the frontend format.
+    
+    Returns a list of line objects with the structure:
+    {
+        indent: int,
+        text: str,
+        justText: str,
+        isAssumption: bool,
+        isPremise: bool
+    }
+    """
+    lines = []
+    
+    def traverse(obj, indent=0, is_premise=False):
+        """Recursively traverse proof objects."""
+        if obj.is_line():
+            formula_str = str(obj.formula)
+            just_str = str(obj.justification)
+            is_assumption = obj.justification.rule is Rules.AS
+            # Check if this is a premise (PR rule) or was marked as premise from context
+            is_premise_line = is_premise or obj.justification.rule is Rules.PR
+            
+            lines.append({
+                'indent': indent,
+                'text': formula_str,
+                'justText': just_str,
+                'isAssumption': is_assumption,
+                'isPremise': is_premise_line
+            })
+        else:
+            # Process assumption line (first line of subproof) at indent + 1
+            subproof_indent = indent + 1
+            if obj.seq and obj.seq[0].is_line():
+                assumption_line = obj.seq[0]
+                formula_str = str(assumption_line.formula)
+                just_str = str(assumption_line.justification)
+                
+                lines.append({
+                    'indent': subproof_indent,
+                    'text': formula_str,
+                    'justText': just_str,
+                    'isAssumption': True,
+                    'isPremise': False
+                })
+                
+                # Process remaining lines in subproof at the same indent level
+                for item in obj.seq[1:]:
+                    traverse(item, subproof_indent, False)
+            else:
+                # Process all items in subproof at increased indent
+                for item in obj.seq:
+                    traverse(item, subproof_indent, False)
+
+    for obj in proof.context:
+        is_premise = obj.is_line() and obj.justification.rule is Rules.PR
+        traverse(obj, 0, is_premise=is_premise)
+    for obj in proof.seq:
+        traverse(obj, 0, is_premise=False)
+    
+    return lines
 
 
 @app.get("/")
@@ -61,9 +122,9 @@ def index():
 def check_proof():
     data = request.get_json(silent=True) or {}
     logic_name, premises_text, conclusion_text = _extract_problem_fields(data)
+    logic, error_message = _resolve_logic(logic_name)
     line_payloads = data.get("lines") or []
 
-    logic, error_message = _resolve_logic(logic_name)
     if logic is None:
         return _json_error(error_message)
 
@@ -73,7 +134,7 @@ def check_proof():
     except ParsingError as e:
         return _json_error(str(e))
 
-    proof = Proof(logic, premises, conclusion)
+    problem = Problem(logic, premises, conclusion)
 
     for payload in line_payloads:
         kind = payload.get("kind")
@@ -84,7 +145,7 @@ def check_proof():
 
         prefix = f"Line {line_no}: " if line_no is not None else ""
 
-        # Premises are already encoded in the initial Proof context.
+        # Premises are already encoded in the initial Problem context.
         if kind == "premise":
             continue
 
@@ -101,13 +162,13 @@ def check_proof():
 
             if kind == "assumption":
                 try:
-                    proof.begin_subproof(assumption)
+                    problem.begin_subproof(assumption)
                 except Exception as e:
                     message = prefix + str(e)
                     return _json_error(message)
             else:  # end_and_begin
                 try:
-                    proof.end_and_begin_subproof(assumption)
+                    problem.end_and_begin_subproof(assumption)
                 except Exception as e:
                     message = prefix + str(e)
                     return _json_error(message)
@@ -117,13 +178,9 @@ def check_proof():
         if not formula_text:
             message = prefix + "Formula is missing."
             return _json_error(message)
-
         if not just_text:
             message = prefix + "Justification is missing."
             return _json_error(message)
-
-        # At this point we know both parts are present; raw may still be empty
-        # if the serializer was older, so rebuild raw defensively if needed.
         if not raw:
             raw = f"{formula_text}; {just_text}"
 
@@ -135,14 +192,18 @@ def check_proof():
 
         try:
             if kind == "line":
-                proof.add_line(formula, justification)
+                problem.add_line(formula, justification)
             elif kind == "close_subproof":
-                proof.end_subproof(formula, justification)
+                problem.end_subproof(formula, justification)
         except Exception as e:
             message = prefix + str(e)
             return _json_error(message)
 
-    is_complete = proof.is_complete()
+    if errors := problem.proof.errors():
+        message = "\n".join(errors)
+        return _json_error(message)
+    is_complete = problem.conclusion_reached()
+
     if is_complete:
         message = "Proof complete! 🎉"
         status = "complete"
@@ -156,7 +217,7 @@ def check_proof():
             "status": status,
             "isComplete": is_complete,
             "message": message,
-            "proofString": str(proof),
+            "proofString": str(problem),
         }
     )
 
@@ -164,20 +225,18 @@ def check_proof():
 @app.post("/api/validate-problem")
 def validate_problem():
     data = request.get_json(silent=True) or {}
-
     logic_name, premises_text, conclusion_text = _extract_problem_fields(data)
     logic, error_message = _resolve_logic(logic_name)
+
     if logic is None:
         return _json_error(error_message)
 
-    # Validate premises and conclusion separately so we can tailor messages.
     try:
         parse_and_verify_premises(premises_text, logic)
     except ParsingError as e:
         message = f"Invalid premise(s): {e}"
         return _json_error(message)
 
-    # Ensure a non-empty conclusion was provided (after premises are checked).
     if not conclusion_text.strip():
         message = "Invalid conclusion: A conclusion must be provided."
         return _json_error(message)
@@ -188,11 +247,41 @@ def validate_problem():
         message = f"Invalid conclusion: {e}"
         return _json_error(message)
     except Exception as e:
-        # Any unexpected error should still return JSON so the frontend
-        # can display a meaningful message instead of a generic fallback.
         return _json_error(str(e))
 
     return jsonify({"ok": True, "status": "ok", "message": ""})
+
+
+@app.post("/api/generate-proof")
+def generate_proof():
+    data = request.get_json(silent=True) or {}
+    logic_name, premises_text, conclusion_text = _extract_problem_fields(data)
+    logic, error_message = _resolve_logic(logic_name)
+
+    if logic is None:
+        return _json_error(error_message)
+    if logic_name != "TFL":
+        return _json_error("Proof generation is only supported for TFL.")
+
+    try:
+        premises = parse_and_verify_premises(premises_text, logic)
+        conclusion = parse_and_verify_formula(conclusion_text, logic)
+    except ParsingError as e:
+        return _json_error(str(e))
+
+    try:
+        problem = prove(premises, conclusion)
+    except Exception as e:
+        return _json_error(str(e))
+
+    proof_lines = _serialize_proof(problem.proof)
+
+    return jsonify({
+        "ok": True,
+        "status": "complete",
+        "message": "Proof complete! 🎉",
+        "lines": proof_lines
+    })
 
 
 if __name__ == "__main__":

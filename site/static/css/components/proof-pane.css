@@ -12,7 +12,7 @@
   border-radius: var(--border-radius-lg);
   padding: var(--spacing-xl);
   min-width: 0;
-  overflow-x: hidden; /* Prevent overflow into right column - scrolling happens in .proof */
+  overflow-x: hidden;
 }
 
 /* === Results Pane Container === */
@@ -37,7 +37,7 @@
   background: transparent;
   border: none;
   border-radius: 0;
-  overflow-x: auto; /* Scroll horizontally when proof lines are wider than container */
+  overflow-x: auto;
   overflow-y: visible;
   width: 100%;
   padding-bottom: var(--proof-padding-bottom);
@@ -55,7 +55,9 @@
   padding: 0;
   color: var(--ink);
   font-size: var(--font-size-xl);
+  line-height: 1.5;
   display: none;
+  white-space: pre-line;
 }
 
 .results--show {

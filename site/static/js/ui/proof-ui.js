@@ -9,6 +9,62 @@
 import { addLine } from '../proof/line-operations.js';
 import { focusLineAt } from '../proof/focus-management.js';
 import { serializeProofState } from '../utils/serialization.js';
+import { processFormula, processJustification } from '../utils/input-processing.js';
+
+/**
+ * Updates the visibility of the GENERATE button based on the selected logic.
+ * The button is only visible when the logic is TFL.
+ * 
+ * @param {Object} state - Application state object
+ */
+export function updateGenerateButtonVisibility(state) {
+  const btnGenerate = document.getElementById('generate-proof');
+  if (!btnGenerate) {
+    return;
+  }
+
+  const isTFL = state.problem.logic === 'TFL';
+  if (isTFL) {
+    btnGenerate.classList.remove('hidden');
+  } else {
+    btnGenerate.classList.add('hidden');
+  }
+}
+
+/**
+ * Deserializes proof lines from the backend and populates the state.
+ * 
+ * @param {Object} state - Application state object
+ * @param {Array} proofLines - Array of line objects from backend
+ */
+function deserializeProofLines(state, proofLines) {
+  // Clear existing proof
+  state.lines = [];
+  state.nextId = 1;
+
+  // Add each line from the backend
+  for (const lineData of proofLines) {
+    const line = addLine(
+      state,
+      lineData.indent,
+      null,
+      lineData.isAssumption,
+      lineData.isPremise
+    );
+    
+    // Process and set the formula text
+    line.text = processFormula(lineData.text || '');
+    
+    // Process and set the justification text
+    // PR and AS are fixed rule names and should not be symbolized
+    const justText = lineData.justText || '';
+    if (justText === 'PR' || justText === 'AS') {
+      line.justText = justText;
+    } else {
+      line.justText = processJustification(justText);
+    }
+  }
+}
 
 /**
  * Initializes proof UI handlers (toolbar buttons).
@@ -39,10 +95,12 @@ export function initProofUI(state, renderProof) {
     focusLineAt(0, 'formula-input', state);
   });
 
-  // Check proof button
-  const btnCheckProof = document.getElementById('check-proof');
+  // Results section elements (shared by both CHECK PROOF and GENERATE buttons)
   const resultsSection = document.getElementById('results-pane');
   const resultsBox = document.getElementById('results');
+
+  // Check proof button
+  const btnCheckProof = document.getElementById('check-proof');
 
   if (btnCheckProof && resultsBox) {
     btnCheckProof.addEventListener('click', async () => {
@@ -97,5 +155,95 @@ export function initProofUI(state, renderProof) {
       }
     });
   }
+
+  // Generate proof button
+  const btnGenerate = document.getElementById('generate-proof');
+
+  if (btnGenerate && resultsBox) {
+    btnGenerate.addEventListener('click', async () => {
+      // Reveal the results section if hidden
+      if (resultsSection && resultsSection.classList.contains('hidden')) {
+        resultsSection.classList.remove('hidden');
+      }
+
+      resultsBox.classList.add('results--show');
+
+      const payload = {
+        logic: state.problem.logic,
+        premisesText: state.problem.premisesText,
+        conclusionText: state.problem.conclusionText
+      };
+
+      resultsBox.textContent = 'Generating proof...';
+
+      try {
+        // Create an AbortController for timeout handling (60 seconds)
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 60000);
+
+        let response;
+        try {
+          response = await fetch('/api/generate-proof', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+        } catch (fetchError) {
+          clearTimeout(timeoutId);
+          if (fetchError.name === 'AbortError') {
+            // Timeout occurred
+            if (resultsSection) {
+              resultsSection.classList.remove('results-pane--success');
+              resultsSection.classList.add('results-pane--error');
+            }
+            resultsBox.textContent = 'Proof generation timed out.';
+            return;
+          }
+          throw fetchError; // Re-throw other errors
+        }
+
+        const data = await response.json();
+        const message = data.message || '';
+
+        if (!response.ok || !data.ok) {
+          if (resultsSection) {
+            resultsSection.classList.remove('results-pane--success');
+            resultsSection.classList.add('results-pane--error');
+          }
+          resultsBox.textContent = message;
+          return;
+        }
+
+        // Success - deserialize and display the proof
+        if (data.lines && Array.isArray(data.lines)) {
+          deserializeProofLines(state, data.lines);
+          renderProof();
+          
+          if (resultsSection) {
+            resultsSection.classList.remove('results-pane--error');
+            resultsSection.classList.add('results-pane--success');
+          }
+          resultsBox.textContent = message;
+        } else {
+          if (resultsSection) {
+            resultsSection.classList.remove('results-pane--success');
+            resultsSection.classList.add('results-pane--error');
+          }
+          resultsBox.textContent = 'Invalid response from server.';
+        }
+      } catch (error) {
+        if (resultsSection) {
+          resultsSection.classList.remove('results-pane--success');
+          resultsSection.classList.add('results-pane--error');
+        }
+        resultsBox.textContent = 'An error occurred while generating the proof.';
+      }
+    });
+  }
+
+  // Initialize GENERATE button visibility
+  updateGenerateButtonVisibility(state);
 }
 

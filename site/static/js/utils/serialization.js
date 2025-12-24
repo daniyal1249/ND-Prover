@@ -2,7 +2,7 @@
  * Proof serialization helpers
  *
  * These helpers prepare the frontend state for sending to the Python backend.
- * The shapes are chosen to map cleanly onto nd_prover.Proof operations.
+ * The shapes are chosen to map cleanly onto nd_prover.Problem operations.
  */
 
 /**
