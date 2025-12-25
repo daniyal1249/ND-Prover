@@ -55,7 +55,7 @@
   padding: 0;
   color: var(--ink);
   font-size: var(--font-size-xl);
-  line-height: 1.5;
+  line-height: 1.6;
   display: none;
   white-space: pre-line;
 }

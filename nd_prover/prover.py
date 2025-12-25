@@ -16,7 +16,7 @@ class _ProofObject:
 
     def is_line(self):
         return isinstance(self, _Line)
-    
+
     def is_subproof(self):
         return isinstance(self, _Proof)
 
@@ -28,61 +28,105 @@ class _Line(_ProofObject):
     citations: tuple
 
     def __post_init__(self):
+        self.is_assumption = self.rule in ("PR", "AS")
         super().__init__()
+
+    def copy(self):
+        return _Line(self.formula, self.rule, self.citations)
 
 
 @dataclass
 class _Proof(_ProofObject):
-    seq: list[_ProofObject]
+    _seq: list[_ProofObject]
     goal: Formula
 
     def __post_init__(self):
         self.seq = self.seq[:]
         super().__init__()
 
+    @property
+    def seq(self):
+        return self._seq
+
+    @seq.setter
+    def seq(self, new_seq):
+        self._seq = new_seq
+        self.init()
+
+    def init(self):
+        self.formulas = {
+            obj.formula 
+            for obj in self.seq 
+            if obj.is_line()
+        }
+        self.assumptions = {
+            obj.formula 
+            for obj in self.seq 
+            if obj.is_line() and obj.is_assumption
+        }
+        self.line_count = sum(
+            1 if obj.is_line() else obj.line_count 
+            for obj in self.seq
+        )
+        self.ip_count = sum(
+            (1 if obj.rule == "IP" else 0) 
+            if obj.is_line() else obj.ip_count 
+            for obj in self.seq
+        )
+
     def copy(self):
         return _Proof(self.seq, self.goal)
 
-    def assumptions(self):
-        return {
-            obj.formula 
-            for obj in self.seq 
-            if obj.is_line() and obj.rule in ("PR", "AS")
-        }
+    def add(self, *objs):
+        for obj in objs:
+            if obj.is_line():
+                self.formulas.add(obj.formula)
+                if obj.is_assumption:
+                    self.assumptions.add(obj.formula)
+                self.line_count += 1
+                if obj.rule == "IP":
+                    self.ip_count += 1
+            else:
+                self.line_count += obj.line_count
+                self.ip_count += obj.ip_count
+            self.seq.append(obj)
 
-    def citations(self):
-        c_set = set()
+    def id_to_obj(self):
+        id_to_obj = {}
         for obj in self.seq:
             if obj.is_line():
-                c_set.update(obj.citations)
+                id_to_obj[obj.id] = obj
             else:
-                c_set.update(obj.citations())
-        return c_set
+                id_to_obj.update(obj.id_to_obj())
+        return id_to_obj
 
-    def line_count(self):
-        return sum(
-            1 if obj.is_line() else obj.line_count() 
-            for obj in self.seq
-        )
-
-    def ip_count(self):
-        return sum(
-            (1 if obj.rule == "IP" else 0) 
-            if obj.is_line() else obj.ip_count() 
-            for obj in self.seq
-        )
+    def id_to_citers(self):
+        id_to_citers = {}
+        for obj in self.seq:
+            if obj.is_line():
+                for c in obj.citations:
+                    citers = id_to_citers.setdefault(c, set())
+                    citers.add(obj.id)
+                id_to_citers[obj.id] = set()
+            else:
+                for k, v in obj.id_to_citers().items():
+                    citers = id_to_citers.setdefault(k, set())
+                    citers.update(v)
+                id_to_citers[obj.id] = set()
+        return id_to_citers
 
     def pop_reiteration(self):
         end = self.seq[-1]
         if end.is_line() and end.rule == "R":
             self.seq.pop()
+            self.line_count -= 1
             return end.citations[0]
         return end.id
 
     def commit_best_branch(self, branches):
         if not branches:
             return False
-        def key(p): return (p.ip_count(), p.line_count())
+        def key(p): return (p.ip_count, p.line_count)
         self.seq = min(branches, key=key).seq
         return True
 
@@ -110,13 +154,13 @@ class Eliminator:
     def R(prover):
         proof = prover.proof
         if proof.seq and (end := proof.seq[-1]).is_line():
-            if end.formula == proof.goal and end.rule not in ("PR", "AS"):
+            if end.formula == proof.goal and not end.is_assumption:
                 return True
 
         for obj in proof.seq:
             if obj.is_line() and obj.formula == proof.goal:
                 line = _Line(obj.formula, "R", (obj.id,))
-                proof.seq.append(line)
+                proof.add(line)
                 return True
         return False
 
@@ -126,7 +170,7 @@ class Eliminator:
         for obj in proof.seq:
             if obj.is_line() and isinstance(obj.formula, Bot):
                 line = _Line(proof.goal, "X", (obj.id,))
-                proof.seq.append(line)
+                proof.add(line)
                 return True
         return False
 
@@ -136,68 +180,66 @@ class Eliminator:
         for obj in proof.seq:
             if not (obj.is_line() and isinstance(obj.formula, Not)):
                 continue
+
             for obj2 in proof.seq:
                 if obj2.is_line() and obj2.formula == obj.formula.inner:
                     line = _Line(Bot(), "¬E", (obj.id, obj2.id))
-                    proof.seq.append(line)
+                    proof.add(line)
                     return True
         return False
 
     @staticmethod
     def AndE(prover):
         proof = prover.proof
-        formulas = {obj.formula for obj in proof.seq if obj.is_line()}
-
         for obj in proof.seq:
             if not (obj.is_line() and isinstance(obj.formula, And)):
                 continue
+
             for conjunct in (obj.formula.left, obj.formula.right):
-                if conjunct not in formulas:
+                if conjunct not in proof.formulas:
                     line = _Line(conjunct, "∧E", (obj.id,))
-                    proof.seq.append(line)
+                    proof.add(line)
                     return True
         return False
 
     @staticmethod
     def ImpE(prover):
         proof = prover.proof
-        formulas = {obj.formula for obj in proof.seq if obj.is_line()}
-
         for obj in proof.seq:
             if not (obj.is_line() and isinstance(obj.formula, Imp)):
                 continue
-            if obj.formula.right in formulas:
+            if obj.formula.right in proof.formulas:
                 continue
+
             for obj2 in proof.seq:
                 if obj2.is_line() and obj2.formula == obj.formula.left:
                     line = _Line(obj.formula.right, "→E", (obj.id, obj2.id))
-                    proof.seq.append(line)
+                    proof.add(line)
                     return True
         return False
 
     @staticmethod
     def IffE(prover):
         proof = prover.proof
-        formulas = {obj.formula for obj in proof.seq if obj.is_line()}
-
         for obj in proof.seq:
             if not (obj.is_line() and isinstance(obj.formula, Iff)):
                 continue
-            have_left = obj.formula.left in formulas
-            have_right = obj.formula.right in formulas
+
+            have_left = obj.formula.left in proof.formulas
+            have_right = obj.formula.right in proof.formulas
 
             if have_left and not have_right:
                 for obj2 in proof.seq:
                     if obj2.is_line() and obj2.formula == obj.formula.left:
                         line = _Line(obj.formula.right, "↔E", (obj.id, obj2.id))
-                        proof.seq.append(line)
+                        proof.add(line)
                         return True
 
             if have_right and not have_left:
                 for obj2 in proof.seq:
                     if obj2.is_line() and obj2.formula == obj.formula.right:
                         line = _Line(obj.formula.left, "↔E", (obj.id, obj2.id))
-                        proof.seq.append(line)
+                        proof.add(line)
                         return True
         return False
 
@@ -237,9 +279,9 @@ class Eliminator:
     def NotE_force(prover):
         proof = prover.proof
         branches = []
-        if not is_valid(proof.assumptions(), Bot()):
+        if not is_valid(proof.assumptions, Bot()):
             return False
-        
+
         for obj in proof.seq:
             if obj.is_line() and isinstance(obj.formula, Not):
                 branch = _Proof(proof.seq, obj.formula.inner)
@@ -254,15 +296,13 @@ class Eliminator:
     @staticmethod
     def ImpE_force(prover):
         proof = prover.proof
-        formulas = {obj.formula for obj in proof.seq if obj.is_line()}
-
         for obj in proof.seq:
             if not (obj.is_line() and isinstance(obj.formula, Imp)):
                 continue
-            if obj.formula.right in formulas:
+            if obj.formula.right in proof.formulas:
                 continue
 
-            if is_valid(proof.assumptions(), obj.formula.left):
+            if is_valid(proof.assumptions, obj.formula.left):
                 branch = _Proof(proof.seq, obj.formula.left)
                 p = Prover(branch, prover.seen)
                 if p.prove():
@@ -275,14 +315,14 @@ class Eliminator:
     @staticmethod
     def IffE_force(prover):
         proof = prover.proof
-        formulas = {obj.formula for obj in proof.seq if obj.is_line()}
+        formulas = proof.formulas
 
         for obj in proof.seq:
             if not (obj.is_line() and isinstance(obj.formula, Iff)):
                 continue
             if obj.formula.left in formulas or obj.formula.right in formulas:
                 continue
-            if not is_valid(proof.assumptions(), obj.formula.left):
+            if not is_valid(proof.assumptions, obj.formula.left):
                 continue
 
             branches = []
@@ -327,9 +367,8 @@ class Introducer:
         
         n = len(proof.seq)
         subproof.seq = subproof.seq[n:]
-        proof.seq.append(subproof)
         line = _Line(proof.goal, "¬I", (subproof.id,))
-        proof.seq.append(line)
+        proof.add(subproof, line)
         return True
 
     @staticmethod
@@ -352,7 +391,7 @@ class Introducer:
             conjunct2_id = branch2.pop_reiteration()
             
             line = _Line(proof.goal, "∧I", (conjunct1_id, conjunct2_id))
-            branch2.seq.append(line)
+            branch2.add(line)
             branches.append(branch2)
 
         return proof.commit_best_branch(branches)
@@ -367,17 +406,17 @@ class Introducer:
         for obj in proof.seq:
             if obj.is_line() and obj.formula in (left, right):
                 line = _Line(proof.goal, "∨I", (obj.id,))
-                proof.seq.append(line)
+                proof.add(line)
                 return True
         
         for disjunct in (left, right):
-            if is_valid(proof.assumptions(), disjunct):
+            if is_valid(proof.assumptions, disjunct):
                 branch = _Proof(proof.seq, disjunct)
                 p = Prover(branch, prover.seen)
                 if p.prove():
                     disjunct_id = branch.pop_reiteration()
                     line = _Line(proof.goal, "∨I", (disjunct_id,))
-                    branch.seq.append(line)
+                    branch.add(line)
                     branches.append(branch)
 
         return proof.commit_best_branch(branches)
@@ -393,9 +432,8 @@ class Introducer:
         
         n = len(proof.seq)
         subproof.seq = subproof.seq[n:]
-        proof.seq.append(subproof)
         line = _Line(proof.goal, "→I", (subproof.id,))
-        proof.seq.append(line)
+        proof.add(subproof, line)
         return True
 
     @staticmethod
@@ -418,25 +456,26 @@ class Introducer:
             return False
         subproof2.seq = subproof2.seq[n + 1:]
 
-        proof.seq.extend((subproof1, subproof2))
         line = _Line(proof.goal, "↔I", (subproof1.id, subproof2.id))
-        proof.seq.append(line)
+        proof.add(subproof1, subproof2, line)
         return True
 
     @staticmethod
     def IP(prover):
         proof = prover.proof
+        if is_valid([proof.goal], Bot()):
+            return False
+
         assumption = _Line(Not(proof.goal), "AS", ())
         subproof = _Proof(proof.seq + [assumption], Bot())
         p = Prover(subproof, prover.seen)
         if not p.prove():
             return False
-        
+
         n = len(proof.seq)
         subproof.seq = subproof.seq[n:]
-        proof.seq.append(subproof)
         line = _Line(proof.goal, "IP", (subproof.id,))
-        proof.seq.append(line)
+        proof.add(subproof, line)
         return True
 
 
@@ -484,10 +523,10 @@ class Prover:
 
     def _enter_state(self):
         proof = self.proof
-        key = (frozenset(proof.assumptions()), proof.goal)
+        key = (frozenset(proof.assumptions), proof.goal)
 
-        cost = (proof.ip_count(), proof.line_count())
-        formulas = frozenset(obj.formula for obj in proof.seq if obj.is_line())
+        cost = (proof.ip_count, proof.line_count)
+        formulas = frozenset(proof.formulas)
 
         prev = self.seen.get(key)
         if prev is not None:
@@ -509,41 +548,62 @@ class Processor:
 
     @staticmethod
     def process(proof):
-        Processor.remove_uncited(proof)
-        return Processor.translate(proof)
+        Processor.remove_uncited(proof, proof.id_to_citers())
+        id_to_obj, id_to_citers = proof.id_to_obj(), proof.id_to_citers()
+        Processor.replace_reiterations(proof, id_to_obj, id_to_citers, {})
+        return Processor.translate(proof, 1, [], {})
 
     @staticmethod
-    def remove_uncited(proof, citations=None):
-        if citations is None:
-            citations = proof.citations()
-
+    def remove_uncited(proof, id_to_citers):
         while True:
             seq, n = [], len(proof.seq)
-
             for idx, obj in enumerate(proof.seq):
-                if obj.id in citations or idx == n - 1:
-                    if obj.is_subproof():
-                        Processor.remove_uncited(obj, citations)
+
+                if obj.is_subproof():
+                    Processor.remove_uncited(obj, id_to_citers)
                     seq.append(obj)
                     continue
-
-                if obj.is_line() and obj.rule in ("PR", "AS"):
+                if obj.is_assumption or idx == n - 1:
+                    seq.append(obj)
+                    continue
+                if id_to_citers[obj.id]:
                     seq.append(obj)
 
             proof.seq = seq
             if len(seq) == n:
                 break
-            citations = proof.citations()
+            id_to_citers = proof.id_to_citers()
 
     @staticmethod
-    def translate(proof, start_idx=1, context=None, id_to_idx=None):
-        if context is None:
-            context = []
-        if id_to_idx is None:
-            id_to_idx = {}
+    def replace_reiterations(proof, id_to_obj, id_to_citers, replace):
+        seq, n = [], len(proof.seq)
+        for idx, obj in enumerate(proof.seq):
 
+            if obj.is_subproof():
+                Processor.replace_reiterations(obj, id_to_obj, id_to_citers, replace)
+                seq.append(obj)
+                continue
+            line = replace.get(obj.id)
+            if line is not None:
+                seq.append(line.copy())
+                continue
+            if obj.is_assumption or idx == n - 1:
+                seq.append(obj)
+                continue
+            citers = id_to_citers[obj.id]
+            if not all(id_to_obj[c].rule == "R" for c in citers):
+                seq.append(obj)
+                continue
+            for c in citers:
+                replace[c] = obj
+
+        proof.seq = seq
+
+    @staticmethod
+    def translate(proof, start_idx, context, id_to_idx):
         seq, idx = [], start_idx
         for obj in proof.seq:
+
             if obj.is_line():
                 rule = Rules.rules.get(obj.rule) or getattr(Rules, obj.rule)
                 citations = tuple(id_to_idx[c] for c in obj.citations)
@@ -555,7 +615,7 @@ class Processor:
 
             subproof = Processor.translate(obj, idx, context + seq, id_to_idx)
             seq.append(subproof)
-            new_idx = idx + obj.line_count()
+            new_idx = idx + obj.line_count
             id_to_idx[obj.id] = (idx, new_idx - 1)
             idx = new_idx
 
