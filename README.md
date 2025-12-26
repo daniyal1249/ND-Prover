@@ -2,17 +2,10 @@
 
 A Fitch-style natural deduction proof generator and checker, implemented in Python.
 
-Supports propositional, first-order, and modal logics (K, T, S4, S5) via a command-line interface.
+Supports propositional, first-order, and modal logics (K, T, S4, S5).
 
 
-## Logic Checklist
-
-- [x] Propositional logic (TFL)
-- [x] First-order logic (FOL)
-- [x] Modal logic K (MLK)
-- [x] Modal logic T (MLT)
-- [x] Modal logic S4 (MLS4)
-- [x] Modal logic S5 (MLS5)
+![ND-Prover Demo](prover.gif)
 
 
 ## Installation
@@ -34,8 +27,8 @@ and running the following in the cloned repo:
 
 ```
 $ nd-prover
-Select logic (TFL, FOL, MLK, MLT, MLS4, MLS5): TFL
-Enter premises (separated by "," or ";"), or "NA" if none: P -> Q, P
+Select logic (TFL, FOL, MLK, MLT, MLS4, MLS5, FOMLK, FOMLT, FOMLS4, FOMLS5): TFL
+Enter premises (separated by ";"), or "NA" if none: P -> Q; P 
 Enter conclusion: Q
 
  1 │ P → Q      PR
@@ -49,7 +42,7 @@ Enter conclusion: Q
 4 - End the current subproof and begin a new one
 5 - Delete the last line
 
-Select action: 1
+Select edit: 1
 Enter line: Q ; ->E, 1,2
 
  1 │ P → Q      PR
