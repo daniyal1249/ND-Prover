@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import time
 
 from .tfl_sat import *
 
@@ -244,7 +245,7 @@ class Eliminator:
         return False
 
     @staticmethod
-    def OrE(prover):
+    def OrE(prover, complete):
         proof = prover.proof
         goal = proof.goal
         branches = []
@@ -257,44 +258,51 @@ class Eliminator:
 
             assumption1 = _Line(disjunct1, "AS", ())
             subproof1 = _Proof(proof.seq + [assumption1], goal)
-            p1 = Prover(subproof1, prover.seen.copy())
-            if not p1.prove():
+            p1 = Prover(subproof1, prover.seen.copy(), prover.deadline)
+            if not p1.prove(complete):
                 continue
             subproof1.seq = subproof1.seq[n:]
 
             assumption2 = _Line(disjunct2, "AS", ())
             subproof2 = _Proof(proof.seq + [subproof1, assumption2], goal)
-            p2 = Prover(subproof2, prover.seen.copy())
-            if not p2.prove():
+            p2 = Prover(subproof2, prover.seen.copy(), prover.deadline)
+            if not p2.prove(complete):
                 continue
             subproof2.seq = subproof2.seq[n + 1:]
 
             line = _Line(goal, "∨E", (obj.id, subproof1.id, subproof2.id))
             branch = _Proof(proof.seq + [subproof1, subproof2, line], goal)
             branches.append(branch)
+            if not complete:
+                break
 
         return proof.commit_best_branch(branches)
 
     @staticmethod
-    def NotE_force(prover):
+    def NotE_force(prover, complete):
         proof = prover.proof
         branches = []
         if not is_valid(proof.assumptions, Bot()):
             return False
 
         for obj in proof.seq:
-            if obj.is_line() and isinstance(obj.formula, Not):
-                branch = _Proof(proof.seq, obj.formula.inner)
-                p = Prover(branch, prover.seen)
-                if p.prove():
-                    branch.pop_reiteration()
-                    if branch.seq != proof.seq:
-                        branches.append(branch)
+            if not (obj.is_line() and isinstance(obj.formula, Not)):
+                continue
+            branch = _Proof(proof.seq, obj.formula.inner)
+            p = Prover(branch, prover.seen, prover.deadline)
+            if not p.prove(complete):
+                continue
+
+            branch.pop_reiteration()
+            if branch.seq != proof.seq:
+                branches.append(branch)
+                if not complete:
+                    break
 
         return proof.commit_best_branch(branches)
 
     @staticmethod
-    def ImpE_force(prover):
+    def ImpE_force(prover, complete):
         proof = prover.proof
         for obj in proof.seq:
             if not (obj.is_line() and isinstance(obj.formula, Imp)):
@@ -304,8 +312,8 @@ class Eliminator:
 
             if is_valid(proof.assumptions, obj.formula.left):
                 branch = _Proof(proof.seq, obj.formula.left)
-                p = Prover(branch, prover.seen)
-                if p.prove():
+                p = Prover(branch, prover.seen, prover.deadline)
+                if p.prove(complete):
                     branch.pop_reiteration()
                     if branch.seq != proof.seq:
                         proof.seq = branch.seq
@@ -313,7 +321,7 @@ class Eliminator:
         return False
 
     @staticmethod
-    def IffE_force(prover):
+    def IffE_force(prover, complete):
         proof = prover.proof
         formulas = proof.formulas
 
@@ -328,11 +336,15 @@ class Eliminator:
             branches = []
             for formula in (obj.formula.left, obj.formula.right):
                 branch = _Proof(proof.seq, formula)
-                p = Prover(branch, prover.seen.copy())
-                if p.prove():
-                    branch.pop_reiteration()
-                    if branch.seq != proof.seq:
-                        branches.append(branch)
+                p = Prover(branch, prover.seen.copy(), prover.deadline)
+                if not p.prove(complete):
+                    continue
+
+                branch.pop_reiteration()
+                if branch.seq != proof.seq:
+                    branches.append(branch)
+                    if not complete:
+                        break
 
             if proof.commit_best_branch(branches):
                 return True
@@ -342,27 +354,27 @@ class Eliminator:
 class Introducer:
 
     @staticmethod
-    def intro(prover):
+    def intro(prover, complete):
         match prover.proof.goal:
             case Not():
-                return Introducer.NotI(prover)
+                return Introducer.NotI(prover, complete)
             case And():
-                return Introducer.AndI(prover)
+                return Introducer.AndI(prover, complete)
             case Or():
-                return Introducer.OrI(prover)
+                return Introducer.OrI(prover, complete)
             case Imp():
-                return Introducer.ImpI(prover)
+                return Introducer.ImpI(prover, complete)
             case Iff():
-                return Introducer.IffI(prover)
+                return Introducer.IffI(prover, complete)
         return False
 
     @staticmethod
-    def NotI(prover):
+    def NotI(prover, complete):
         proof = prover.proof
         assumption = _Line(proof.goal.inner, "AS", ())
         subproof = _Proof(proof.seq + [assumption], Bot())
-        p = Prover(subproof, prover.seen)
-        if not p.prove():
+        p = Prover(subproof, prover.seen, prover.deadline)
+        if not p.prove(complete):
             return False
         
         n = len(proof.seq)
@@ -372,32 +384,34 @@ class Introducer:
         return True
 
     @staticmethod
-    def AndI(prover):
+    def AndI(prover, complete):
         proof = prover.proof
         left, right = proof.goal.left, proof.goal.right
         branches = []
 
         for conjunct1, conjunct2 in [(left, right), (right, left)]:
             branch1 = _Proof(proof.seq, conjunct1)
-            p1 = Prover(branch1, prover.seen.copy())
-            if not p1.prove():
+            p1 = Prover(branch1, prover.seen.copy(), prover.deadline)
+            if not p1.prove(complete):
                 continue
             conjunct1_id = branch1.pop_reiteration()
 
             branch2 = _Proof(branch1.seq, conjunct2)
-            p2 = Prover(branch2, prover.seen.copy())
-            if not p2.prove():
+            p2 = Prover(branch2, prover.seen.copy(), prover.deadline)
+            if not p2.prove(complete):
                 continue
             conjunct2_id = branch2.pop_reiteration()
-            
+
             line = _Line(proof.goal, "∧I", (conjunct1_id, conjunct2_id))
             branch2.add(line)
             branches.append(branch2)
+            if not complete:
+                break
 
         return proof.commit_best_branch(branches)
 
     @staticmethod
-    def OrI(prover):
+    def OrI(prover, complete):
         proof = prover.proof
         left, right = proof.goal.left, proof.goal.right
         branches = []
@@ -408,26 +422,30 @@ class Introducer:
                 line = _Line(proof.goal, "∨I", (obj.id,))
                 proof.add(line)
                 return True
-        
+
         for disjunct in (left, right):
             if is_valid(proof.assumptions, disjunct):
                 branch = _Proof(proof.seq, disjunct)
-                p = Prover(branch, prover.seen)
-                if p.prove():
-                    disjunct_id = branch.pop_reiteration()
-                    line = _Line(proof.goal, "∨I", (disjunct_id,))
-                    branch.add(line)
-                    branches.append(branch)
+                p = Prover(branch, prover.seen, prover.deadline)
+                if not p.prove(complete):
+                    continue
+
+                disjunct_id = branch.pop_reiteration()
+                line = _Line(proof.goal, "∨I", (disjunct_id,))
+                branch.add(line)
+                branches.append(branch)
+                if not complete:
+                    break
 
         return proof.commit_best_branch(branches)
 
     @staticmethod
-    def ImpI(prover):
+    def ImpI(prover, complete):
         proof = prover.proof
         assumption = _Line(proof.goal.left, "AS", ())
         subproof = _Proof(proof.seq + [assumption], proof.goal.right)
-        p = Prover(subproof, prover.seen)
-        if not p.prove():
+        p = Prover(subproof, prover.seen, prover.deadline)
+        if not p.prove(complete):
             return False
         
         n = len(proof.seq)
@@ -437,22 +455,22 @@ class Introducer:
         return True
 
     @staticmethod
-    def IffI(prover):
+    def IffI(prover, complete):
         proof = prover.proof
         left, right = proof.goal.left, proof.goal.right
         n = len(proof.seq)
 
         assumption1 = _Line(left, "AS", ())
         subproof1 = _Proof(proof.seq + [assumption1], right)
-        p1 = Prover(subproof1, prover.seen.copy())
-        if not p1.prove():
+        p1 = Prover(subproof1, prover.seen.copy(), prover.deadline)
+        if not p1.prove(complete):
             return False
         subproof1.seq = subproof1.seq[n:]
 
         assumption2 = _Line(right, "AS", ())
         subproof2 = _Proof(proof.seq + [subproof1, assumption2], left)
-        p2 = Prover(subproof2, prover.seen.copy())
-        if not p2.prove():
+        p2 = Prover(subproof2, prover.seen.copy(), prover.deadline)
+        if not p2.prove(complete):
             return False
         subproof2.seq = subproof2.seq[n + 1:]
 
@@ -461,15 +479,15 @@ class Introducer:
         return True
 
     @staticmethod
-    def IP(prover):
+    def IP(prover, complete):
         proof = prover.proof
         if is_valid([proof.goal], Bot()):
             return False
 
         assumption = _Line(Not(proof.goal), "AS", ())
         subproof = _Proof(proof.seq + [assumption], Bot())
-        p = Prover(subproof, prover.seen)
-        if not p.prove():
+        p = Prover(subproof, prover.seen, prover.deadline)
+        if not p.prove(complete):
             return False
 
         n = len(proof.seq)
@@ -481,45 +499,42 @@ class Introducer:
 
 class Prover:
 
-    def __init__(self, proof, seen=None):
+    def __init__(self, proof, seen=None, deadline=None):
         self.proof = proof
         self.seen = {} if seen is None else seen
+        self.deadline = deadline
 
-    def prove(self):
+    def prove(self, complete):
+        if self.deadline is not None and time.monotonic() >= self.deadline:
+            raise TimeoutError()
         if not self._enter_state():
             return False
 
         if Eliminator.elim(self):
             return True
-        if Introducer.intro(self):
+        if Introducer.intro(self, complete):
             return True
 
+        strategies = (
+            lambda p: Eliminator.NotE_force(p, complete) and p.prove(complete),
+            lambda p: Eliminator.ImpE_force(p, complete) and p.prove(complete),
+            lambda p: Eliminator.IffE_force(p, complete) and p.prove(complete),
+            lambda p: Eliminator.OrE(p, complete),
+            lambda p: Introducer.IP(p, complete),
+        )
+
         branches = []
-
-        p = self.copy()
-        if Eliminator.NotE_force(p) and p.prove():
-            branches.append(p.proof)
-
-        p = self.copy()
-        if Eliminator.ImpE_force(p) and p.prove():
-            branches.append(p.proof)
-
-        p = self.copy()
-        if Eliminator.IffE_force(p) and p.prove():
-            branches.append(p.proof)
-
-        p = self.copy()
-        if Eliminator.OrE(p):
-            branches.append(p.proof)
-
-        p = self.copy()
-        if Introducer.IP(p):
-            branches.append(p.proof)
+        for strategy in strategies:
+            p = self.copy()
+            if strategy(p):
+                branches.append(p.proof)
+                if not complete:
+                    break
 
         return self.proof.commit_best_branch(branches)
 
     def copy(self):
-        return Prover(self.proof.copy(), self.seen)
+        return Prover(self.proof.copy(), self.seen, self.deadline)
 
     def _enter_state(self):
         proof = self.proof
@@ -622,15 +637,24 @@ class Processor:
         return Proof(seq, context)
 
 
-def prove(premises, conclusion):
+def prove(premises, conclusion, timeout=3):
     if not is_valid(premises, conclusion):
         raise ProverError("Invalid argument, no proof exists.")
+
     seq = [_Line(p, "PR", ()) for p in premises]
     _proof = _Proof(seq, conclusion)
-    p = Prover(_proof)
+    p = Prover(_proof, deadline=time.monotonic() + timeout)
 
-    if not p.prove():
-        raise ProverError("Argument is valid, but no proof was found.")
+    try:
+        proved = p.prove(complete=True)
+    except TimeoutError:
+        proved = False
+
+    if not proved:
+        _proof = _Proof(seq, conclusion)
+        p = Prover(_proof)
+        if not p.prove(complete=False):
+            raise ProverError("Argument is valid, but no proof was found.")
 
     problem = Problem(TFL, premises, conclusion)
     proof = Processor.process(_proof)
