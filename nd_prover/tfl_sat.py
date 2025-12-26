@@ -35,39 +35,27 @@ def evaluate(formula, model):
             return False
 
 
-def is_valid(premises, conclusion):
+def countermodel(premises, conclusion):
     all_vars = set()
     for premise in premises:
         all_vars |= prop_vars(premise)
     all_vars |= prop_vars(conclusion)
-    
-    if not all_vars:
-        empty_model = {}
-        all_premises_true = True
-        for premise in premises:
-            if not evaluate(premise, empty_model):
-                all_premises_true = False
-                break
-        if all_premises_true:
-            return evaluate(conclusion, empty_model)
-        return True
-    
+
     sorted_vars = sorted(all_vars)
     n = len(sorted_vars)
-    
-    for i in range(2 ** n):
-        model = {}
-        for j, var in enumerate(sorted_vars):
-            model[var] = bool(i & (1 << (n - 1 - j)))
-        
-        all_premises_true = True
-        for premise in premises:
-            if not evaluate(premise, model):
-                all_premises_true = False
-                break
-        
-        if all_premises_true:
-            if not evaluate(conclusion, model):
-                return False
 
-    return True
+    for i in range(2 ** n):
+        model = {
+            var: bool(i & (1 << (n - 1 - j))) 
+            for j, var in enumerate(sorted_vars)
+        }
+
+        if all(evaluate(p, model) for p in premises):
+            if not evaluate(conclusion, model):
+                return model
+
+    return None
+
+
+def is_valid(premises, conclusion):
+    return countermodel(premises, conclusion) is None

@@ -638,8 +638,10 @@ class Processor:
 
 
 def prove(premises, conclusion, timeout=3):
-    if not is_valid(premises, conclusion):
-        raise ProverError("Invalid argument, no proof exists.")
+    cm = countermodel(premises, conclusion)
+    if cm is not None:
+        cm_str = "\n".join(f"{k} : {v}" for k, v in sorted(cm.items()))
+        raise ProverError(f"Invalid argument. Countermodel:\n\n{cm_str}")
 
     seq = [_Line(p, "PR", ()) for p in premises]
     _proof = _Proof(seq, conclusion)
