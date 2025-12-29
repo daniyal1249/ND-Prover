@@ -177,9 +177,9 @@ export function initProofUI(state, renderProof) {
       resultsBox.textContent = 'Generating proof...';
 
       try {
-        // Create an AbortController for timeout handling (60 seconds)
+        // Create an AbortController for timeout handling (10 seconds)
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 60000);
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
 
         let response;
         try {
