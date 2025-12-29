@@ -84,7 +84,7 @@ def strip_parens(s):
 
 def find_main_connective(s, symbol):
     depth = 0
-    for i in range(len(s) - 1, -1, -1):
+    for i in range(len(s)):
         if s[i] == ")":
             depth += 1
         elif s[i] == "(":
@@ -112,7 +112,7 @@ def split_args(s):
 
 def parse_args_from_parens(s, start_idx, error_context):
     if s[start_idx] != "(":
-        raise ParsingError(f'Missing "(" in {error_context}: "{s}".')
+        raise ParsingError(f'Missing "(" in {error_context} application: "{s}".')
     
     depth, i = 1, start_idx + 1
     while i < len(s) and depth > 0:
@@ -123,13 +123,13 @@ def parse_args_from_parens(s, start_idx, error_context):
         i += 1
     
     if depth != 0:
-        raise ParsingError(f'Missing ")" in {error_context}: "{s}".')
+        raise ParsingError(f'Missing ")" in {error_context} application: "{s}".')
     args_str = s[start_idx + 1:i - 1]
     return args_str, i
 
 
 def parse_term(t):
-    t = t.strip()
+    t = strip_parens(t)
     
     # Variables
     if len(t) == 1 and t in Var.names:
@@ -138,19 +138,16 @@ def parse_term(t):
     # Functions
     if t and t[0] in Func.names:
         name = t[0]
-        # Check if there are parentheses
         if len(t) == 1:
             return Func(name, ())
-        elif t[1] == "(":
-            args_str, end_idx = parse_args_from_parens(t, 1, "term")
-            if end_idx != len(t):
-                raise ParsingError(f'Unexpected trailing characters in "{t}".')
-            args = ()
-            if args_str.strip():
-                args = tuple(parse_term(arg) for arg in split_args(args_str))
-            return Func(name, args)
-        else:
-            raise ParsingError(f'Function "{t}" is not well-formed.')
+
+        args_str, end_idx = parse_args_from_parens(t, 1, "function")
+        if end_idx != len(t):
+            raise ParsingError(f'Unexpected trailing characters in "{t}".')
+        args = ()
+        if args_str.strip():
+            args = tuple(parse_term(arg) for arg in split_args(args_str))
+        return Func(name, args)
     
     raise ParsingError(f'Term "{t}" is not well-formed.')
 
@@ -202,17 +199,16 @@ def _parse_formula(f):
     # Predicates
     if f and f[0].isalpha() and f[0].isupper():
         name = f[0]
-        # Check if there are parentheses
         if len(f) == 1:
             return Pred(name, ())
-        elif f[1] == "(":
-            args_str, end_idx = parse_args_from_parens(f, 1, "predicate")
-            if end_idx != len(f):
-                raise ParsingError(f'Unexpected trailing characters in "{f}".')
-            args = ()
-            if args_str.strip():
-                args = tuple(parse_term(arg) for arg in split_args(args_str))
-            return Pred(name, args)
+
+        args_str, end_idx = parse_args_from_parens(f, 1, "predicate")
+        if end_idx != len(f):
+            raise ParsingError(f'Unexpected trailing characters in "{f}".')
+        args = ()
+        if args_str.strip():
+            args = tuple(parse_term(arg) for arg in split_args(args_str))
+        return Pred(name, args)
 
     raise ParsingError(f'Formula "{f}" is not well-formed.')
 

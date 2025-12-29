@@ -35,7 +35,7 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/daniyal1249/nd-prover"
+Homepage = "https://ndprover.org"
 Repository = "https://github.com/daniyal1249/nd-prover"
 
 [project.scripts]
