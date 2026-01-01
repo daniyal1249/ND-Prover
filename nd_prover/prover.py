@@ -249,29 +249,41 @@ class Eliminator:
         proof = prover.proof
         goal = proof.goal
         branches = []
-        n = len(proof.seq)
 
         for obj in proof.seq:
             if not (obj.is_line() and isinstance(obj.formula, Or)):
                 continue
             disjunct1, disjunct2 = obj.formula.left, obj.formula.right
+            objs = []
 
-            assumption1 = _Line(disjunct1, "AS", ())
-            subproof1 = _Proof(proof.seq + [assumption1], goal)
-            p1 = Prover(subproof1, prover.seen.copy(), prover.deadline)
-            if not p1.prove(complete):
-                continue
-            subproof1.seq = subproof1.seq[n:]
+            subproof1 = find_subproof(proof.seq, disjunct1, goal)
+            found1 = subproof1 is not None
 
-            assumption2 = _Line(disjunct2, "AS", ())
-            subproof2 = _Proof(proof.seq + [subproof1, assumption2], goal)
-            p2 = Prover(subproof2, prover.seen.copy(), prover.deadline)
-            if not p2.prove(complete):
-                continue
-            subproof2.seq = subproof2.seq[n + 1:]
+            if not found1:
+                assumption1 = _Line(disjunct1, "AS", ())
+                subproof1 = _Proof(proof.seq + [assumption1], goal)
+                p1 = Prover(subproof1, prover.seen.copy(), prover.deadline)
+                if not p1.prove(complete):
+                    continue
+                subproof1.seq = subproof1.seq[len(proof.seq):]
+                objs.append(subproof1)
+
+            seq = proof.seq + objs
+            subproof2 = find_subproof(seq, disjunct2, goal)
+            found2 = subproof2 is not None
+
+            if not found2:
+                assumption2 = _Line(disjunct2, "AS", ())
+                subproof2 = _Proof(seq + [assumption2], goal)
+                p2 = Prover(subproof2, prover.seen.copy(), prover.deadline)
+                if not p2.prove(complete):
+                    continue
+                subproof2.seq = subproof2.seq[len(seq):]
+                objs.append(subproof2)
 
             line = _Line(goal, "∨E", (obj.id, subproof1.id, subproof2.id))
-            branch = _Proof(proof.seq + [subproof1, subproof2, line], goal)
+            objs.append(line)
+            branch = _Proof(proof.seq + objs, goal)
             branches.append(branch)
             if not complete:
                 break
@@ -289,6 +301,7 @@ class Eliminator:
             if not (obj.is_line() and isinstance(obj.formula, Not)):
                 continue
             branch = _Proof(proof.seq, obj.formula.inner)
+            # FIX: prover.seen should be copied (inefficient)
             p = Prover(branch, prover.seen, prover.deadline)
             if not p.prove(complete):
                 continue
@@ -312,6 +325,7 @@ class Eliminator:
 
             if is_valid(proof.assumptions, obj.formula.left):
                 branch = _Proof(proof.seq, obj.formula.left)
+                # FIX: prover.seen should be copied (slightly inefficient)
                 p = Prover(branch, prover.seen, prover.deadline)
                 if p.prove(complete):
                     branch.pop_reiteration()
@@ -343,6 +357,7 @@ class Eliminator:
                 branch.pop_reiteration()
                 if branch.seq != proof.seq:
                     branches.append(branch)
+                    # FIX: consider always breaking
                     if not complete:
                         break
 
@@ -371,16 +386,20 @@ class Introducer:
     @staticmethod
     def NotI(prover, complete):
         proof = prover.proof
-        assumption = _Line(proof.goal.inner, "AS", ())
-        subproof = _Proof(proof.seq + [assumption], Bot())
-        p = Prover(subproof, prover.seen, prover.deadline)
-        if not p.prove(complete):
-            return False
-        
-        n = len(proof.seq)
-        subproof.seq = subproof.seq[n:]
+        subproof = find_subproof(proof.seq, proof.goal.inner, Bot())
+        found = subproof is not None
+
+        if not found:
+            assumption = _Line(proof.goal.inner, "AS", ())
+            subproof = _Proof(proof.seq + [assumption], Bot())
+            p = Prover(subproof, prover.seen, prover.deadline)
+            if not p.prove(complete):
+                return False
+            subproof.seq = subproof.seq[len(proof.seq):]
+
         line = _Line(proof.goal, "¬I", (subproof.id,))
-        proof.add(subproof, line)
+        objs = (line,) if found else (subproof, line)
+        proof.add(*objs)
         return True
 
     @staticmethod
@@ -426,6 +445,7 @@ class Introducer:
         for disjunct in (left, right):
             if is_valid(proof.assumptions, disjunct):
                 branch = _Proof(proof.seq, disjunct)
+                # FIX: prover.seen should be copied (inefficient)
                 p = Prover(branch, prover.seen, prover.deadline)
                 if not p.prove(complete):
                     continue
@@ -442,40 +462,57 @@ class Introducer:
     @staticmethod
     def ImpI(prover, complete):
         proof = prover.proof
-        assumption = _Line(proof.goal.left, "AS", ())
-        subproof = _Proof(proof.seq + [assumption], proof.goal.right)
-        p = Prover(subproof, prover.seen, prover.deadline)
-        if not p.prove(complete):
-            return False
-        
-        n = len(proof.seq)
-        subproof.seq = subproof.seq[n:]
+        left, right = proof.goal.left, proof.goal.right
+        subproof = find_subproof(proof.seq, left, right)
+        found = subproof is not None
+
+        if not found:
+            assumption = _Line(left, "AS", ())
+            subproof = _Proof(proof.seq + [assumption], right)
+            p = Prover(subproof, prover.seen, prover.deadline)
+            if not p.prove(complete):
+                return False
+            subproof.seq = subproof.seq[len(proof.seq):]
+
         line = _Line(proof.goal, "→I", (subproof.id,))
-        proof.add(subproof, line)
+        objs = (line,) if found else (subproof, line)
+        proof.add(*objs)
         return True
 
     @staticmethod
     def IffI(prover, complete):
         proof = prover.proof
         left, right = proof.goal.left, proof.goal.right
-        n = len(proof.seq)
+        objs = []
 
-        assumption1 = _Line(left, "AS", ())
-        subproof1 = _Proof(proof.seq + [assumption1], right)
-        p1 = Prover(subproof1, prover.seen.copy(), prover.deadline)
-        if not p1.prove(complete):
-            return False
-        subproof1.seq = subproof1.seq[n:]
+        subproof1 = find_subproof(proof.seq, left, right)
+        found1 = subproof1 is not None
 
-        assumption2 = _Line(right, "AS", ())
-        subproof2 = _Proof(proof.seq + [subproof1, assumption2], left)
-        p2 = Prover(subproof2, prover.seen.copy(), prover.deadline)
-        if not p2.prove(complete):
-            return False
-        subproof2.seq = subproof2.seq[n + 1:]
+        if not found1:
+            assumption1 = _Line(left, "AS", ())
+            subproof1 = _Proof(proof.seq + [assumption1], right)
+            p1 = Prover(subproof1, prover.seen.copy(), prover.deadline)
+            if not p1.prove(complete):
+                return False
+            subproof1.seq = subproof1.seq[len(proof.seq):]
+            objs.append(subproof1)
+
+        seq = proof.seq + objs
+        subproof2 = find_subproof(seq, right, left)
+        found2 = subproof2 is not None
+
+        if not found2:
+            assumption2 = _Line(right, "AS", ())
+            subproof2 = _Proof(seq + [assumption2], left)
+            p2 = Prover(subproof2, prover.seen.copy(), prover.deadline)
+            if not p2.prove(complete):
+                return False
+            subproof2.seq = subproof2.seq[len(seq):]
+            objs.append(subproof2)
 
         line = _Line(proof.goal, "↔I", (subproof1.id, subproof2.id))
-        proof.add(subproof1, subproof2, line)
+        objs.append(line)
+        proof.add(*objs)
         return True
 
     @staticmethod
@@ -483,17 +520,20 @@ class Introducer:
         proof = prover.proof
         if is_valid([proof.goal], Bot()):
             return False
+        subproof = find_subproof(proof.seq, Not(proof.goal), Bot())
+        found = subproof is not None
 
-        assumption = _Line(Not(proof.goal), "AS", ())
-        subproof = _Proof(proof.seq + [assumption], Bot())
-        p = Prover(subproof, prover.seen, prover.deadline)
-        if not p.prove(complete):
-            return False
+        if not found:
+            assumption = _Line(Not(proof.goal), "AS", ())
+            subproof = _Proof(proof.seq + [assumption], Bot())
+            p = Prover(subproof, prover.seen, prover.deadline)
+            if not p.prove(complete):
+                return False
+            subproof.seq = subproof.seq[len(proof.seq):]
 
-        n = len(proof.seq)
-        subproof.seq = subproof.seq[n:]
         line = _Line(proof.goal, "IP", (subproof.id,))
-        proof.add(subproof, line)
+        objs = (line,) if found else (subproof, line)
+        proof.add(*objs)
         return True
 
 
@@ -635,6 +675,18 @@ class Processor:
             idx = new_idx
 
         return Proof(seq, context)
+
+
+def find_subproof(seq, assumption, conclusion):
+    for obj in seq:
+        if obj.is_line() or len(obj.seq) == 1:
+            continue
+        start, end = obj.seq[0], obj.seq[-1]
+        if not end.is_line():
+            continue
+        if start.formula == assumption and end.formula == conclusion:
+            return obj
+    return None
 
 
 def prove(premises, conclusion, timeout=3):
