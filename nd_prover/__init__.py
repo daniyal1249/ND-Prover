@@ -6,19 +6,15 @@ __description__ = "Natural deduction proof generator & checker"
 __url__ = "https://github.com/daniyal1249/nd-prover"
 
 
+from .checker import (
+    InferenceError, ProofEditError, Rule, Justification, Rules, TFL, FOL, 
+    MLK, MLT, MLS4, MLS5, FOMLK, FOMLT, FOMLS4, FOMLS5, ProofObject, 
+    Line, Proof, Problem, verify_arity, assumption_constants
+)
 from .cli import (
     logics, parse_and_verify_formula, parse_and_verify_premises, 
     select_logic, input_premises, input_conclusion, create_problem, 
     select_edit, input_line, input_assumption, perform_edit, main
-)
-from .logic import (
-    InferenceError, ProofEditError, Metavar, Formula, Bot, Not, And, Or, 
-    Imp, Iff, Term, Func, Var, Pred, Eq, Forall, Exists, Box, Dia, 
-    BoxMarker, Rule, Justification, Rules, verify_arity, 
-    assumption_constants, TFL, FOL, MLK, MLT, MLS4, MLS5, FOMLK, FOMLT, 
-    FOMLS4, FOMLS5, is_tfl_formula, is_fol_formula, is_fol_sentence, 
-    is_ml_formula, atomic_terms, constants, free_vars, sub_term, 
-    ProofObject, Line, Proof, Problem
 )
 from .parser import (
     ParsingError, Symbols, split_line, strip_parens, find_main_connective, 
@@ -28,9 +24,15 @@ from .parser import (
 )
 from .prover import (
     ProverError, _ProofObject, _Line, _Proof, Eliminator, Introducer, 
-    Prover, Processor, prove
+    Prover, Processor, find_subproof, prove
 )
-from .tfl_sat import prop_vars, evaluate, is_valid
+from .syntax import (
+    Metavar, Formula, Bot, Not, And, Or, Imp, Iff, Term, Func, Var, Pred, 
+    Eq, Forall, Exists, Box, Dia, BoxMarker, is_tfl_formula, 
+    is_fol_formula, is_fol_sentence, is_ml_formula, atomic_terms, 
+    constants, free_vars, sub_term
+)
+from .tfl_sat import prop_vars, evaluate, countermodel, is_valid
 
 
 __all__ = [name for name in globals() if not name.startswith("__")]

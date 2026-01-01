@@ -1,6 +1,6 @@
 import re
 
-from .logic import *
+from .checker import *
 
 
 class ParsingError(Exception):

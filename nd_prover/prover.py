@@ -1,6 +1,6 @@
-from dataclasses import dataclass
 import time
 
+from .checker import *
 from .tfl_sat import *
 
 

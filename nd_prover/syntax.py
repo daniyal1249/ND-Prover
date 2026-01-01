@@ -1,0 +1,265 @@
+from dataclasses import dataclass, field
+
+
+@dataclass
+class Metavar:
+    domain_pred: object = None
+    id: int = field(init=False)
+    value: object = field(default=None, init=False)
+
+    count = 0
+
+    def __post_init__(self):
+        type(self).count += 1
+        self.id = type(self).count
+
+    def __str__(self):
+        return f"?m{self.id}"
+
+    def __eq__(self, value):
+        # Check safety
+        p = self.domain_pred
+        if p and not p(value):
+            return False
+        if self.value is None:
+            self.value = value
+            return True
+        return self.value == value
+
+
+class Formula:
+
+    def __str__(self):
+        s = self._str()
+        if s[0] == "(" and s[-1] == ")":
+            return s[1:-1]
+        return s
+
+# TFL
+@dataclass(frozen=True)
+class Bot(Formula):
+
+    def _str(self):
+        return "⊥"
+
+@dataclass(frozen=True)
+class Not(Formula):
+    inner: Formula
+
+    def _str(self):
+        return f"¬{self.inner._str()}"
+
+@dataclass(frozen=True)
+class And(Formula):
+    left: Formula
+    right: Formula
+
+    def _str(self):
+        return f"({self.left._str()} ∧ {self.right._str()})"
+
+@dataclass(frozen=True)
+class Or(Formula):
+    left: Formula
+    right: Formula
+
+    def _str(self):
+        return f"({self.left._str()} ∨ {self.right._str()})"
+
+@dataclass(frozen=True)
+class Imp(Formula):
+    left: Formula
+    right: Formula
+
+    def _str(self):
+        return f"({self.left._str()} → {self.right._str()})"
+
+@dataclass(frozen=True)
+class Iff(Formula):
+    left: Formula
+    right: Formula
+
+    def _str(self):
+        return f"({self.left._str()} ↔ {self.right._str()})"
+
+# FOL
+class Term:
+
+    def __str__(self):
+        return self._str()
+
+@dataclass(frozen=True)
+class Func(Term):
+    name: str
+    args: tuple[Term]
+
+    names = "abcdefghijklmnopqr"
+
+    def _str(self):
+        if not self.args:
+            return self.name
+        return f"{self.name}({', '.join(str(t) for t in self.args)})"
+
+@dataclass(frozen=True)
+class Var(Term):
+    name: str
+
+    names = "stuvwxyz"
+
+    def _str(self):
+        return self.name
+
+@dataclass(frozen=True)
+class Pred(Formula):
+    name: str
+    args: tuple[Term]
+
+    def _str(self):
+        if not self.args:
+            return self.name
+        return f"{self.name}({', '.join(str(t) for t in self.args)})"
+
+@dataclass(frozen=True)
+class Eq(Formula):
+    left: Term
+    right: Term
+
+    def _str(self):
+        return f"{self.left} = {self.right}"
+
+@dataclass(frozen=True)
+class Forall(Formula):
+    var: Var
+    inner: Formula
+
+    def _str(self):
+        return f"∀{self.var} {self.inner._str()}"
+
+@dataclass(frozen=True)
+class Exists(Formula):
+    var: Var
+    inner: Formula
+
+    def _str(self):
+        return f"∃{self.var} {self.inner._str()}"
+
+# ML
+@dataclass(frozen=True)
+class Box(Formula):
+    inner: Formula
+
+    def _str(self):
+        return f"□{self.inner._str()}"
+
+@dataclass(frozen=True)
+class Dia(Formula):
+    inner: Formula
+
+    def _str(self):
+        return f"♢{self.inner._str()}"
+
+@dataclass(frozen=True)
+class BoxMarker:
+
+    def __str__(self):
+        return "□"
+
+
+def is_tfl_formula(formula):
+    match formula:
+        case Pred(_, args):
+            return not args
+        case Bot():
+            return True
+        case Not(a):
+            return is_tfl_formula(a)
+        case And(a, b) | Or(a, b) | Imp(a, b) | Iff(a, b):
+            return is_tfl_formula(a) and is_tfl_formula(b)
+        case _:
+            return False
+
+
+def is_fol_formula(formula):
+    match formula:
+        case Pred() | Bot() | Eq():
+            return True
+        case Not(a) | Forall(_, a) | Exists(_, a):
+            return is_fol_formula(a)
+        case And(a, b) | Or(a, b) | Imp(a, b) | Iff(a, b):
+            return is_fol_formula(a) and is_fol_formula(b)
+        case _:
+            return False
+
+
+def is_fol_sentence(formula):
+    return is_fol_formula(formula) and not free_vars(formula)
+
+
+def is_ml_formula(formula):
+    match formula:
+        case Pred(_, args):
+            return not args
+        case Bot():
+            return True
+        case Not(a) | Box(a) | Dia(a):
+            return is_ml_formula(a)
+        case And(a, b) | Or(a, b) | Imp(a, b) | Iff(a, b):
+            return is_ml_formula(a) and is_ml_formula(b)
+        case _:
+            return False
+
+
+def atomic_terms(formula, free):
+    match formula:
+        case Not(a) | Box(a) | Dia(a):
+            return atomic_terms(a, free)
+        case And(a, b) | Or(a, b) | Imp(a, b) | Iff(a, b) | Eq(a, b):
+            return atomic_terms(a, free) | atomic_terms(b, free)
+        case Func(_, args) as f:
+            if not args:
+                return {f}
+            return set().union(*(atomic_terms(t, free) for t in args))
+        case Var() as v:
+            return {v}
+        case Pred(_, args):
+            return set().union(*(atomic_terms(t, free) for t in args))
+        case Forall(v, a) | Exists(v, a):
+            return atomic_terms(a, free) - ({v} if free else set())
+        case _:
+            return set()
+
+
+def constants(formula):
+    all_terms = atomic_terms(formula, free=False)
+    return {t for t in all_terms if isinstance(t, Func)}
+
+
+def free_vars(formula):
+    free_terms = atomic_terms(formula, free=True)
+    return {t for t in free_terms if isinstance(t, Var)}
+
+
+def sub_term(formula, term, gen, ignore=lambda v: False):
+    match formula:
+        case Bot():
+            return Bot()
+        case Not(a) | Box(a) | Dia(a):
+            a = sub_term(a, term, gen, ignore)
+            return type(formula)(a)
+        case And(a, b) | Or(a, b) | Imp(a, b) | Iff(a, b) | Eq(a, b):
+            a = sub_term(a, term, gen, ignore)
+            b = sub_term(b, term, gen, ignore)
+            return type(formula)(a, b)
+        case Func(s, args) as f:
+            if f == term:
+                return gen()
+            args = tuple(sub_term(t, term, gen, ignore) for t in args)
+            return Func(s, args)
+        case Var() as v:
+            return gen() if v == term else v
+        case Pred(s, args):
+            args = tuple(sub_term(t, term, gen, ignore) for t in args)
+            return Pred(s, args)
+        case Forall(v, a) | Exists(v, a):
+            if not (v == term or ignore(v)):
+                a = sub_term(a, term, gen, ignore)
+            return type(formula)(v, a)

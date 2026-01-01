@@ -1,4 +1,4 @@
-from .logic import *
+from .syntax import *
 
 
 def prop_vars(formula):
