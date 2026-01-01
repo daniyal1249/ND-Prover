@@ -111,7 +111,6 @@
   background: transparent;
   font-family: var(--math-font);
   font-size: var(--font-size);
-  line-height: var(--line-height);
   min-height: var(--input-min-height);
   box-sizing: border-box;
   color: inherit;
@@ -176,7 +175,6 @@
   background: transparent;
   font-family: var(--math-font);
   font-size: var(--font-size);
-  line-height: var(--line-height);
   padding: var(--proof-row-padding-vertical) var(--spacing-sm);
   min-height: var(--input-min-height);
   box-sizing: border-box;
@@ -191,6 +189,15 @@
   opacity: 1;
   cursor: default;
   pointer-events: none;
+}
+
+/* Prevent vertical scrolling/jitter inside the proof editor */
+.formula-input,
+.justification-input {
+  overflow-y: hidden;
+  line-height: calc(
+    var(--proof-row-min-height) - (2 * var(--proof-row-padding-vertical))
+  );
 }
 
 /* === Line Actions === */
