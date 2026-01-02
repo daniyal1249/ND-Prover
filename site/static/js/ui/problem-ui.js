@@ -10,42 +10,22 @@
 import { processFormula } from '../utils/input-processing.js';
 import { addLine } from '../proof/line-operations.js';
 import { updateGenerateButtonVisibility } from './proof-ui.js';
+import { getLogicValue } from '../utils/logic-mapping.js';
+import { renderProblemSummary, splitPremisesTopLevel } from './problem-summary.js';
+import { scheduleUrlUpdate } from '../utils/url-state.js';
 
 /**
  * Commits an input box value to state, processing the text.
  * 
  * @param {HTMLElement} el - Input element
- * @param {string} target - Target property name in state.problem
+ * @param {string} target - Target property name in state.problemDraft
  * @param {Object} state - Application state object
  */
 export function commitInputBox(el, target, state) {
   const raw = el.value || '';
   const processed = processFormula(raw);
   el.value = processed;
-  state.problem[target] = processed;
-}
-
-/**
- * Maps a base logic to its first-order version if the checkbox is checked.
- * 
- * @param {string} baseLogic - Base logic value (TFL, MLK, MLT, MLS4, MLS5)
- * @param {boolean} isFirstOrder - Whether first-order checkbox is checked
- * @returns {string} Logic value to use
- */
-function getLogicValue(baseLogic, isFirstOrder) {
-  if (!isFirstOrder) {
-    return baseLogic;
-  }
-  
-  const firstOrderMap = {
-    'TFL': 'FOL',
-    'MLK': 'FOMLK',
-    'MLT': 'FOMLT',
-    'MLS4': 'FOMLS4',
-    'MLS5': 'FOMLS5'
-  };
-  
-  return firstOrderMap[baseLogic] || baseLogic;
+  state.problemDraft[target] = processed;
 }
 
 /**
@@ -79,14 +59,21 @@ export function initProblemUI(state, renderProof) {
   // Input box blur handlers
   premisesBox.addEventListener('blur', () => {
     commitInputBox(premisesBox, 'premisesText', state);
+    scheduleUrlUpdate();
   });
   
   conclusionBox.addEventListener('blur', () => {
     commitInputBox(conclusionBox, 'conclusionText', state);
+    scheduleUrlUpdate();
   });
   
   // Logic select and first-order checkbox change handlers
   function updateLogic() {
+    const baseLogic = logicSelect.value;
+    const isFirstOrder = firstOrderCheckbox.checked;
+    state.problemDraft.logic = getLogicValue(baseLogic, isFirstOrder);
+    updateGenerateButtonVisibility(state);
+    scheduleUrlUpdate();
   }
   
   logicSelect.addEventListener('change', updateLogic);
@@ -101,11 +88,11 @@ export function initProblemUI(state, renderProof) {
     const baseLogic = logicSelect.value;
     const isFirstOrder = firstOrderCheckbox.checked;
     const logicLabel = getLogicValue(baseLogic, isFirstOrder);
-    state.problem.logic = logicLabel;
-    const premisesText = state.problem.premisesText || '';
-    const conclusionText = state.problem.conclusionText || '';
+    state.problemDraft.logic = logicLabel;
+    const premisesText = state.problemDraft.premisesText || '';
+    const conclusionText = state.problemDraft.conclusionText || '';
 
-    // Validate problem with backend before creating proof
+    // Validate problem before creating a proof.
     const payload = {
       logic: logicLabel,
       premisesText,
@@ -126,11 +113,12 @@ export function initProblemUI(state, renderProof) {
       const message = data.message || '';
 
       if (!response.ok || !data.ok) {
-        // Hide the proof pane if visible
+        // Keep the proof pane hidden on validation failure.
         const proofPane = document.getElementById('proof-pane');
         if (proofPane) {
           proofPane.classList.add('hidden');
         }
+        scheduleUrlUpdate();
 
         // Show error in results pane directly under problem-setup
         if (resultsSection && resultsBox) {
@@ -143,11 +131,12 @@ export function initProblemUI(state, renderProof) {
         return;
       }
     } catch (error) {
-      // Network or server error; treat as validation failure
+      // Network/server error; treat as validation failure.
       const proofPane = document.getElementById('proof-pane');
       if (proofPane) {
         proofPane.classList.add('hidden');
       }
+      scheduleUrlUpdate();
       if (resultsSection && resultsBox) {
         resultsSection.classList.remove('hidden');
         resultsSection.classList.remove('results-pane--success');
@@ -166,25 +155,25 @@ export function initProblemUI(state, renderProof) {
       resultsBox.classList.remove('results--show');
     }
 
-    // Reset proof
+    // Reset proof editor state and commit the problem to the proof pane.
     state.lines = [];
     state.nextId = 1;
+    state.proofProblem = {
+      logic: logicLabel,
+      premisesText,
+      conclusionText
+    };
 
-    // Split premises on ; and add as PR lines
-    const parts = premisesText.split(/;/).map((s) => s.trim()).filter(Boolean);
+    // Split premises on commas/semicolons at top level and add as PR lines
+    const parts = splitPremisesTopLevel(premisesText);
 
-    // Build and show the summary line with mixed fonts
-    const premStr = parts.join(', ');
-    const conclStr = conclusionText || '';
-    const divider = ' ∴ ';
-    const mathContent = premStr ? (premStr + divider + conclStr) : (divider + conclStr);
-    const problemSummary = document.getElementById('problem-summary');
-    if (problemSummary) {
-      // Split text: regular font before colon, math font after
-      problemSummary.innerHTML =
-        `Prove the following argument in ${logicLabel}:&nbsp;&nbsp;` +
-        `<span class="math-content">${mathContent}</span>`;
-    }
+    // Proof-pane summary.
+    renderProblemSummary(
+      document.getElementById('problem-summary'),
+      state.proofProblem.logic,
+      state.proofProblem.premisesText,
+      state.proofProblem.conclusionText
+    );
 
     // Create premise lines
     for (const p of parts) {
@@ -203,6 +192,7 @@ export function initProblemUI(state, renderProof) {
     updateGenerateButtonVisibility(state);
 
     renderProof();
+    scheduleUrlUpdate();
   });
 
   return {
@@ -212,4 +202,3 @@ export function initProblemUI(state, renderProof) {
     conclusionBox
   };
 }
-

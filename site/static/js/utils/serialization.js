@@ -81,10 +81,11 @@ function computeLineKind(lines, index, line) {
  * @returns {Object} JSON-serializable proof payload
  */
 export function serializeProofState(state) {
+  const problem = state.proofProblem || state.problemDraft || {};
   return {
-    logic: state.problem.logic,
-    premisesText: state.problem.premisesText,
-    conclusionText: state.problem.conclusionText,
+    logic: problem.logic,
+    premisesText: problem.premisesText,
+    conclusionText: problem.conclusionText,
     lines: state.lines.map((line, index) => {
       const kind = computeLineKind(state.lines, index, line);
       const isAssumptionLike = kind === 'assumption' || kind === 'end_and_begin';

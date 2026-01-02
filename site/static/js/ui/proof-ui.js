@@ -10,6 +10,7 @@ import { addLine } from '../proof/line-operations.js';
 import { focusLineAt } from '../proof/focus-management.js';
 import { serializeProofState } from '../utils/serialization.js';
 import { processFormula, processJustification } from '../utils/input-processing.js';
+import { scheduleUrlUpdate } from '../utils/url-state.js';
 
 /**
  * Updates the visibility of the GENERATE button based on the selected logic.
@@ -23,7 +24,10 @@ export function updateGenerateButtonVisibility(state) {
     return;
   }
 
-  const isTFL = state.problem.logic === 'TFL';
+  const logic = (state.proofProblem && state.proofProblem.logic)
+    ? state.proofProblem.logic
+    : (state.problemDraft ? state.problemDraft.logic : 'TFL');
+  const isTFL = logic === 'TFL';
   if (isTFL) {
     btnGenerate.classList.remove('hidden');
   } else {
@@ -55,8 +59,7 @@ function deserializeProofLines(state, proofLines) {
     // Process and set the formula text
     line.text = processFormula(lineData.text || '');
     
-    // Process and set the justification text
-    // PR and AS are fixed rule names and should not be symbolized
+    // PR/AS are fixed and should not be symbolized.
     const justText = lineData.justText || '';
     if (justText === 'PR' || justText === 'AS') {
       line.justText = justText;
@@ -82,6 +85,7 @@ export function initProofUI(state, renderProof) {
     addLine(state, 0, null, false, false); // First top-level line
     renderProof();
     focusLineAt(0, 'formula-input', state);
+    scheduleUrlUpdate();
   });
 
   // Begin subproof button (first-line only)
@@ -93,6 +97,7 @@ export function initProofUI(state, renderProof) {
     addLine(state, 1, null, true, false); // First assumption at indent 1
     renderProof();
     focusLineAt(0, 'formula-input', state);
+    scheduleUrlUpdate();
   });
 
   // Results section elements (shared by both CHECK PROOF and GENERATE buttons)
@@ -169,9 +174,9 @@ export function initProofUI(state, renderProof) {
       resultsBox.classList.add('results--show');
 
       const payload = {
-        logic: state.problem.logic,
-        premisesText: state.problem.premisesText,
-        conclusionText: state.problem.conclusionText
+        logic: state.proofProblem ? state.proofProblem.logic : (state.problemDraft ? state.problemDraft.logic : 'TFL'),
+        premisesText: state.proofProblem ? state.proofProblem.premisesText : (state.problemDraft ? state.problemDraft.premisesText : ''),
+        conclusionText: state.proofProblem ? state.proofProblem.conclusionText : (state.problemDraft ? state.problemDraft.conclusionText : '')
       };
 
       resultsBox.textContent = 'Generating proof...';
@@ -220,6 +225,7 @@ export function initProofUI(state, renderProof) {
         if (data.lines && Array.isArray(data.lines)) {
           deserializeProofLines(state, data.lines);
           renderProof();
+          scheduleUrlUpdate();
           
           if (resultsSection) {
             resultsSection.classList.remove('results-pane--error');
@@ -246,4 +252,3 @@ export function initProofUI(state, renderProof) {
   // Initialize GENERATE button visibility
   updateGenerateButtonVisibility(state);
 }
-

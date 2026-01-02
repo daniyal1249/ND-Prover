@@ -33,6 +33,7 @@ import {
 } from './ui/keyboard-shortcuts.js';
 import { initProblemUI } from './ui/problem-ui.js';
 import { initProofUI } from './ui/proof-ui.js';
+import { initUrlState, scheduleUrlUpdate } from './utils/url-state.js';
 
 /**
  * Creates a bound render function that can be passed around.
@@ -95,6 +96,7 @@ function createRenderFunction() {
     // Update dimensions and toolbar
     updateProofDimensions(state);
     updateToolbarVisibility(toolbar, state);
+    scheduleUrlUpdate();
   };
   
   const wrappedAddLineAfterSame = (i) => {
@@ -155,6 +157,7 @@ function createRenderFunction() {
     
     // Focus new line
     focusLineAt(newIdx, 'formula-input', state);
+    scheduleUrlUpdate();
   };
   
   const wrappedBeginSubproofBelow = (i) => {
@@ -215,6 +218,7 @@ function createRenderFunction() {
     
     // Focus new line
     focusLineAt(newIdx, 'formula-input', state);
+    scheduleUrlUpdate();
   };
   
   const wrappedEndSubproofAt = (i) => {
@@ -278,6 +282,7 @@ function createRenderFunction() {
     
     // Focus new line
     focusLineAt(newIdx, 'formula-input', state);
+    scheduleUrlUpdate();
   };
   
   const wrappedEndAndBeginAnotherAt = (i) => {
@@ -341,6 +346,7 @@ function createRenderFunction() {
     
     // Focus new line
     focusLineAt(newIdx, 'formula-input', state);
+    scheduleUrlUpdate();
   };
   
   function render() {
@@ -427,6 +433,7 @@ function init() {
   // Initialize UI handlers
   initProblemUI(state, render);
   initProofUI(state, render);
+  initUrlState(state, render, { renderOnInit: false });
 
   window.addEventListener('focus', () => {
     const ae = document.activeElement;
@@ -451,6 +458,8 @@ function init() {
   
   // Initial render (if needed)
   render();
+  // Keep URL in sync with initial committed state (including URL-loaded state).
+  scheduleUrlUpdate();
 }
 
 // Start the application when DOM is ready
@@ -459,4 +468,3 @@ if (document.readyState === 'loading') {
 } else {
   init();
 }
-

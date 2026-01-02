@@ -11,6 +11,7 @@
 import { textWidth, pxVar } from '../utils/text-measurement.js';
 import { processFormula, processJustification } from '../utils/input-processing.js';
 import { commitActiveEditor, focusLineAt } from './focus-management.js';
+import { scheduleUrlUpdate } from '../utils/url-state.js';
 
 /**
  * Computes the required width for the proof formula column based on content.
@@ -225,6 +226,7 @@ function createFormulaCell(line, idx, lineId, state) {
       input.value = processed;
       updateHorizontalBarWidth(cell, processed);
       updateProofDimensions(state);
+      scheduleUrlUpdate();
       return;
     }
     
@@ -236,6 +238,7 @@ function createFormulaCell(line, idx, lineId, state) {
     
     updateHorizontalBarWidth(cell, processed);
     updateProofDimensions(state);
+    scheduleUrlUpdate();
   });
 
   // Note: When clicking on a disabled input, the click event bubbles up to the cell container.
@@ -315,6 +318,7 @@ function createJustificationCell(line, idx, lineId, state) {
     if (state.lines[i].justText === processed) {
       justInput.value = processed;
       updateProofDimensions(state);
+      scheduleUrlUpdate();
       return;
     }
     
@@ -332,6 +336,7 @@ function createJustificationCell(line, idx, lineId, state) {
     );
     
     updateProofDimensions(state);
+    scheduleUrlUpdate();
   });
 
   // Note: When clicking on a disabled input, the click event bubbles up to the cell container.
