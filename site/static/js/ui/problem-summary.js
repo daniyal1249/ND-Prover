@@ -85,11 +85,12 @@ export function renderProblemSummary(
   container.textContent = '';
 
   const prefix = document.createTextNode(
-    `Prove the following argument in ${logicLabel}:  `
+    `Prove the following argument in ${logicLabel}:`
   );
+  const nbsp = document.createTextNode('\u00A0\u00A0');
   const mathSpan = document.createElement('span');
   mathSpan.className = 'math-content';
   mathSpan.textContent = mathContent;
 
-  container.append(prefix, mathSpan);
+  container.append(prefix, nbsp, mathSpan);
 }

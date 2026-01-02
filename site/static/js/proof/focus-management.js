@@ -85,4 +85,3 @@ export function focusLineAt(index, field = 'formula-input', state = null) {
     }
   });
 }
-

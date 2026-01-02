@@ -187,7 +187,7 @@ function createFormulaCell(line, idx, lineId, state) {
   
   // Set padding to fill cell and maintain text position based on indent
   const paddingLeft =
-    `calc(var(--spacing-lg) + ${line.indent} * var(--proof-indent) + ` +
+    `calc(var(--spacing-lg) + ${line.indent} * var(--proof-indent) + ` + 
     `var(--proof-text-gap))`;
   const paddingRight = 'var(--spacing-lg)';
   const paddingTop = 'var(--proof-row-padding-vertical)';
@@ -592,7 +592,7 @@ export function updateLineNumbers(proofRoot, state) {
       activeElement.blur();
     }
   }
-  
+
   // Update each row based on its line ID
   rows.forEach((row) => {
     const lineId = Number(row.dataset.id);
