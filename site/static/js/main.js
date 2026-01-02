@@ -429,11 +429,11 @@ function createRenderFunction() {
 function init() {
   // Create render function
   const render = createRenderFunction();
-  
+
   // Initialize UI handlers
   initProblemUI(state, render);
   initProofUI(state, render);
-  initUrlState(state, render, { renderOnInit: false });
+  const loadedFromUrl = initUrlState(state, render, { renderOnInit: false });
 
   window.addEventListener('focus', () => {
     const ae = document.activeElement;
@@ -455,11 +455,19 @@ function init() {
       }
     }
   });
-  
+
   // Initial render (if needed)
   render();
   // Keep URL in sync with initial committed state (including URL-loaded state).
   scheduleUrlUpdate();
+
+  // If we restored from a URL, re-render once fonts are ready so measurements
+  // (e.g., horizontal bars) use the final font metrics instead of fallback fonts.
+  if (loadedFromUrl && document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => {
+      render();
+    });
+  }
 }
 
 // Start the application when DOM is ready
