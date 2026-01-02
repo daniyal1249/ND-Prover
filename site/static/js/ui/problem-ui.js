@@ -14,6 +14,22 @@ import { getLogicValue } from '../utils/logic-mapping.js';
 import { renderProblemSummary, splitPremisesTopLevel } from './problem-summary.js';
 import { scheduleUrlUpdate } from '../utils/url-state.js';
 
+function hideAndClearProof(state) {
+  const proofPane = document.getElementById('proof-pane');
+  if (proofPane) {
+    proofPane.classList.add('hidden');
+  }
+
+  const summary = document.getElementById('problem-summary');
+  if (summary) {
+    summary.textContent = '';
+  }
+
+  state.lines = [];
+  state.nextId = 1;
+  state.proofProblem = null;
+}
+
 /**
  * Commits an input box value to state, processing the text.
  * 
@@ -113,11 +129,7 @@ export function initProblemUI(state, renderProof) {
       const message = data.message || '';
 
       if (!response.ok || !data.ok) {
-        // Keep the proof pane hidden on validation failure.
-        const proofPane = document.getElementById('proof-pane');
-        if (proofPane) {
-          proofPane.classList.add('hidden');
-        }
+        hideAndClearProof(state);
         scheduleUrlUpdate();
 
         // Show error in results pane directly under problem-setup
@@ -132,10 +144,7 @@ export function initProblemUI(state, renderProof) {
       }
     } catch (error) {
       // Network/server error; treat as validation failure.
-      const proofPane = document.getElementById('proof-pane');
-      if (proofPane) {
-        proofPane.classList.add('hidden');
-      }
+      hideAndClearProof(state);
       scheduleUrlUpdate();
       if (resultsSection && resultsBox) {
         resultsSection.classList.remove('hidden');

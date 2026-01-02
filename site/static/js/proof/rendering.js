@@ -123,7 +123,9 @@ function createHorizontalBar(line) {
   h.style.left = `calc(${line.indent} * var(--proof-indent))`;
   const base = pxVar('--horizontal-bar-length');
   const extra = pxVar('--horizontal-bar-extra-width');
-  const width = line.text ? (textWidth(line.text) + pxVar('--proof-text-gap') + extra) : base;
+  const width = line.text
+    ? (textWidth(line.text) + pxVar('--proof-text-gap') + extra)
+    : base;
   h.style.width = Math.max(base, width) + 'px';
   return h;
 }
@@ -184,7 +186,9 @@ function createFormulaCell(line, idx, lineId, state) {
   input.style.zIndex = '1';
   
   // Set padding to fill cell and maintain text position based on indent
-  const paddingLeft = `calc(var(--spacing-lg) + ${line.indent} * var(--proof-indent) + var(--proof-text-gap))`;
+  const paddingLeft =
+    `calc(var(--spacing-lg) + ${line.indent} * var(--proof-indent) + ` +
+    `var(--proof-text-gap))`;
   const paddingRight = 'var(--spacing-lg)';
   const paddingTop = 'var(--proof-row-padding-vertical)';
   const paddingBottom = 'var(--proof-row-padding-vertical)';
@@ -241,11 +245,12 @@ function createFormulaCell(line, idx, lineId, state) {
     scheduleUrlUpdate();
   });
 
-  // Note: When clicking on a disabled input, the click event bubbles up to the cell container.
-  // The browser automatically blurs the currently focused element when clicking on a non-focusable
-  // element (the cell div), so no manual blur handler is needed here. The pointer-events: none
-  // on disabled inputs is useful for preventing the input from being the event target and for
-  // cursor behavior, but blur happens regardless due to event bubbling.
+  // Note: When clicking on a disabled input, the click event bubbles up to 
+  // the cell container. The browser automatically blurs the currently focused 
+  // element when clicking on a non-focusable element (the cell div), so no 
+  // manual blur handler is needed here. The pointer-events: none on disabled 
+  // inputs is useful for preventing the input from being the event target and 
+  // for cursor behavior, but blur happens regardless due to event bubbling.
 
   cell.appendChild(input);
 
@@ -339,11 +344,12 @@ function createJustificationCell(line, idx, lineId, state) {
     scheduleUrlUpdate();
   });
 
-  // Note: When clicking on a disabled input, the click event bubbles up to the cell container.
-  // The browser automatically blurs the currently focused element when clicking on a non-focusable
-  // element (the cell div), so no manual blur handler is needed here. The pointer-events: none
-  // on disabled inputs is useful for preventing the input from being the event target and for
-  // cursor behavior, but blur happens regardless due to event bubbling.
+  // Note: When clicking on a disabled input, the click event bubbles up to 
+  // the cell container. The browser automatically blurs the currently focused 
+  // element when clicking on a non-focusable element (the cell div), so no 
+  // manual blur handler is needed here. The pointer-events: none on disabled 
+  // inputs is useful for preventing the input from being the event target and 
+  // for cursor behavior, but blur happens regardless due to event bubbling.
 
   just.appendChild(justInput);
   return just;
@@ -449,7 +455,10 @@ function createActionButtons(
 
   // Determine whether this line can "end" its subproof
   const next = state.lines[idx + 1];
-  const canEndHere = !next || next.indent < line.indent || (next.indent === line.indent && next.isAssumption);
+  const canEndHere =
+    !next ||
+    next.indent < line.indent ||
+    (next.indent === line.indent && next.isAssumption);
 
   // Add buttons based on line type
   if (line.isPremise) {
@@ -574,7 +583,10 @@ export function updateLineNumbers(proofRoot, state) {
   });
   
   const activeElement = document.activeElement;
-  if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+  if (
+    activeElement &&
+    (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')
+  ) {
     const activeRow = activeElement.closest('.proof-line');
     if (activeRow) {
       activeElement.blur();

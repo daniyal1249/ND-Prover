@@ -174,9 +174,15 @@ export function initProofUI(state, renderProof) {
       resultsBox.classList.add('results--show');
 
       const payload = {
-        logic: state.proofProblem ? state.proofProblem.logic : (state.problemDraft ? state.problemDraft.logic : 'TFL'),
-        premisesText: state.proofProblem ? state.proofProblem.premisesText : (state.problemDraft ? state.problemDraft.premisesText : ''),
-        conclusionText: state.proofProblem ? state.proofProblem.conclusionText : (state.problemDraft ? state.problemDraft.conclusionText : '')
+        logic: state.proofProblem
+          ? state.proofProblem.logic
+          : (state.problemDraft ? state.problemDraft.logic : 'TFL'),
+        premisesText: state.proofProblem
+          ? state.proofProblem.premisesText
+          : (state.problemDraft ? state.problemDraft.premisesText : ''),
+        conclusionText: state.proofProblem
+          ? state.proofProblem.conclusionText
+          : (state.problemDraft ? state.problemDraft.conclusionText : '')
       };
 
       resultsBox.textContent = 'Generating proof...';

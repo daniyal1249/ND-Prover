@@ -47,10 +47,14 @@ function findNextEditableIndex(state, startIdx, direction, field) {
  * @param {HTMLElement} input - The input element to attach handlers to
  * @param {Object} state - Application state object
  * @param {number} lineId - Stable ID of the line
- * @param {Function} addLineAfterSame - Function to add line after index (takes idx, calls render and focus)
- * @param {Function} beginSubproofBelow - Function to begin subproof (takes idx, calls render and focus)
- * @param {Function} endSubproofAt - Function to end subproof (takes idx, calls render and focus if needed)
- * @param {Function} endAndBeginAnotherAt - Function to end and begin subproof (takes idx, calls render and focus if needed)
+ * @param {Function} addLineAfterSame - Function to add line after index
+ *   (takes idx, calls render and focus)
+ * @param {Function} beginSubproofBelow - Function to begin subproof
+ *   (takes idx, calls render and focus)
+ * @param {Function} endSubproofAt - Function to end subproof
+ *   (takes idx, calls render and focus if needed)
+ * @param {Function} endAndBeginAnotherAt - Function to end and begin subproof
+ *   (takes idx, calls render and focus if needed)
  * @param {Function} focusLineAt - Function to focus a line
  */
 export function attachKeyboardHandlers(
@@ -75,7 +79,12 @@ export function attachKeyboardHandlers(
         return;
       }
       const direction = e.key === 'ArrowDown' ? 1 : -1;
-      const nextIdx = findNextEditableIndex(state, currentIdx, direction, 'formula-input');
+      const nextIdx = findNextEditableIndex(
+        state,
+        currentIdx,
+        direction,
+        'formula-input'
+      );
       if (nextIdx !== null) {
         e.preventDefault();
         focusLineAt(nextIdx, 'formula-input', state);
@@ -92,7 +101,9 @@ export function attachKeyboardHandlers(
     const next = state.lines[currentIdx + 1];
     const canEndHere =
       line &&
-      (!next || next.indent < line.indent || (next.indent === line.indent && next.isAssumption));
+      (!next ||
+        next.indent < line.indent ||
+        (next.indent === line.indent && next.isAssumption));
 
     if (e.key === 'Enter' && e.shiftKey && noMods) {
       e.preventDefault();
@@ -151,7 +162,12 @@ export function attachJustificationKeyboardHandlers(
         return;
       }
       const direction = e.key === 'ArrowDown' ? 1 : -1;
-      const nextIdx = findNextEditableIndex(state, currentIdx, direction, 'justification-input');
+      const nextIdx = findNextEditableIndex(
+        state,
+        currentIdx,
+        direction,
+        'justification-input'
+      );
       if (nextIdx !== null) {
         e.preventDefault();
         focusLineAt(nextIdx, 'justification-input', state);

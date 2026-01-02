@@ -41,7 +41,8 @@ export function commitActiveEditor(state, processFormula, processJustification) 
 
 /**
  * Focuses a specific line at the given index and positions cursor at end.
- * Uses lineId from state as fallback if data-index lookup fails (e.g., during DOM updates).
+ * Uses lineId from state as fallback if data-index lookup fails
+ * (e.g., during DOM updates).
  * 
  * @param {number} index - Index of the line to focus
  * @param {string} field - Field to focus ('formula-input' or 'justification-input')
@@ -76,7 +77,9 @@ export function focusLineAt(index, field = 'formula-input', state = null) {
     }
     
     // Add focused class to container
-    const container = el.closest(field === 'formula-input' ? '.formula-cell' : '.justification-cell');
+    const container = el.closest(
+      field === 'formula-input' ? '.formula-cell' : '.justification-cell'
+    );
     if (container) {
       container.classList.add('focused');
     }

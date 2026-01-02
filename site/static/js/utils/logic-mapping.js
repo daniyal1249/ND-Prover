@@ -10,7 +10,8 @@
  *
  * @param {string} baseLogic - Base logic value (TFL, MLK, MLT, MLS4, MLS5)
  * @param {boolean} isFirstOrder - Whether first-order checkbox is checked
- * @returns {string} Logic label to store in state.problemDraft.logic (or the committed proof problem)
+ * @returns {string} Logic label to store in state.problemDraft.logic 
+ *   (or the committed proof problem)
  */
 export function getLogicValue(baseLogic, isFirstOrder) {
   if (!isFirstOrder) {

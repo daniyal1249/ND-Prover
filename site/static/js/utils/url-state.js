@@ -45,7 +45,8 @@ export function initUrlState(state, render, opts = {}) {
 
 /**
  * Debounced request to write current app state into the URL.
- * Call this after any mutation to `state.problemDraft`, `state.proofProblem`, or `state.lines`.
+ * Call this after any mutation to `state.problemDraft`, 
+ * `state.proofProblem`, or `state.lines`.
  */
 export function scheduleUrlUpdate() {
   if (!_state || _suspendWrites) {
@@ -63,20 +64,26 @@ export function scheduleUrlUpdate() {
 }
 
 function buildSnapshotFromState(state) {
-  const draft = state.problemDraft || { logic: 'TFL', premisesText: '', conclusionText: '' };
+  const draft = state.problemDraft || {
+    logic: 'TFL',
+    premisesText: '',
+    conclusionText: ''
+  };
   const proofProblem = state.proofProblem || null;
+
+  const proofActive = isProofPaneActive();
 
   const hasAnyProblem =
     !!(draft.logic && draft.logic !== 'TFL') ||
     !!(draft.premisesText && /\S/.test(draft.premisesText)) ||
     !!(draft.conclusionText && /\S/.test(draft.conclusionText));
-  const hasAnyLines = Array.isArray(state.lines) && state.lines.length > 0;
+  const hasAnyLines =
+    proofActive && Array.isArray(state.lines) && state.lines.length > 0;
 
   if (!hasAnyProblem && !hasAnyLines) {
     return null;
   }
 
-  const proofActive = isProofPaneActive();
   const storedLines = proofActive
     ? (state.lines || []).map((line) => {
       const flags = (line.isAssumption ? 1 : 0) | (line.isPremise ? 2 : 0);
@@ -106,7 +113,8 @@ function buildSnapshotFromState(state) {
     proof: {
       active: proofActive,
       problem: committed,
-      // Each line: [indent, flags, text, justText] where flags bitmask: 1=assumption, 2=premise.
+      // Each line: [indent, flags, text, justText] where flags bitmask:
+      // 1=assumption, 2=premise.
       lines: storedLines
     }
   };
@@ -118,7 +126,11 @@ function applySnapshotToState(snapshot, state) {
   state.problemDraft.premisesText = String(d.premisesText || '');
   state.problemDraft.conclusionText = String(d.conclusionText || '');
 
-  const { active: proofActive, tuples, problem: proofProblem } = extractProofFromSnapshot(snapshot);
+  const {
+    active: proofActive,
+    tuples,
+    problem: proofProblem
+  } = extractProofFromSnapshot(snapshot);
   state.proofProblem = proofActive ? proofProblem : null;
 
   state.lines = [];
@@ -275,7 +287,8 @@ function setEncodedSnapshotInUrl(encoded) {
   const newHash = params.toString();
   const base = `${window.location.pathname}${window.location.search}`;
   const nextUrl = newHash ? `${base}#${newHash}` : base;
-  const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  const currentUrl =
+    `${window.location.pathname}${window.location.search}${window.location.hash}`;
   if (nextUrl === currentUrl) {
     return;
   }
@@ -309,7 +322,8 @@ function base64UrlDecode(encoded) {
   if (!s) {
     return '';
   }
-  const padded = s.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((s.length + 3) % 4);
+  const padded =
+    s.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((s.length + 3) % 4);
   const binary = atob(padded);
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) {

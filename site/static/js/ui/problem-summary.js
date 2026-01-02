@@ -70,7 +70,12 @@ export function buildProblemMathContent(premisesText, conclusionText) {
  * @param {string} premisesText
  * @param {string} conclusionText
  */
-export function renderProblemSummary(container, logicLabel, premisesText, conclusionText) {
+export function renderProblemSummary(
+  container,
+  logicLabel,
+  premisesText,
+  conclusionText
+) {
   if (!container) {
     return;
   }
@@ -79,7 +84,9 @@ export function renderProblemSummary(container, logicLabel, premisesText, conclu
 
   container.textContent = '';
 
-  const prefix = document.createTextNode(`Prove the following argument in ${logicLabel}:  `);
+  const prefix = document.createTextNode(
+    `Prove the following argument in ${logicLabel}:  `
+  );
   const mathSpan = document.createElement('span');
   mathSpan.className = 'math-content';
   mathSpan.textContent = mathContent;

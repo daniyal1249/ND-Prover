@@ -68,7 +68,8 @@ function createSymbolRegex() {
   // Escape special regex characters in each key
   const patterns = keys.map(key => escapeRegex(key));
   
-  // Add special patterns for Forall (A followed by letter) and Exists (E followed by letter)
+  // Add special patterns for Forall (A followed by letter) and Exists
+  // (E followed by letter)
   patterns.push('A(?=[a-zA-Z])');  // 'A' followed by a letter
   patterns.push('E(?=[a-zA-Z])');  // 'E' followed by a letter
   
