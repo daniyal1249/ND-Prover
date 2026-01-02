@@ -10,7 +10,7 @@
 /**
  * Symbol mapping from text operators to logical symbols.
  * Keys are sorted by length (longest first) to ensure longer patterns
- * are matched before shorter ones (e.g., "forall" before "for").
+ * are matched before shorter ones.
  */
 const SYMBOLS = {
   'not': '¬',
@@ -18,20 +18,27 @@ const SYMBOLS = {
   '∼': '¬',
   '-': '¬',
   '−': '¬',
+  '!': '¬',
   'and': '∧',
   '^': '∧',
   '&': '∧',
+  '&&': '∧',
   '.': '∧',
   '·': '∧',
   '*': '∧',
   'or': '∨',
+  '|': '∨',
+  '||': '∨',
+  '+': '∨',
   'iff': '↔',
   '≡': '↔',
   '<->': '↔',
+  '<=>': '↔',
   'imp': '→',
   '⇒': '→',
   '⊃': '→',
   '->': '→',
+  '=>': '→',
   '>': '→',
   'forall': '∀',
   '⋀': '∀',
@@ -40,6 +47,7 @@ const SYMBOLS = {
   'bot': '⊥',
   'XX': '⊥',
   '#': '⊥',
+  '_': '⊥',
   'box': '□',
   '[]': '□',
   'dia': '♢',
@@ -122,4 +130,3 @@ export function symbolize(s) {
   // Replace all matched operators with their symbols
   return str.replace(SYMBOL_REGEX, replaceSymbol);
 }
-

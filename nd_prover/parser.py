@@ -14,20 +14,27 @@ class Symbols:
         "∼": "¬",
         "-": "¬",
         "−": "¬",
+        "!": "¬",
         "and": "∧",
         "^": "∧",
         "&": "∧",
+        "&&": "∧",
         ".": "∧",
         "·": "∧",
         "*": "∧",
         "or": "∨",
+        "|": "∨",
+        "||": "∨",
+        "+": "∨",
         "iff": "↔",
         "≡": "↔",
         "<->": "↔",
+        "<=>": "↔",
         "imp": "→",
         "⇒": "→",
         "⊃": "→",
         "->": "→",
+        "=>": "→",
         ">": "→",
         "forall": "∀",
         "⋀": "∀",
@@ -36,6 +43,7 @@ class Symbols:
         "bot": "⊥",
         "XX": "⊥",
         "#": "⊥",
+        "_": "⊥",
         "box": "□",
         "[]": "□",
         "dia": "♢",
@@ -62,9 +70,9 @@ class Symbols:
 
 
 def split_line(line):
-    parts = [s.strip() for s in re.split(r"[;|]", line)]
+    parts = [s.strip() for s in line.split(";")]
     if len(parts) != 2:
-        raise ParsingError('Must provide justification separated by ";" or "|".')
+        raise ParsingError('Must provide justification separated by ";".')
     return parts
 
 

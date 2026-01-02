@@ -32,7 +32,23 @@ def parse_and_verify_premises(s, logic):
     s = s.strip()
     if s == "NA":
         return []
-    parts = [p for p in s.split(";") if p.strip()]
+
+    def split_top_level(text):
+        parts, depth, start = [], 0, 0
+        for i, ch in enumerate(text):
+            if ch == "(":
+                depth += 1
+            elif ch == ")":
+                depth = max(0, depth - 1)
+            elif depth == 0 and ch in (",", ";"):
+                if part := text[start:i].strip():
+                    parts.append(part)
+                start = i + 1
+        if tail := text[start:].strip():
+            parts.append(tail)
+        return parts
+
+    parts = split_top_level(s)
     return [parse_and_verify_formula(p, logic) for p in parts]
 
 
@@ -47,7 +63,7 @@ def select_logic():
 
 def input_premises(logic):
     while True:
-        raw = input('Enter premises (separated by ";"), or "NA" if none: ')
+        raw = input('Enter premises (separated by "," or ";"), or "NA" if none: ')
         try:
             return parse_and_verify_premises(raw, logic)
         except ParsingError as e:

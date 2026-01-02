@@ -28,7 +28,7 @@ and running the following in the cloned repo:
 ```
 $ nd-prover
 Select logic (TFL, FOL, MLK, MLT, MLS4, MLS5, FOMLK, FOMLT, FOMLS4, FOMLS5): TFL
-Enter premises (separated by ";"), or "NA" if none: P -> Q; P 
+Enter premises (separated by "," or ";"), or "NA" if none: P -> Q, P
 Enter conclusion: Q
 
  1 │ P → Q      PR
