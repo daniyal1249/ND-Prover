@@ -99,8 +99,41 @@ function hydrateExerciseLinks() {
   })
 }
 
+function enhanceExerciseRows() {
+  const rows = document.querySelectorAll('tr.exercise-row')
+  rows.forEach((row) => {
+    const link = row.querySelector('a.exercise-link')
+    if (!link) {
+      return
+    }
+
+    row.addEventListener('click', (e) => {
+      const target = e.target
+      if (target && target.closest && target.closest('a.exercise-link')) {
+        return
+      }
+
+      const href = String(link.getAttribute('href') || '').trim()
+      if (!href || href === '#') {
+        return
+      }
+
+      e.preventDefault()
+      if (e.ctrlKey || e.metaKey) {
+        window.open(href, '_blank', 'noopener')
+        return
+      }
+      window.location.assign(href)
+    })
+  })
+}
+
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', hydrateExerciseLinks)
+  document.addEventListener('DOMContentLoaded', () => {
+    hydrateExerciseLinks()
+    enhanceExerciseRows()
+  })
 } else {
   hydrateExerciseLinks()
+  enhanceExerciseRows()
 }

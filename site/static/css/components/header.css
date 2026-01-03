@@ -25,9 +25,9 @@
 .site-nav {
   margin-top: var(--spacing-lg);
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: var(--spacing-md);
-  flex-wrap: wrap;
 }
 
 .site-nav a,
@@ -51,7 +51,7 @@
   background: var(--background-light);
 }
 
-/* Normalize <button> appearance so it matches <a> pills */
+/* Normalize <button> appearance so it matches */
 .site-nav button {
   appearance: none;
   font: inherit;
@@ -65,7 +65,7 @@
 
 .nav-exercises__options {
   display: none;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
 }
 
 .nav-exercises.is-open .nav-exercises__options {

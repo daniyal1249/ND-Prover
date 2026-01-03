@@ -33,6 +33,15 @@
     line-height: 1.5;
   }
 
+  .site-nav {
+    font-size: var(--font-size-xl);
+  }
+
+  .nav-exercises__options {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
   /* === Problem Setup Adjustments === */
   .problem-setup {
     grid-template-columns: 1fr;
@@ -81,6 +90,23 @@
   .table-like th {
     padding: 0 var(--spacing-md) var(--spacing-xl);
     font-size: var(--font-size-xl);
+  }
+
+  /* === Exercises Page Adjustments === */
+  .exercises-table col:first-child {
+    width: 40px;
+  }
+
+  .exercises-table th {
+    font-size: var(--font-size-lg);
+  }
+
+  .exercises-table td {
+    font-size: var(--font-size-lg);
+  }
+
+  .exercise-link {
+    font-size: inherit;
   }
 
   .actions-help-table col:nth-child(1) {

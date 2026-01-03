@@ -20,7 +20,7 @@
 }
 
 .exercises-table th {
-  text-align: left;
+  /* text-align: left; */
   font-weight: 400;
 }
 
@@ -29,10 +29,6 @@
   color: var(--text-color-muted);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
-}
-
-.exercise-problem {
-  padding-left: var(--spacing-lg);
 }
 
 /* === Links (make entire cell feel clickable) === */
@@ -51,14 +47,14 @@
 }
 
 /* === Hover / Active States === */
+.exercise-row {
+  cursor: pointer;
+}
+
 .exercise-row td {
   transition: background var(--transition-medium);
 }
 
 .exercise-row:hover td {
   background: var(--hover-background);
-}
-
-.exercise-row:active td {
-  background: var(--hover-background-strong);
 }
