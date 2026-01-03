@@ -38,6 +38,8 @@
   border: 1px solid transparent;
   border-radius: var(--border-radius-md);
   background: transparent;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .site-nav a:hover,
