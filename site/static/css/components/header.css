@@ -21,3 +21,53 @@
   color: var(--text-color-tertiary);
 }
 
+/* === Header Navigation === */
+.site-nav {
+  margin-top: var(--spacing-lg);
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.site-nav a,
+.site-nav button {
+  color: var(--text-color-secondary);
+  text-decoration: none;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid transparent;
+  border-radius: var(--border-radius-md);
+  background: transparent;
+}
+
+.site-nav a:hover,
+.site-nav button:hover {
+  background: var(--hover-background);
+}
+
+.site-nav a.active,
+.site-nav button.active {
+  border-color: var(--border-color);
+  background: var(--background-light);
+}
+
+/* Normalize <button> appearance so it matches <a> pills */
+.site-nav button {
+  appearance: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* === Exercises button -> inline options === */
+.nav-exercises.is-open .nav-exercises__toggle {
+  display: none;
+}
+
+.nav-exercises__options {
+  display: none;
+  gap: var(--spacing-md);
+}
+
+.nav-exercises.is-open .nav-exercises__options {
+  display: flex;
+}

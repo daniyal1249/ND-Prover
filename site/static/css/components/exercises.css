@@ -1,0 +1,64 @@
+/**
+ * Exercises Page Component
+ *
+ * Styles for the exercises list page, using the same card/table visual
+ * language as the rest of the app.
+ *
+ * Dependencies: variables.css, tables.css
+ */
+
+/* === Page Layout === */
+.exercises-page {
+  display: grid;
+  row-gap: var(--grid-row-gap);
+  margin: 0 0 var(--spacing-xxxl);
+}
+
+/* === Table Layout === */
+.exercises-table col:first-child {
+  width: 70px;
+}
+
+.exercises-table th {
+  text-align: left;
+  font-weight: 400;
+}
+
+.exercise-number {
+  text-align: right;
+  color: var(--text-color-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.exercise-problem {
+  padding-left: var(--spacing-lg);
+}
+
+/* === Links (make entire cell feel clickable) === */
+.exercise-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  font-family: var(--math-font);
+  font-size: var(--font-size-xl);
+}
+
+.exercise-link:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+  border-radius: var(--border-radius-sm);
+}
+
+/* === Hover / Active States === */
+.exercise-row td {
+  transition: background var(--transition-medium);
+}
+
+.exercise-row:hover td {
+  background: var(--hover-background);
+}
+
+.exercise-row:active td {
+  background: var(--hover-background-strong);
+}

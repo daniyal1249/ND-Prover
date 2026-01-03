@@ -118,6 +118,21 @@ def index():
     return render_template("index.html")
 
 
+@app.get("/exercises/tfl")
+def exercises_tfl():
+    return render_template("exercises_tfl.html")
+
+
+@app.get("/exercises/fol")
+def exercises_fol():
+    return render_template("exercises_fol.html")
+
+
+@app.get("/exercises/ml")
+def exercises_ml():
+    return render_template("exercises_ml.html")
+
+
 @app.post("/api/check-proof")
 def check_proof():
     data = request.get_json(silent=True) or {}

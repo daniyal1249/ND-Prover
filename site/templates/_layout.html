@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>{% block title %}Natural Deduction Proof Generator & Checker{% endblock %}</title>
+  <!-- maximum-scale=1 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- <link rel="icon" type="image/svg+xml" href="/static/img/nd.svg" /> -->
+
+  <!-- Noto Sans (site-wide font) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+  <!-- Noto Sans Math (mathematical symbols and text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Math&display=swap" rel="stylesheet">
+
+  <!-- CSS Files -->
+  <link rel="stylesheet" href="/static/css/variables.css">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/layout.css">
+  <link rel="stylesheet" href="/static/css/components/header.css">
+  <link rel="stylesheet" href="/static/css/components/problem-setup.css">
+  <link rel="stylesheet" href="/static/css/components/proof-pane.css">
+  <link rel="stylesheet" href="/static/css/components/proof-line.css">
+  <link rel="stylesheet" href="/static/css/components/toolbar.css">
+  <link rel="stylesheet" href="/static/css/components/tables.css">
+  <link rel="stylesheet" href="/static/css/components/buttons.css">
+  <link rel="stylesheet" href="/static/css/responsive.css">
+
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  <header class="site-header">
+    <h1>Natural Deduction Proof Generator & Checker</h1>
+    <p>
+      This is a proof generator and checker for the Fitch-style natural
+      deduction system found in
+      <a
+        href="https://forallx.openlogicproject.org"
+        target="_blank"
+        rel="noreferrer"><em>forall x: Calgary</em></a>.
+      It is based on the
+      <a
+        href="https://github.com/OpenLogicProject/fitch-checker"
+        target="_blank"
+        rel="noreferrer">Open Logic Project</a>
+      proof checker. More information can be found in the
+      <a
+        href="https://github.com/daniyal1249/nd-prover"
+        target="_blank"
+        rel="noreferrer">ND-Prover</a>
+      repository.
+    </p>
+
+    <nav class="site-nav" aria-label="Site">
+      <a
+        href="/"
+        class="{% if request.path == '/' %}active{% endif %}">Proof editor</a>
+      <div
+        id="nav-exercises"
+        class="nav-exercises">
+        <button
+          id="nav-exercises-toggle"
+          class="nav-exercises__toggle {% if request.path.startswith('/exercises') %}active{% endif %}"
+          type="button"
+          aria-expanded="false"
+          aria-controls="nav-exercises-options">
+          Exercises
+        </button>
+
+        <div
+          id="nav-exercises-options"
+          class="nav-exercises__options"
+          hidden>
+          <a
+            href="/exercises/tfl"
+            class="{% if request.path == '/exercises/tfl' %}active{% endif %}">TFL</a>
+          <a
+            href="/exercises/fol"
+            class="{% if request.path == '/exercises/fol' %}active{% endif %}">FOL</a>
+          <a
+            href="/exercises/ml"
+            class="{% if request.path == '/exercises/ml' %}active{% endif %}">ML</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  {% block content %}{% endblock %}
+
+  <script type="module" src="/static/js/ui/nav-exercises.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

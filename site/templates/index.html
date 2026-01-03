@@ -1,59 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Natural Deduction Proof Generator & Checker</title>
-  <!-- maximum-scale=1 -->
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- <link rel="icon" type="image/svg+xml" href="/static/img/nd.svg" /> -->
+{% extends "_layout.html" %}
 
-  <!-- Noto Sans (site-wide font) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-
-  <!-- Noto Sans Math (mathematical symbols and text) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Math&display=swap" rel="stylesheet">
-
-  <!-- CSS Files -->
-  <link rel="stylesheet" href="/static/css/variables.css">
-  <link rel="stylesheet" href="/static/css/base.css">
-  <link rel="stylesheet" href="/static/css/layout.css">
-  <link rel="stylesheet" href="/static/css/components/header.css">
-  <link rel="stylesheet" href="/static/css/components/problem-setup.css">
-  <link rel="stylesheet" href="/static/css/components/proof-pane.css">
-  <link rel="stylesheet" href="/static/css/components/proof-line.css">
-  <link rel="stylesheet" href="/static/css/components/toolbar.css">
-  <link rel="stylesheet" href="/static/css/components/tables.css">
-  <link rel="stylesheet" href="/static/css/components/buttons.css">
-  <link rel="stylesheet" href="/static/css/responsive.css">
-</head>
-<body>
-  <header class="site-header">
-    <h1>Natural Deduction Proof Generator & Checker</h1>
-    <p>
-      This is a proof generator and checker for the Fitch-style natural 
-      deduction system found in
-      <a
-        href="https://forallx.openlogicproject.org"
-        target="_blank"
-        rel="noreferrer"><em>forall x: Calgary</em></a>.
-      It is based on the
-      <a
-        href="https://github.com/OpenLogicProject/fitch-checker"
-        target="_blank"
-        rel="noreferrer">Open Logic Project</a>
-      proof checker. More information can be found in the
-      <a
-        href="https://github.com/daniyal1249/nd-prover"
-        target="_blank"
-        rel="noreferrer">ND-Prover</a>
-      repository.
-    </p>
-  </header>
-
+{% block content %}
   <div class="main-grid">
     <!-- LEFT COLUMN: Create problem + Proof (independent vertical stack) -->
     <div class="left-column col-stack">
@@ -244,11 +191,11 @@
             </tr>
             <tr>
               <td>Box</td>
-              <td class="pre-wrap">box  □  []</td>
+              <td class="pre-wrap">box  ☐  []</td>
             </tr>
             <tr>
               <td>Diamond</td>
-              <td class="pre-wrap">dia  ♢  <></td>
+              <td class="pre-wrap">dia  ◇  <></td>
             </tr>
           </table>
         </div>
@@ -256,7 +203,9 @@
     </div>
   </div>
 
+{% endblock %}
+
+{% block scripts %}
   <!-- Main Application Script -->
   <script type="module" src="/static/js/main.js"></script>
-</body>
-</html>
+{% endblock %}

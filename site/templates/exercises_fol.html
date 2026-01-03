@@ -1,0 +1,341 @@
+{% extends "_layout.html" %}
+
+{% block title %}FOL Exercises - Natural Deduction Proof Generator & Checker{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="/static/css/components/exercises.css">
+{% endblock %}
+
+{% block content %}
+  <section class="exercises-page" aria-label="FOL exercises">
+
+    <div class="table-card exercises-section" data-logic="FOL">
+      <table class="table-like exercises-table">
+        <colgroup>
+          <col>
+          <col>
+        </colgroup>
+        <tr>
+          <th colspan="2">Chapter 36, Exercise B — Add the missing justifications to the following proofs:</th>
+        </tr>
+
+        <tr class="exercise-row">
+          <td class="exercise-number">1.</td>
+          <td class="exercise-problem">
+            <a
+              class="exercise-link"
+              href="/#s=PLACEHOLDER_MANUAL_CH17B_1">∀x ∃y (R(x, y) ∨ R(y, x)), ∀x ¬R(m, x) ∴ ∃x R(x, m)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">2.</td>
+          <td class="exercise-problem">
+            <a
+              class="exercise-link"
+              href="/#s=PLACEHOLDER_MANUAL_CH17B_2">∀x (∃y L(x, y) → ∀z L(z, x)), L(a, b) ∴ ∀x L(x, x)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">3.</td>
+          <td class="exercise-problem">
+            <a
+              class="exercise-link"
+              href="/#s=PLACEHOLDER_MANUAL_CH17B_3">∀x (J(x) → K(x)), ∃x ∀y L(x, y), ∀x J(x) ∴ ∃x (K(x) ∧ L(x, x))</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="table-card exercises-section" data-logic="FOL">
+      <table class="table-like exercises-table">
+        <colgroup>
+          <col>
+          <col>
+        </colgroup>
+        <tr>
+          <th colspan="2">Chapter 36, Exercise E — Give a proof for each of the following arguments:</th>
+        </tr>
+
+        <tr class="exercise-row">
+          <td class="exercise-number">1.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∴ ∀x F(x) → ∀y (F(y) ∧ F(y))</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">2.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∀x (A(x) → B(x)), ∃x A(x) ∴ ∃x B(x)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">3.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∀x (M(x) ↔ N(x)), M(a) ∧ ∃x R(x, a) ∴ ∃x N(x)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">4.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∀x ∀y G(x, y) ∴ ∃x G(x, x)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">5.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∴ ∀x R(x, x) → ∃x ∃y R(x, y)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">6.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∴ ∀y ∃x (Q(y) → Q(x))</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">7.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">N(a) → ∀x (M(x) ↔ M(a)), M(a), ¬M(b) ∴ ¬N(a)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">8.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∀x ∀y (G(x, y) → G(y, x)) ∴ ∀x ∀y (G(x, y) ↔ G(y, x))</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">9.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∀x (¬M(x) ∨ L(j, x)), ∀x (B(x) → L(j, x)), ∀x (M(x) ∨ B(x)) ∴ ∀x L(j, x)</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="table-card exercises-section" data-logic="FOL">
+      <table class="table-like exercises-table">
+        <colgroup>
+          <col>
+          <col>
+        </colgroup>
+        <tr>
+          <th colspan="2">Chapter 37, Exercise A — Give a proof for each of the following arguments:</th>
+        </tr>
+
+        <tr class="exercise-row">
+          <td class="exercise-number">1.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">A → ∀x B(x) ∴ ∀x (A → B(x))</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">2.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∃x (A → B(x)) ∴ A → ∃x B(x)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">3.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∴ ∀x (A(x) ∧ B(x)) ↔ (∀x A(x) ∧ ∀x B(x))</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">4.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∴ ∃x (A(x) ∨ B(x)) ↔ (∃x A(x) ∨ ∃x B(x))</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">5.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">A ∨ ∀x B(x) ∴ ∀x (A ∨ B(x))</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">6.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∀x (A(x) → B) ∴ ∃x A(x) → B</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">7.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∃x (A(x) → B) ∴ ∀x A(x) → B</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">8.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∴ ∀x (A(x) → ∃y A(y))</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="table-card exercises-section" data-logic="FOL">
+      <table class="table-like exercises-table">
+        <colgroup>
+          <col>
+          <col>
+        </colgroup>
+        <tr>
+          <th colspan="2">Chapter 37, Exercise B — Give a proof for each of the following arguments:</th>
+        </tr>
+
+        <tr class="exercise-row">
+          <td class="exercise-number">1.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∀x R(x, x) ∴ ∀x ∃y R(x, y)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">2.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∀x ∀y ∀z ((R(x, y) ∧ R(y, z)) → R(x, z)) ∴ ∀x ∀y (R(x, y) → ∀z (R(y, z) → R(x, z)))</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">3.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∀x ∀y ∀z ((R(x, y) ∧ R(y, z)) → R(x, z)), ∀x ∀y (R(x, y) → R(y, x)) ∴ ∀x ∀y ∀z ((R(x, y) ∧ R(x, z)) → R(y, z))</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">4.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∀x ∀y (R(x, y) → R(y, x)) ∴ ∀x ∀y ∀z ((R(x, y) ∧ R(x, z)) → ∃u (R(y, u) ∧ R(z, u)))</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">5.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∴ ¬∃x ∀y (A(x, y) ↔ ¬A(y, y))</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="table-card exercises-section" data-logic="FOL">
+      <table class="table-like exercises-table">
+        <colgroup>
+          <col>
+          <col>
+        </colgroup>
+        <tr>
+          <th colspan="2">Chapter 37, Exercise C — Practice proving arguments requiring IP:</th>
+        </tr>
+
+        <tr class="exercise-row">
+          <td class="exercise-number">1.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∀x A(x) → B ∴ ∃x (A(x) → B)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">2.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">A → ∃x B(x) ∴ ∃x (A → B(x))</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">3.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∀x (A ∨ B(x)) ∴ A ∨ ∀x B(x)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">4.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∴ ∃x (A(x) → ∀y A(y))</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">5.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∴ ∃x (∃y A(y) → A(x))</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="table-card exercises-section" data-logic="FOL">
+      <table class="table-like exercises-table">
+        <colgroup>
+          <col>
+          <col>
+        </colgroup>
+        <tr>
+          <th colspan="2">Chapter 39, Exercise A — Give a proof for each of the following arguments:</th>
+        </tr>
+
+        <tr class="exercise-row">
+          <td class="exercise-number">1.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">P(a) ∨ Q(b), Q(b) → b = c, ¬P(a) ∴ Q(c)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">2.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">m = n ∨ n = o, A(n) ∴ A(m) ∨ A(o)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">3.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∀x x = m, R(m, a) ∴ ∃x R(x, x)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">4.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∀x ∀y (R(x, y) → x = y) ∴ R(a, b) → R(b, a)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">5.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">¬∃x ¬x = m ∴ ∀x ∀y (P(x) → P(y))</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">6.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∃x J(x), ∃x ¬J(x) ∴ ∃x ∃y ¬x = y</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">7.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∀x (x = n ↔ M(x)), ∀x (O(x) ∨ ¬M(x)) ∴ O(n)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">8.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∃x D(x), ∀x (x = p ↔ D(x)) ∴ D(p)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">9.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∃x ((K(x) ∧ ∀y (K(y) → x = y)) ∧ B(x)), K(d) ∴ B(d)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">10.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∴ P(a) → ∀x (P(x) ∨ ¬x = a)</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script type="module" src="/static/js/exercises/auto-exercise-links.js"></script>
+{% endblock %}

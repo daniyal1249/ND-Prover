@@ -1,0 +1,446 @@
+{% extends "_layout.html" %}
+
+{% block title %}TFL Exercises - Natural Deduction Proof Generator & Checker{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="/static/css/components/exercises.css">
+{% endblock %}
+
+{% block content %}
+  <section class="exercises-page" aria-label="Exercises">
+
+    <div class="table-card exercises-section" data-logic="TFL">
+      <table class="table-like exercises-table">
+        <colgroup>
+          <col>
+          <col>
+        </colgroup>
+        <tr>
+          <th colspan="2">Chapter 17, Exercise B — Add the missing justifications to the following proofs:</th>
+        </tr>
+
+        <tr class="exercise-row">
+          <td class="exercise-number">1.</td>
+          <td class="exercise-problem">
+            <a
+              class="exercise-link"
+              href="/#s=PLACEHOLDER_MANUAL_CH17B_1">P ∧ S, S → R ∴ R ∨ E</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">2.</td>
+          <td class="exercise-problem">
+            <a
+              class="exercise-link"
+              href="/#s=PLACEHOLDER_MANUAL_CH17B_2">A → D ∴ (A ∧ B) → (D ∨ E)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">3.</td>
+          <td class="exercise-problem">
+            <a
+              class="exercise-link"
+              href="/#s=PLACEHOLDER_MANUAL_CH17B_3">¬L → (J ∨ L), ¬L ∴ J</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="table-card exercises-section" data-logic="TFL">
+      <table class="table-like exercises-table">
+        <colgroup>
+          <col>
+          <col>
+        </colgroup>
+        <tr>
+          <th colspan="2">Chapter 17, Exercise C — Give a proof for each of the following arguments:</th>
+        </tr>
+
+        <tr class="exercise-row">
+          <td class="exercise-number">1.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">J → ¬J ∴ ¬J</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">2.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">Q → (Q ∧ ¬Q) ∴ ¬Q</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">3.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">A → (B → C) ∴ (A ∧ B) → C</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">4.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">K ∧ L ∴ K ↔ L</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">5.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">(C ∧ D) ∨ E ∴ E ∨ D</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">6.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">A ↔ B, B ↔ C ∴ A ↔ C</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">7.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">¬F → G, F → H ∴ G ∨ H</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">8.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">(Z ∧ K) ∨ (K ∧ M), K → D ∴ D</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">9.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">P ∧ (Q ∨ R), P → ¬R ∴ Q ∨ E</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">10.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">S ↔ T ∴ S ↔ (T ∨ S)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">11.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">¬(P → Q) ∴ ¬Q</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">12.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">¬(P → Q) ∴ P</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="table-card exercises-section" data-logic="TFL">
+      <table class="table-like exercises-table">
+        <colgroup>
+          <col>
+          <col>
+        </colgroup>
+        <tr>
+          <th colspan="2">Chapter 18, Exercise A — Give a proof for each of the following arguments:</th>
+        </tr>
+
+        <tr class="exercise-row">
+          <td class="exercise-number">1.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">A → B, A → C ∴ A → (B ∧ C)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">2.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">(A ∧ B) → C ∴ A → (B → C)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">3.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">A → (B → C) ∴ (A → B) → (A → C)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">4.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">A ∨ (B ∧ C) ∴ (A ∨ B) ∧ (A ∨ C)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">5.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">(A ∧ B) ∨ (A ∧ C) ∴ A ∧ (B ∨ C)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">6.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">A ∨ B, A → C, B → D ∴ C ∨ D</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">7.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">¬A ∨ ¬B ∴ ¬(A ∧ B)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">8.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">A ∧ ¬B ∴ ¬(A → B)</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="table-card exercises-section" data-logic="TFL">
+      <table class="table-like exercises-table">
+        <colgroup>
+          <col>
+          <col>
+        </colgroup>
+        <tr>
+          <th colspan="2">Chapter 18, Exercise C — Practice proving sentences from no premises:</th>
+        </tr>
+
+        <tr class="exercise-row">
+          <td class="exercise-number">1.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">¬A → (A → ⊥)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">2.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">¬(A ∧ ¬A)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">3.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">((A → C) ∧ (B → C)) → ((A ∨ B) → C)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">4.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">¬(A → B) → (A ∧ ¬B)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">5.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">(¬A ∨ B) → (A → B)</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="table-card exercises-section" data-logic="TFL">
+      <table class="table-like exercises-table">
+        <colgroup>
+          <col>
+          <col>
+        </colgroup>
+        <tr>
+          <th colspan="2">Chapter 18, Exercise D — Practice proving arguments requiring IP:</th>
+        </tr>
+
+        <tr class="exercise-row">
+          <td class="exercise-number">1.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∴ ¬¬A → A</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">2.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">¬A → ¬B ∴ B → A</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">3.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">A → B ∴ ¬A ∨ B</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">4.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∴ ¬(A ∧ B) → (¬A ∨ ¬B)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">5.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">A → (B ∨ C) ∴ (A → B) ∨ (A → C)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">6.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∴ (A → B) ∨ (B → A)</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">7.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">∴ ((A → B) → A) → A</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="table-card exercises-section" data-logic="TFL">
+      <table class="table-like exercises-table">
+        <colgroup>
+          <col>
+          <col>
+        </colgroup>
+        <tr>
+          <th colspan="2">Chapter 19, Exercise A — Add the missing justifications to the following proofs:</th>
+        </tr>
+
+        <tr class="exercise-row">
+          <td class="exercise-number">1.</td>
+          <td class="exercise-problem">
+            <a
+              class="exercise-link"
+              href="/#s=PLACEHOLDER_MANUAL_CH19A_1">W → ¬B, A ∧ W, B ∨ (J ∧ K) ∴ K</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">2.</td>
+          <td class="exercise-problem">
+            <a
+              class="exercise-link"
+              href="/#s=PLACEHOLDER_MANUAL_CH19A_2">L ↔ ¬O, L ∨ ¬O ∴ L</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">3.</td>
+          <td class="exercise-problem">
+            <a
+              class="exercise-link"
+              href="/#s=PLACEHOLDER_MANUAL_CH19A_3">Z → (C ∧ ¬N), ¬Z → (N ∧ ¬C) ∴ N ∨ C</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="table-card exercises-section" data-logic="TFL">
+      <table class="table-like exercises-table">
+        <colgroup>
+          <col>
+          <col>
+        </colgroup>
+        <tr>
+          <th colspan="2">Chapter 19, Exercise B — Give a proof for each of the following arguments:</th>
+        </tr>
+
+        <tr class="exercise-row">
+          <td class="exercise-number">1.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">E ∨ F, F ∨ G, ¬F ∴ E ∧ G</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">2.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">M ∨ (N → M) ∴ ¬M → ¬N</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">3.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">(M ∨ N) ∧ (O ∨ P), N → P, ¬P ∴ M ∧ O</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">4.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">(X ∧ Y) ∨ (X ∧ Z), ¬(X ∧ D), D ∨ M ∴ M</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="table-card exercises-section" data-logic="TFL">
+      <table class="table-like exercises-table">
+        <colgroup>
+          <col>
+          <col>
+        </colgroup>
+        <tr>
+          <th colspan="2">Chapter 20, Exercise A — Show that each of the following sentences is a theorem:</th>
+        </tr>
+
+        <tr class="exercise-row">
+          <td class="exercise-number">1.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">O → O</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">2.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">N ∨ ¬N</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">3.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">J ↔ (J ∨ (L ∧ ¬L))</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">4.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">((A → B) → A) → A</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="table-card exercises-section" data-logic="TFL">
+      <table class="table-like exercises-table">
+        <colgroup>
+          <col>
+          <col>
+        </colgroup>
+        <tr>
+          <th colspan="2">Chapter 20, Exercise B — Give a proof for each of the following arguments:</th>
+        </tr>
+
+        <tr class="exercise-row">
+          <td class="exercise-number">1.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">C → (E ∧ G), ¬C → G ∴ G</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">2.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">M ∧ (¬N → ¬M) ∴ (N ∧ M) ∨ ¬M</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">3.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">(Z ∧ K) ↔ (Y ∧ M), D ∧ (D → M) ∴ Y → Z</a>
+          </td>
+        </tr>
+        <tr class="exercise-row">
+          <td class="exercise-number">4.</td>
+          <td class="exercise-problem">
+            <a class="exercise-link" href="#">(W ∨ X) ∨ (Y ∨ Z), X → Y, ¬Z ∴ W ∨ Y</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script type="module" src="/static/js/exercises/auto-exercise-links.js"></script>
+{% endblock %}
