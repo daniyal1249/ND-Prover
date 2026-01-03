@@ -133,4 +133,3 @@ export function endAndBeginAnotherAt(state, i) {
   addLine(state, line.indent, i, true, false);
   return i + 1;
 }
-
