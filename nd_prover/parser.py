@@ -44,10 +44,10 @@ class Symbols:
         "XX": "⊥",
         "#": "⊥",
         "_": "⊥",
-        "box": "□",
-        "[]": "□",
-        "dia": "♢",
-        "<>": "♢",
+        "box": "☐",
+        "[]": "☐",
+        "dia": "◇",
+        "<>": "◇",
     }
 
     keys = sorted(symbols, key=len, reverse=True)
@@ -192,9 +192,9 @@ def _parse_formula(f):
         return Exists(var, inner)
 
     # Modal operators
-    if f.startswith("□"):
+    if f.startswith("☐"):
         return Box(_parse_formula(f[1:]))
-    if f.startswith("♢"):
+    if f.startswith("◇"):
         return Dia(_parse_formula(f[1:]))
 
     # Equality

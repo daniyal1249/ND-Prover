@@ -327,30 +327,30 @@ class FOL(TFL):
 
 class MLK(TFL):
 
-    @Rules.add("□I")
+    @Rules.add("☐I")
     def BoxI(premises, **kwargs):
         a = verify_arity(premises, 1)
         if not (a.is_subproof() and isinstance(a.assumption, BoxMarker) 
                 and a.conclusion):
-            raise InferenceError("Invalid application of the rule □I.")
+            raise InferenceError("Invalid application of the rule ☐I.")
         return [Box(a.conclusion)]
     
-    @Rules.add("□E", strict=True)
+    @Rules.add("☐E", strict=True)
     def BoxE(premises, scope, **kwargs):
         a = verify_arity(premises, 1)
         if not (a.is_line() and isinstance(a := a.formula, Box)):
-            raise InferenceError("Invalid application of the rule □E.")
+            raise InferenceError("Invalid application of the rule ☐E.")
         
         lines = [obj.formula for obj in scope[1] if obj.is_line()]
         if lines.count(BoxMarker()) != 1:
-            raise InferenceError("Invalid application of the rule □E.")
+            raise InferenceError("Invalid application of the rule ☐E.")
         return [a.inner]
 
-    @Rules.add("Def♢")
+    @Rules.add("Def◇")
     def DefDia(premises, **kwargs):
         a = verify_arity(premises, 1)
         if not a.is_line():
-            raise InferenceError("Invalid application of the rule Def♢.")
+            raise InferenceError("Invalid application of the rule Def◇.")
 
         match a.formula:
             case Not(Box(Not(b))):
@@ -358,7 +358,7 @@ class MLK(TFL):
             case Dia(b):
                 return [Not(Box(Not(b)))]
         
-        raise InferenceError("Invalid application of the rule Def♢.")
+        raise InferenceError("Invalid application of the rule Def◇.")
 
     @Rules.add("MC")
     def MC(premises, **kwargs):

@@ -148,20 +148,20 @@ class Box(Formula):
     inner: Formula
 
     def _str(self):
-        return f"□{self.inner._str()}"
+        return f"☐{self.inner._str()}"
 
 @dataclass(frozen=True)
 class Dia(Formula):
     inner: Formula
 
     def _str(self):
-        return f"♢{self.inner._str()}"
+        return f"◇{self.inner._str()}"
 
 @dataclass(frozen=True)
 class BoxMarker:
 
     def __str__(self):
-        return "□"
+        return "☐"
 
 
 def is_tfl_formula(formula):

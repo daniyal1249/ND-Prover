@@ -103,24 +103,24 @@ Proof complete! 🎉
 A proof in modal logic S5: 
 
 ```
-Proof of ♢□A ∴ □A
+Proof of ◇☐A ∴ ☐A
 ─────────────────
 
- 1 │ ♢□A          PR
+ 1 │ ◇☐A          PR
    ├─────         
- 2 │ ¬□¬□A        Def♢, 1
+ 2 │ ¬☐¬☐A        Def◇, 1
    │              
- 3 │ │ ¬□A        AS
+ 3 │ │ ¬☐A        AS
    │ ├─────       
- 4 │ │ │ □        AS
+ 4 │ │ │ ☐        AS
    │ │ ├───       
- 5 │ │ │ ¬□A      R5, 3
+ 5 │ │ │ ¬☐A      R5, 3
    │ │            
- 6 │ │ □¬□A       □I, 4-5
+ 6 │ │ ☐¬☐A       ☐I, 4-5
    │ │            
  7 │ │ ⊥          ¬E, 2,6
    │              
- 8 │ □A           IP, 3-7
+ 8 │ ☐A           IP, 3-7
 
 Proof complete! 🎉
 ```
