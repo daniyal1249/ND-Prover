@@ -139,7 +139,10 @@ kbd {
 }
 
 /* === Table Cell Content === */
-.table-like td[data-pre-wrap],
 .table-like .pre-wrap {
   white-space: pre-wrap;
+}
+
+.instructions .table-like .pre-wrap {
+  font-family: var(--math-font);
 }

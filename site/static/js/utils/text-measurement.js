@@ -23,7 +23,9 @@ document.body.appendChild(measurer);
 export function textWidth(text) {
   const root = getComputedStyle(document.documentElement);
   // Use math font for accurate measurement of mathematical symbols and text
-  measurer.style.fontFamily = root.getPropertyValue('--math-font') || 'Noto Sans Math, sans-serif';
+  measurer.style.fontFamily =
+    root.getPropertyValue('--math-font') ||
+    'Noto Sans Math, Noto Sans Symbols 2, Noto Sans Symbols, Noto Sans, sans-serif';
   measurer.style.fontSize = root.getPropertyValue('--font-size') || '16px';
   measurer.textContent = text || '';
   return measurer.offsetWidth;

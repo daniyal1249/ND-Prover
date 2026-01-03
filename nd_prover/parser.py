@@ -228,7 +228,7 @@ def parse_formula(f):
 
 def parse_assumption(a):
     a = "".join(Symbols.sub(a).split())
-    if a == "□":
+    if a == "☐":
         return BoxMarker()
     return _parse_formula(a)
 
