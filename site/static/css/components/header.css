@@ -38,12 +38,20 @@
   border: 1px solid transparent;
   border-radius: var(--border-radius-md);
   background: transparent;
+  -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none;
   user-select: none;
 }
 
-.site-nav a:hover,
-.site-nav button:hover {
+@media (hover: hover) and (pointer: fine) {
+  .site-nav a:hover,
+  .site-nav button:hover {
+    background: var(--hover-background);
+  }
+}
+
+.site-nav a:active,
+.site-nav button:active {
   background: var(--hover-background);
 }
 

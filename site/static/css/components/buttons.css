@@ -20,7 +20,13 @@
   user-select: none;
 }
 
-.ui-btn:hover {
+@media (hover: hover) and (pointer: fine) {
+  .ui-btn:hover {
+    filter: brightness(0.95);
+  }
+}
+
+.ui-btn:active {
   filter: brightness(0.95);
 }
 
@@ -40,7 +46,6 @@
   cursor: pointer;
   padding: 0;
   color: var(--ink);
-  -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none;
   user-select: none;
 }
