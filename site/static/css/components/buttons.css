@@ -40,11 +40,19 @@
   cursor: pointer;
   padding: 0;
   color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none;
   user-select: none;
 }
 
-.action-btn:hover {
+@media (hover: hover) and (pointer: fine) {
+  .action-btn:hover {
+    filter: brightness(0.98);
+    background: var(--background-lighter);
+  }
+}
+
+.action-btn:active {
   filter: brightness(0.98);
   background: var(--background-lighter);
 }

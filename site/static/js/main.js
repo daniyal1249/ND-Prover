@@ -15,8 +15,7 @@ import {
   removeLineFromDOM,
   insertLineInDOM,
   updateLineNumbers,
-  updateActionButtons,
-  createProofLine
+  updateActionButtons
 } from './proof/rendering.js';
 import {
   deleteLineAt,
@@ -33,6 +32,7 @@ import {
 } from './ui/keyboard-shortcuts.js';
 import { initProblemUI } from './ui/problem-ui.js';
 import { initProofUI } from './ui/proof-ui.js';
+import { initActionBtnDelay } from './ui/action-btn-delay.js';
 import { initUrlState, scheduleUrlUpdate } from './utils/url-state.js';
 
 /**
@@ -433,6 +433,7 @@ function init() {
   // Initialize UI handlers
   initProblemUI(state, render);
   initProofUI(state, render);
+  initActionBtnDelay(document.getElementById('proof'));
   const loadedFromUrl = initUrlState(state, render, { renderOnInit: false });
 
   window.addEventListener('focus', () => {
