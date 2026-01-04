@@ -8,7 +8,7 @@
 /* === Top Header === */
 /* Top header (centered title) */
 .site-header {
-  padding: var(--spacing-xxxl) var(--spacing-xl);
+  padding: var(--spacing-xxxl) var(--spacing-xl) var(--spacing-xl);
   text-align: center;
 }
 
@@ -23,7 +23,7 @@
 
 /* === Header Navigation === */
 .site-nav {
-  margin-top: var(--spacing-lg);
+  margin-top: var(--spacing-xl);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;

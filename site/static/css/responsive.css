@@ -167,6 +167,6 @@
   }
 
   .site-header {
-    padding: var(--spacing-xxl) var(--spacing-lg);
+    padding: var(--spacing-xxl) var(--spacing-lg) var(--spacing-xl);
   }
 }
