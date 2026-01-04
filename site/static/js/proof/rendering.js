@@ -390,10 +390,10 @@ function createActionButtons(
   btnDel.title = 'Delete this line';
   btnDel.setAttribute('aria-label', 'Delete this line');
   btnDel.textContent = 'x';
-  btnDel.addEventListener('pointerup', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    btnDel.blur();
+  btnDel.addEventListener('click', (e) => {
+    // e.preventDefault();
+    // e.stopPropagation();
+    // btnDel.blur();
     deleteLineAt(idx);
   });
 
@@ -404,10 +404,10 @@ function createActionButtons(
   btnAdd.title = 'Add a line below';
   btnAdd.setAttribute('aria-label', 'Add a line below');
   btnAdd.textContent = '↓';
-  btnAdd.addEventListener('pointerup', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    btnAdd.blur();
+  btnAdd.addEventListener('click', (e) => {
+    // e.preventDefault();
+    // e.stopPropagation();
+    // btnAdd.blur();
     addLineAfterSame(idx);
   });
 
@@ -418,10 +418,10 @@ function createActionButtons(
   btnSub.title = 'Begin a subproof below';
   btnSub.setAttribute('aria-label', 'Begin a subproof below');
   btnSub.textContent = '→';
-  btnSub.addEventListener('pointerup', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    btnSub.blur();
+  btnSub.addEventListener('click', (e) => {
+    // e.preventDefault();
+    // e.stopPropagation();
+    // btnSub.blur();
     beginSubproofBelow(idx);
   });
 
@@ -432,10 +432,10 @@ function createActionButtons(
   btnEnd.title = 'End this subproof and add a line below';
   btnEnd.setAttribute('aria-label', 'End this subproof and add a line below');
   btnEnd.textContent = '←';
-  btnEnd.addEventListener('pointerup', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    btnEnd.blur();
+  btnEnd.addEventListener('click', (e) => {
+    // e.preventDefault();
+    // e.stopPropagation();
+    // btnEnd.blur();
     endSubproofAt(idx);
   });
 
@@ -446,10 +446,10 @@ function createActionButtons(
   btnEndBegin.title = 'End this subproof and begin another below';
   btnEndBegin.setAttribute('aria-label', 'End this subproof and begin another below');
   btnEndBegin.textContent = '↔';
-  btnEndBegin.addEventListener('pointerup', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    btnEndBegin.blur();
+  btnEndBegin.addEventListener('click', (e) => {
+    // e.preventDefault();
+    // e.stopPropagation();
+    // btnEndBegin.blur();
     endAndBeginAnotherAt(idx);
   });
 
