@@ -14,7 +14,6 @@ class Symbols:
         "∼": "¬",
         "-": "¬",
         "−": "¬",
-        "!": "¬",
         "and": "∧",
         "^": "∧",
         "&": "∧",
@@ -38,8 +37,10 @@ class Symbols:
         ">": "→",
         "forall": "∀",
         "⋀": "∀",
+        "!": "∀",
         "exists": "∃",
         "⋁": "∃",
+        "?": "∃",
         "bot": "⊥",
         "XX": "⊥",
         "#": "⊥",
@@ -52,8 +53,8 @@ class Symbols:
 
     keys = sorted(symbols, key=len, reverse=True)
     patterns = [re.escape(k) for k in keys]
-    patterns.append(r"A(?=[a-zA-Z])")  # Forall
-    patterns.append(r"E(?=[a-zA-Z])")  # Exists
+    patterns.append(r"A(?=[s-zIE])")  # Forall
+    patterns.append(r"E(?=[s-zIE])")  # Exists
     pattern = "|".join(patterns)
     regex = re.compile(pattern)
 

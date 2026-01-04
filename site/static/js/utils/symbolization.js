@@ -18,7 +18,6 @@ const SYMBOLS = {
   '∼': '¬',
   '-': '¬',
   '−': '¬',
-  '!': '¬',
   'and': '∧',
   '^': '∧',
   '&': '∧',
@@ -42,8 +41,10 @@ const SYMBOLS = {
   '>': '→',
   'forall': '∀',
   '⋀': '∀',
+  '!': '∀',
   'exists': '∃',
   '⋁': '∃',
+  '?': '∃',
   'bot': '⊥',
   'XX': '⊥',
   '#': '⊥',
@@ -57,7 +58,7 @@ const SYMBOLS = {
 /**
  * Creates a regex pattern for matching all symbol operators.
  * Patterns are sorted by length (longest first) to match longer operators first.
- * Special patterns for 'A' and 'E' followed by letters are added for Forall/Exists.
+ * Special patterns are added for Forall/Exists.
  *
  * @returns {RegExp} Compiled regex pattern for matching operators
  */
@@ -68,10 +69,8 @@ function createSymbolRegex() {
   // Escape special regex characters in each key
   const patterns = keys.map(key => escapeRegex(key));
   
-  // Add special patterns for Forall (A followed by letter) and Exists
-  // (E followed by letter)
-  patterns.push('A(?=[a-zA-Z])');  // 'A' followed by a letter
-  patterns.push('E(?=[a-zA-Z])');  // 'E' followed by a letter
+  patterns.push('A(?=[s-zIE])');
+  patterns.push('E(?=[s-zIE])');
   
   // Join all patterns with alternation operator
   const pattern = patterns.join('|');
