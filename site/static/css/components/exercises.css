@@ -38,6 +38,7 @@
   text-decoration: none;
   font-family: var(--math-font);
   font-size: var(--font-size-xl);
+  -webkit-tap-highlight-color: transparent;
 }
 
 .exercise-link:focus-visible {
@@ -49,6 +50,7 @@
 /* === Hover / Active States === */
 .exercise-row {
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .exercise-row td {
