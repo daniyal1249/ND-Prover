@@ -28,7 +28,7 @@ function getRow(target) {
  * @param {HTMLElement} proofRoot - Root element containing proof lines
  * @param {number} delayMs - Minimum time actions must be visible before clicks work
  */
-export function initActionBtnDelay(proofRoot, delayMs = 150) {
+export function initActionBtnDelay(proofRoot, delayMs = 250) {
   if (!proofRoot) {
     return;
   }
