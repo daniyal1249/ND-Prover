@@ -436,27 +436,6 @@ function init() {
   initActionBtnDelay(document.getElementById('proof'));
   const loadedFromUrl = initUrlState(state, render, { renderOnInit: false });
 
-  window.addEventListener('focus', () => {
-    const ae = document.activeElement;
-    if (ae && ae !== document.body && ae !== document.documentElement) {
-      return;
-    }
-
-    const last = window.__ndLastFocus;
-    if (!last) {
-      return;
-    }
-
-    if (last.kind === 'proof') {
-      focusLineAt(last.index, last.field || 'formula-input', state);
-    } else if (last.kind === 'problem' && last.inputId) {
-      const el = document.getElementById(last.inputId);
-      if (el) {
-        el.focus({ preventScroll: true });
-      }
-    }
-  });
-
   // Initial render (if needed)
   render();
   // Keep URL in sync with initial committed state (including URL-loaded state).

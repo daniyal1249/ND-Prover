@@ -58,20 +58,6 @@ export function initProblemUI(state, renderProof) {
   const premisesBox = document.getElementById('premises');
   const conclusionBox = document.getElementById('conclusion');
 
-  premisesBox.addEventListener('focus', () => {
-    window.__ndLastFocus = {
-      kind: 'problem',
-      inputId: 'premises'
-    };
-  });
-
-  conclusionBox.addEventListener('focus', () => {
-    window.__ndLastFocus = {
-      kind: 'problem',
-      inputId: 'conclusion'
-    };
-  });
-
   // Input box blur handlers
   premisesBox.addEventListener('blur', () => {
     commitInputBox(premisesBox, 'premisesText', state);

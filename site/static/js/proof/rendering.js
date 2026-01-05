@@ -207,11 +207,6 @@ function createFormulaCell(line, idx, lineId, state) {
       return;
     }
     cell.classList.add('focused');
-    window.__ndLastFocus = {
-      kind: 'proof',
-      index: idx,
-      field: 'formula-input'
-    };
   });
 
   // Input blur handler
@@ -300,11 +295,6 @@ function createJustificationCell(line, idx, lineId, state) {
       return;
     }
     just.classList.add('focused');
-    window.__ndLastFocus = {
-      kind: 'proof',
-      index: idx,
-      field: 'justification-input'
-    };
   });
 
   // Justification blur handler
