@@ -8,7 +8,7 @@
 /* === Top Header === */
 /* Top header (centered title) */
 .site-header {
-  padding: var(--spacing-xxxl) var(--spacing-xl) var(--spacing-xl);
+  padding: var(--spacing-xxl) var(--spacing-lg) var(--spacing-lg);
   text-align: center;
 }
 
@@ -17,24 +17,24 @@
 }
 
 .site-header p {
-  margin: var(--spacing-md) 0 0;
+  margin: var(--spacing-sm) 0 0;
   color: var(--text-color-tertiary);
 }
 
 /* === Header Navigation === */
 .site-nav {
-  margin-top: var(--spacing-xl);
+  margin-top: var(--spacing-lg);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
 }
 
 .site-nav a,
 .site-nav button {
   color: var(--text-color-secondary);
   text-decoration: none;
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: var(--spacing-xs) var(--spacing-sm);
   border: 1px solid transparent;
   border-radius: var(--border-radius-md);
   background: transparent;
@@ -75,7 +75,7 @@
 
 .nav-exercises__options {
   display: none;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xs);
 }
 
 .nav-exercises.is-open .nav-exercises__options {

@@ -1,0 +1,4 @@
+$\begin{nd}
+  \have[m]{a}{\metav{A}}
+  \have[\ ]{c}{\metav{A}} \by{R}{a}
+\end{nd}$

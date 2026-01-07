@@ -1,0 +1,12 @@
+$\begin{nd}
+  \have[m]{ab}{\metav{A}\eor\metav{B}}
+  \open
+	\hypo[i]{a}{\metav{A}}\AS
+	\have[j]{c1}{\metav{C}}
+  \close
+  \open
+	\hypo[k]{b}{\metav{B}}\AS
+	\have[l]{c2}{\metav{C}}
+  \close
+  \have[\mathem]{c}{\metav{C}} \oe{ab,a-c1, b-c2}
+\end{nd}$

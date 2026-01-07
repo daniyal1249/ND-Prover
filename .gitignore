@@ -7,6 +7,8 @@ build/
 .null-ls*
 
 old_checker/
+.build/
+RULES.md
 
 discord_app.py
 test.py

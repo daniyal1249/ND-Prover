@@ -1,0 +1,4 @@
+$\begin{nd}
+  \have[m]{ab}{\enot \exists \metav{x}  \metav{A}}
+  \have[\ ]{ac}{\forall \metav{x}\enot\metav{A}}\cq{ab}
+\end{nd}$

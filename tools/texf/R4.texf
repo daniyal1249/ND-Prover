@@ -1,0 +1,6 @@
+$\begin{nd}
+  \have[m]{m}{\ebox\metav{A}}
+  \open
+	\hypo[\ ]{k}{\ebox}\AS
+	\have[\ ]{n}{\ebox\metav{A}}\rfour{m}
+\end{nd}$

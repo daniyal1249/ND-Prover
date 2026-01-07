@@ -1,0 +1,5 @@
+$\begin{nd}
+  \have[m]{ab}{\metav{A}\eif\metav{B}}
+  \have[n]{a}{\metav{A}}
+  \have[\ ]{b}{\metav{B}} \ce{ab,a}
+\end{nd}$

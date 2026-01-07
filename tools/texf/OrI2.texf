@@ -1,0 +1,4 @@
+$\begin{nd}
+  \have[m]{a}{\metav{A}}
+  \have[\ ]{ba}{\metav{B}\eor\metav{A}}\oi{a}
+\end{nd}$
