@@ -1,0 +1,7 @@
+$\begin{nd}
+  \open
+	\hypo[i]{a}{\enot\metav{A}}\AS
+	\have[j]{nb}{\ered}
+  \close
+  \have[\mathem]{na}{\metav{A}}\ip{a-nb}
+\end{nd}$

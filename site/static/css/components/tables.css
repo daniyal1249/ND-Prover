@@ -11,7 +11,7 @@
   background: var(--background);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-lg);
-  padding: var(--spacing-xl);
+  padding: var(--spacing-lg);
   /* Clip inner table corners */
   overflow: hidden;
 }
@@ -40,15 +40,15 @@
 }
 
 .table-like th {
-  padding: 0 var(--spacing-md) var(--spacing-xl);
+  padding: 0 var(--spacing-sm) var(--spacing-lg);
   text-align: center;
   font-weight: 600;
-  font-size: var(--table-header-size, var(--spacing-xl));
+  font-size: var(--table-header-size, var(--spacing-lg));
 }
 
 .table-like td {
-  padding: var(--table-cell-vpad, var(--spacing-lg)) var(--spacing-md);
-  font-size: var(--table-body-size, var(--font-size-lg));
+  padding: var(--table-cell-vpad, var(--spacing-md)) var(--spacing-sm);
+  font-size: var(--table-body-size, var(--font-size-md));
 }
 
 .table-like th + th,
@@ -64,14 +64,14 @@
 /* === Instructions Table === */
 /* Instructions: section-specific sizes via vars (same look as before) */
 .instructions table {
-  --table-header-size: var(--spacing-xl);
-  --table-body-size: var(--font-size-lg);
-  --table-cell-vpad: var(--spacing-lg);
+  --table-header-size: var(--spacing-lg);
+  --table-body-size: var(--font-size-md);
+  --table-cell-vpad: var(--spacing-md);
   --table-valign: middle;
 }
 
 .instructions .instruction-section {
-  padding: var(--instruction-section-padding) var(--spacing-md);
+  padding: var(--instruction-section-padding) var(--spacing-sm);
   text-align: left;
 }
 
@@ -85,8 +85,8 @@
 
 /* Actions-help table: same typography as instructions */
 .actions-help table {
-  --table-header-size: var(--spacing-xl);
-  --table-body-size: var(--font-size-lg);
+  --table-header-size: var(--spacing-lg);
+  --table-body-size: var(--font-size-md);
   --table-cell-vpad: var(--instruction-section-padding);
   --table-valign: middle;
 }
@@ -111,12 +111,12 @@
 /* === Keyboard Shortcut Tags === */
 kbd {
   display: inline-block;
-  padding: var(--spacing-xs) var(--spacing-sm);
+  padding: var(--spacing-xxs) var(--spacing-xs);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-sm);
   background: var(--background-light);
   font-family: monospace;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   line-height: 1.2;
   white-space: nowrap;
 }

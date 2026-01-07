@@ -1,0 +1,79 @@
+/**
+ * Rules Page Component
+ *
+ * Styles for the /rules page which displays rule SVGs in a responsive grid.
+ * Dependencies: variables.css, tables.css
+ */
+
+.rules-page {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--grid-row-gap);
+  margin: 0 0 var(--spacing-xxl);
+}
+
+.rules-section__title {
+  margin: 0;
+  padding: 0 var(--spacing-sm) var(--spacing-lg);
+  text-align: center;
+  font-size: var(--font-size-xxl);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.rules-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--border-color);
+  padding: var(--spacing-md) 0;
+}
+
+.rule {
+  display: block;
+  padding: 0 var(--spacing-xl);
+}
+
+.rule + .rule {
+  border-top: 1px solid var(--border-color);
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+}
+
+.rule__title {
+  margin: 0 0 var(--spacing-sm);
+  padding: 0;
+  text-align: left;
+  font-size: var(--font-size-xl);
+  line-height: 1.35;
+}
+
+.rule__abbrev {
+  font-family: var(--math-font);
+}
+
+.rule__scroll {
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.rule__parts {
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  grid-auto-rows: auto;
+  row-gap: var(--spacing-sm);
+  column-gap: var(--spacing-xxl);
+  align-items: start;
+  justify-content: start;
+}
+
+.rule__parts:has(> :only-child) {
+  grid-template-columns: max-content;
+}
+
+.rule__img {
+  width: auto;
+  height: auto;
+  display: block;
+  transform: scale(var(--rule-scale));
+  transform-origin: left top;
+}

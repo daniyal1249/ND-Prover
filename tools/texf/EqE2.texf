@@ -1,0 +1,5 @@
+$\begin{nd}
+  \have[m]{e}{\metav{a}=\metav{b}}
+  \have[n]{a}{\metav{A}(\ldots \metav{b} \ldots \metav{b}\ldots)}
+  \have[\ ]{ea2}{\metav{A}(\ldots \metav{a} \ldots \metav{b}\ldots)} \by{=E}{e,a}
+\end{nd}$

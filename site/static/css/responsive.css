@@ -7,21 +7,23 @@
 
 /* === Mobile Breakpoint === */
 @media (max-width: 991px) {
-  /* === Layout Adjustments === */
+  
+  /* === General Layout & Structure === */
+  body {
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
+  }
+
   .main-grid {
     grid-template-columns: 1fr;
     column-gap: 0;
     row-gap: var(--grid-row-gap);
+    margin-bottom: var(--spacing-lg);
   }
 
-  body {
-    padding-left: var(--spacing-lg);
-    padding-right: var(--spacing-lg);
-  }
-
-  /* === Header Adjustments === */
+  /* === Site Header & Navigation === */
   .site-header {
-    padding: var(--spacing-xl) var(--spacing-md);
+    padding: var(--spacing-lg) var(--spacing-sm);
   }
 
   .site-header h1 {
@@ -29,12 +31,12 @@
   }
 
   .site-header p {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-md);
     line-height: 1.5;
   }
 
   .site-nav {
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-lg);
   }
 
   .nav-exercises__options {
@@ -42,21 +44,47 @@
     justify-content: center;
   }
 
-  /* === Problem Setup Adjustments === */
+  /* === Shared Components === */
+  /* Buttons - Touch target improvements */
+  .ui-btn {
+    min-height: 44px;
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: var(--font-size-xxs);
+  }
+
+  /* Tables - Used in instructions, exercises, and rules pages */
+  .table-card {
+    padding: var(--spacing-lg);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-like td {
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+  }
+
+  .table-like th {
+    padding: 0 var(--spacing-sm) var(--spacing-lg);
+    font-size: var(--font-size-lg);
+  }
+
+  /* === Main Proof Editor Page === */
+  /* Problem Setup Form */
   .problem-setup {
     grid-template-columns: 1fr;
-    gap: var(--spacing-sm) var(--spacing-md);
+    gap: var(--spacing-xs) var(--spacing-sm);
   }
 
   .problem-setup label {
-    margin-top: var(--spacing-xs);
-    font-size: var(--font-size-lg);
+    margin-top: var(--spacing-xxs);
+    font-size: var(--font-size-md);
   }
 
   .text-input,
   select.logic {
-    padding: var(--spacing-md);
-    font-size: var(--font-size-md);
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-sm);
   }
 
   select.logic {
@@ -65,44 +93,52 @@
 
   .first-order-container label {
     margin-top: 0;
+    font-size: var(--font-size-sm);
+  }
+
+  /* Proof Pane & Results */
+  .proof-pane,
+  .results-pane {
+    padding: var(--spacing-lg);
+  }
+
+  .problem-summary {
     font-size: var(--font-size-md);
   }
 
-  /* === Touch Target Improvements === */
-  .ui-btn {
-    min-height: 44px;
-    padding: var(--spacing-lg) var(--spacing-xl);
-    font-size: var(--font-size-xs);
-  }
-
-  /* === Table Adjustments === */
-  .table-card {
-    padding: var(--spacing-xl);
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .table-like td {
-    padding: var(--spacing-md);
+  .results {
     font-size: var(--font-size-md);
   }
 
-  .table-like th {
-    padding: 0 var(--spacing-md) var(--spacing-xl);
-    font-size: var(--font-size-xl);
+  /* Proof Editor - Scaling */
+  .proof {
+    transform: scale(var(--proof-mobile-scale));
+    transform-origin: top left;
+    width: calc(100% / var(--proof-mobile-scale));
+    max-width: calc(100% / var(--proof-mobile-scale));
   }
 
-  /* === Exercises Page Adjustments === */
+  /* Toolbar */
+  .toolbar {
+    gap: var(--spacing-xs);
+  }
+
+  /* Editor Actions */
+  .editor-actions {
+    margin-top: var(--spacing-md);
+  }
+
+  /* === Exercises Page === */
   .exercises-table col:first-child {
     width: 40px;
   }
 
   .exercises-table th {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-md);
   }
 
   .exercises-table td {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-md);
   }
 
   .exercise-link {
@@ -117,45 +153,25 @@
     width: 80%;
   }
 
-  /* === Proof Pane Adjustments === */
-  .proof-pane,
-  .results-pane {
-    padding: var(--spacing-xl);
-  }
-
-  .problem-summary {
-    font-size: var(--font-size-lg);
-  }
-
-  .results {
-    font-size: var(--font-size-lg);
-  }
-
-  /* === Proof Editor Scaling === */
-  /* Scale proof editor proportionally while preserving internal proportions */
+  /* === Rules Page === */
   :root {
-    --proof-mobile-scale: 0.85;
+    --rule-scale: 1.05;
   }
 
-  .proof {
-    transform: scale(var(--proof-mobile-scale));
-    transform-origin: top left;
-    width: calc(100% / var(--proof-mobile-scale));
-    max-width: calc(100% / var(--proof-mobile-scale));
+  .rules-section__title {
+    font-size: var(--font-size-xl);
   }
 
-  /* === Toolbar Adjustments === */
-  .toolbar {
-    gap: var(--spacing-sm);
+  .rule__title {
+    font-size: var(--font-size-lg);
   }
 
-  /* === Spacing Adjustments === */
-  .main-grid {
-    margin-bottom: var(--spacing-xl);
+  .rule {
+    padding: 0 var(--spacing-md);
   }
 
-  .editor-actions {
-    margin-top: var(--spacing-lg);
+  .rule__parts {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -167,6 +183,6 @@
   }
 
   .site-header {
-    padding: var(--spacing-xxl) var(--spacing-lg) var(--spacing-xl);
+    padding: var(--spacing-xl) var(--spacing-md) var(--spacing-lg);
   }
 }

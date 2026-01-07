@@ -1,0 +1,11 @@
+$\begin{nd}
+  \open
+	\hypo[i]{a}{\metav{A}}\AS
+	\have[j]{c1}{\metav{B}}
+  \close
+  \open
+	\hypo[k]{b}{\enot\metav{A}}\AS
+	\have[l]{c2}{\metav{B}}
+  \close
+  \have[\mathem]{ab}{\metav{B}}\tnd{a-c1,b-c2}
+\end{nd}$

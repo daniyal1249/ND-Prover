@@ -65,6 +65,9 @@
       <a
         href="/"
         class="{% if request.path == '/' %}active{% endif %}">Proof editor</a>
+      <a
+        href="/rules"
+        class="{% if request.path == '/rules' %}active{% endif %}">Rules</a>
       <div
         id="nav-exercises"
         class="nav-exercises">
@@ -96,8 +99,8 @@
   </header>
 
   {% block content %}{% endblock %}
-
   <script type="module" src="/static/js/ui/nav-exercises.js"></script>
   {% block scripts %}{% endblock %}
+
 </body>
 </html>

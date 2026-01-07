@@ -1,0 +1,94 @@
+{% extends "_layout.html" %}
+
+{% block title %}Rules - Natural Deduction Proof Generator & Checker{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="/static/css/components/rules.css">
+{% endblock %}
+
+{% block content %}
+  <section class="rules-page" aria-label="Rules of inference">
+
+    {% set sections = [
+      ("Basic deduction rules for TFL", [
+        ("R", "Reiteration", ["R"]),
+        ("∧I", "Conjunction introduction", ["AndI"]),
+        ("∧E", "Conjunction elimination", ["AndE1", "AndE2"]),
+        ("∨I", "Disjunction introduction", ["OrI1", "OrI2"]),
+        ("∨E", "Disjunction elimination", ["OrE"]),
+        ("→I", "Conditional introduction", ["ImpI"]),
+        ("→E", "Conditional elimination", ["ImpE"]),
+        ("↔I", "Biconditional introduction", ["IffI"]),
+        ("↔E", "Biconditional elimination", ["IffE1", "IffE2"]),
+        ("¬I", "Negation introduction", ["NotI"]),
+        ("¬E", "Negation elimination", ["NotE"]),
+        ("X", "Explosion", ["X"]),
+        ("IP", "Indirect proof", ["IP"])
+      ]),
+      ("Derived rules for TFL", [
+        ("DS", "Disjunctive syllogism", ["DS1", "DS2"]),
+        ("MT", "Modus tollens", ["MT"]),
+        ("DNE", "Double-negation elimination", ["DNE"]),
+        ("LEM", "Excluded middle", ["LEM"]),
+        ("DeM", "De Morgan's laws", ["DeM1", "DeM2", "DeM3", "DeM4"])
+      ]),
+      ("Basic deduction rules for FOL", [
+        ("∀I", "Universal introduction", ["ForallI"]),
+        ("∀E", "Universal elimination", ["ForallE"]),
+        ("∃I", "Existential introduction", ["ExistsI"]),
+        ("∃E", "Existential elimination", ["ExistsE"]),
+        ("=I", "Identity introduction", ["EqI"]),
+        ("=E", "Identity elimination", ["EqE1", "EqE2"])
+      ]),
+      ("Derived rules for FOL", [
+        ("CQ", "Conversion of quantifiers", ["CQ1", "CQ2", "CQ3", "CQ4"])
+      ]),
+      ("Basic deduction rules for ML", [
+        ("☐I", "Box introduction", ["BoxI"]),
+        ("☐E", "Box elimination", ["BoxE"]),
+        ("Def◇", "Definition of diamond", ["DefDia1", "DefDia2"]),
+        ("RT", "System T rule", ["RT"]),
+        ("R4", "System S4 rule", ["R4"]),
+        ("R5", "System S5 rule", ["R5"])
+      ]),
+      ("Derived rules for ML", [
+        ("MC", "Modal conversion", ["MC1", "MC2", "MC3", "MC4"])
+      ]),
+      ("Derived rules for FOML", [
+        ("BF", "Barcan formula", ["BF"]),
+        ("CBF", "Converse Barcan formula", ["CBF"])
+      ])
+    ] %}
+
+    {% for title, rules in sections %}
+      <div class="table-card rules-section">
+        <div class="rules-section__title">{{ title }}</div>
+        <div class="rules-list" role="list">
+          {% for abbrev, rule_title, parts in rules %}
+            <div class="rule" role="listitem" aria-label="{{ abbrev }} — {{ rule_title }}">
+              <div class="rule__title">
+                <span class="rule__abbrev">{{ abbrev }}</span> — <span class="rule__title-text">{{ rule_title }}</span>
+              </div>
+              <div class="rule__scroll">
+                <div class="rule__parts">
+                  {% for slug in parts %}
+                    <div class="rule__img-wrapper">
+                      <img
+                        class="rule__img"
+                        src="/static/rules/{{ slug }}.svg"
+                        alt="{{ abbrev }} — {{ rule_title }} ({{ loop.index }})">
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script type="module" src="/static/js/ui/rules.js"></script>
+{% endblock %}

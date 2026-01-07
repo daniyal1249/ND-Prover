@@ -1,5 +1,5 @@
 /**
- * Exercises link hydrator
+ * Exercise links
  *
  * Auto-generates proof-editor URLs for exercises based on the argument text.
  *
@@ -15,7 +15,7 @@
  */
 
 import { processFormula } from '../utils/input-processing.js'
-import { splitPremisesTopLevel } from '../ui/problem-summary.js'
+import { splitPremisesTopLevel } from './problem-summary.js'
 
 const HASH_PARAM = 's'
 const THEREFORE = '∴'

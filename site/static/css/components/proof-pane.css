@@ -10,7 +10,7 @@
   background: var(--background);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-lg);
-  padding: var(--spacing-xl);
+  padding: var(--spacing-lg);
   min-width: 0;
   overflow-x: hidden;
 }
@@ -20,7 +20,7 @@
   background: var(--background);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-lg);
-  padding: var(--spacing-xl);
+  padding: var(--spacing-lg);
 }
 
 .results-pane--success {
@@ -46,7 +46,7 @@
 /* === Results Display === */
 .help {
   color: var(--text-color-muted);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-sm);
   margin: var(--help-margin);
 }
 
@@ -54,7 +54,7 @@
   margin: 0;
   padding: 0;
   color: var(--ink);
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-lg);
   line-height: 1.6;
   display: none;
   white-space: pre-line;
@@ -68,6 +68,6 @@
 .editor-actions {
   display: flex;
   justify-content: flex-end;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
   margin-top: var(--editor-actions-margin-top);
 }

@@ -9,20 +9,20 @@
 /* === Problem Setup Form === */
 /* Panels / cards (white backgrounds, grayscale) */
 .problem-setup {
-  padding: var(--spacing-xl);
+  padding: var(--spacing-lg);
   background: var(--background);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-lg);
   display: grid;
   grid-template-columns: var(--problem-setup-label-width) minmax(0, 1fr);
-  gap: var(--spacing-md) var(--spacing-lg);
+  gap: var(--spacing-sm) var(--spacing-md);
   align-items: center;
   min-width: 0; /* Allow shrinking below content size on mobile */
 }
 
 .problem-setup label {
   color: var(--text-color-secondary);
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-lg);
 }
 
 /* === Form Inputs === */
@@ -30,14 +30,14 @@
 .logic-container {
   display: flex;
   align-items: center;
-  gap: var(--spacing-lg);
+  gap: var(--spacing-md);
 }
 
 /* Logic select (width 50% of its field column) */
 select.logic {
   font-family: var(--sans);
-  font-size: var(--font-size-lg);
-  padding: var(--spacing-md);
+  font-size: var(--font-size-md);
+  padding: var(--spacing-sm);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-md);
   background: var(--background);
@@ -48,7 +48,7 @@ select.logic {
 .first-order-container {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xs);
 }
 
 /* First-order checkbox */
@@ -57,11 +57,12 @@ select.logic {
   height: 1.25em;
   cursor: pointer;
   accent-color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* First-order label */
 .first-order-container label {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-md);
   color: var(--text-color-secondary);
   cursor: pointer;
   margin: 0;
@@ -70,8 +71,8 @@ select.logic {
 /* Single-line inputs for Premises/Conclusion */
 .text-input {
   font-family: var(--math-font);
-  font-size: var(--font-size-lg);
-  padding: var(--spacing-md);
+  font-size: var(--font-size-md);
+  padding: var(--spacing-sm);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-md);
   background: var(--background);
@@ -89,7 +90,7 @@ select.logic {
   color: var(--ink);
   margin: 0 0 var(--problem-summary-margin-bottom);
   font-family: var(--sans);
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-lg);
 }
 
 /* Mathematical content in problem summary */
@@ -102,6 +103,6 @@ select.logic {
   grid-column: 1 / -1;
   display: flex;
   justify-content: flex-end;
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-sm);
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
 }

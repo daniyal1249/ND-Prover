@@ -1,0 +1,11 @@
+$\begin{nd}
+  \open
+	\hypo[i]{a1}{\metav{A}} \AS
+	\have[j]{b1}{\metav{B}}
+  \close
+  \open
+	\hypo[k]{b2}{\metav{B}}\AS
+	\have[l]{a2}{\metav{A}}
+  \close
+  \have[\mathem]{ab}{\metav{A}\eiff\metav{B}}\bi{a1-b1,b2-a2}
+\end{nd}$

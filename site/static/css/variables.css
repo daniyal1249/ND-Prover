@@ -30,13 +30,13 @@
   --sans: "Noto Sans";
   --symbol-font: "Noto Sans Symbols 2", "Noto Sans Symbols";
   --math-font: "Noto Sans Math", var(--symbol-font), "Noto Sans", sans-serif;
-  --font-size: 16px;
-  --line-height: 1.25;
-  --font-size-xs: 11px;
-  --font-size-sm: 12px;
-  --font-size-md: 13px;
-  --font-size-lg: 14px;
-  --font-size-xl: 15px;
+  --font-size-xxs: 11px;
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-md: 14px;
+  --font-size-lg: 15px;
+  --font-size-xl: 16px;
+  --font-size-xxl: 18px;
 
   /* === Layout === */
   --page-margin: 10%;
@@ -70,13 +70,13 @@
   --line-actions-gap: 6px;
   /* Dynamic line-number column width */
   --line-number-width: calc(3ch + 8px);
-  --spacing-xs: 2px;
-  --spacing-sm: 4px;
-  --spacing-md: 8px;
-  --spacing-lg: 12px;
-  --spacing-xl: 16px;
-  --spacing-xxl: 24px;
-  --spacing-xxxl: 40px;
+  --spacing-xxs: 2px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-xxl: 40px;
 
   /* === Border Radius === */
   --border-radius-sm: 4px;
@@ -94,6 +94,10 @@
   --help-margin: 8px 2px;
   --logic-select-width: 50%;
   --editor-actions-margin-top: 20px;
+
+  /* === Scaling === */
+  --rule-scale: 1.2;
+  --proof-mobile-scale: 0.85;
 
   /* === Transitions === */
   --transition-fast: 0.05s linear;

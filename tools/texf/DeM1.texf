@@ -1,0 +1,4 @@
+$\begin{nd}
+  \have[m]{ab}{\enot (\metav{A} \eor \metav{B})}
+  \have[\ ]{dm}{\enot \metav{A} \eand \enot \metav{B}}\dem{ab}
+\end{nd}$

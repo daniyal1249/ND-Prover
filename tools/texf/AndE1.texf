@@ -1,0 +1,4 @@
+$\begin{nd}
+  \have[m]{ab}{\metav{A}\eand\metav{B}}
+  \have[\ ]{a}{\metav{A}} \ae{ab}
+\end{nd}$

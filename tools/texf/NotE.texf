@@ -1,0 +1,5 @@
+$\begin{nd}
+  \have[m]{na}{\enot\metav{A}}
+  \have[n]{a}{\metav{A}}
+  \have[\ ]{bot}{\ered}\ri{na, a}
+\end{nd}$

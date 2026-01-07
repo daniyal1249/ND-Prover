@@ -133,6 +133,11 @@ def exercises_ml():
     return render_template("exercises_ml.html")
 
 
+@app.get("/rules")
+def rules():
+    return render_template("rules.html")
+
+
 @app.post("/api/check-proof")
 def check_proof():
     data = request.get_json(silent=True) or {}

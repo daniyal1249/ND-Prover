@@ -9,8 +9,8 @@
 .ui-btn {
   font-family: var(--sans);
   font-weight: 600;
-  font-size: var(--font-size-sm);
-  padding: var(--spacing-lg) var(--spacing-xxl);
+  font-size: var(--font-size-xs);
+  padding: var(--spacing-md) var(--spacing-xl);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-md);
   background: var(--background);
@@ -41,7 +41,7 @@
   align-items: center;
   justify-content: center;
   font-family: var(--math-font);
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-md);
   line-height: 1;
   cursor: pointer;
   padding: 0;
