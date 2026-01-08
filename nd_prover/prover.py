@@ -12,8 +12,8 @@ class _ProofObject:
     count = 0
 
     def __init__(self):
-        type(self).count += 1
-        self.id = type(self).count
+        _ProofObject.count += 1
+        self.id = _ProofObject.count
 
     def is_line(self):
         return isinstance(self, _Line)
@@ -128,6 +128,7 @@ class _Proof(_ProofObject):
         if not branches:
             return False
         def key(p): return (p.ip_count, p.line_count)
+        # FIX: consider copying seq
         self.seq = min(branches, key=key).seq
         return True
 
@@ -695,6 +696,7 @@ def prove(premises, conclusion, timeout=3):
         cm_str = "\n".join(f"{k} : {v}" for k, v in sorted(cm.items()))
         raise ProverError(f"Invalid argument. Countermodel:\n\n{cm_str}")
 
+    _ProofObject.count = 0
     seq = [_Line(p, "PR", ()) for p in premises]
     _proof = _Proof(seq, conclusion)
     p = Prover(_proof, deadline=time.monotonic() + timeout)
