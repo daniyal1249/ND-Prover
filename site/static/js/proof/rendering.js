@@ -187,9 +187,9 @@ function createFormulaCell(line, idx, lineId, state) {
   
   // Set padding to fill cell and maintain text position based on indent
   const paddingLeft =
-    `calc(var(--spacing-lg) + ${line.indent} * var(--proof-indent) + ` + 
+    `calc(var(--spacing-md) + ${line.indent} * var(--proof-indent) + ` + 
     `var(--proof-text-gap))`;
-  const paddingRight = 'var(--spacing-lg)';
+  const paddingRight = 'var(--spacing-md)';
   const paddingTop = 'var(--proof-row-padding-vertical)';
   const paddingBottom = 'var(--proof-row-padding-vertical)';
   input.style.paddingLeft = paddingLeft;

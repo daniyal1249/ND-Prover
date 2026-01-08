@@ -27,9 +27,9 @@
 
   /* === Typography === */
   /* Site-wide font */
-  --sans: "Noto Sans";
+  --sans: "Noto Sans", sans-serif;
   --symbol-font: "Noto Sans Symbols 2", "Noto Sans Symbols";
-  --math-font: "Noto Sans Math", var(--symbol-font), "Noto Sans", sans-serif;
+  --math-font: "Noto Sans Math", var(--symbol-font), var(--sans);
   --font-size-xxs: 11px;
   --font-size-xs: 12px;
   --font-size-sm: 13px;
