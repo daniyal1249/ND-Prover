@@ -1,4 +1,4 @@
 $\begin{nd}
   \have[m]{a}{\metav{A}}
-  \have[\ ]{ab}{\metav{A}\eor\metav{B}}\oi{a}
+  \have[\ ]{ab}{\metav{A} \eor \metav{B}} \oi{a}
 \end{nd}$

@@ -1,4 +1,4 @@
 $\begin{nd}
-  \have[m]{m}{\enot\ebox \metav{A}}
-  \have[\ ]{n}{\ediamond \enot\metav{A}}\mc{m}
+  \have[m]{m}{\enot\ebox\metav{A}}
+  \have[\ ]{n}{\ediamond\enot\metav{A}} \mc{m}
 \end{nd}$

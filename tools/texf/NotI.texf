@@ -1,7 +1,7 @@
 $\begin{nd}
   \open
-	\hypo[m]{a}{\metav{A}}\AS
-	\have[n]{nb}{\ered}
+    \hypo[m]{a}{\metav{A}} \AS
+    \have[n]{nb}{\ered}
   \close
-  \have[\ ]{na}{\enot\metav{A}}\ni{a-nb}
+  \have[\ ]{na}{\enot\metav{A}} \ni{a-nb}
 \end{nd}$

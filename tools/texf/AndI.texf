@@ -1,5 +1,5 @@
 $\begin{nd}
   \have[m]{a}{\metav{A}}
   \have[n]{b}{\metav{B}}
-  \have[\ ]{c}{\metav{A}\eand\metav{B}} \ai{a, b}
+  \have[\ ]{c}{\metav{A} \eand \metav{B}} \ai{a, b}
 \end{nd}$

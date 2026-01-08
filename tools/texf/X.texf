@@ -1,4 +1,4 @@
 $\begin{nd}
   \have[m]{bot}{\ered}
-  \have[\ ]{}{\metav{A}}\re{bot}
+  \have[\ ]{}{\metav{A}} \re{bot}
 \end{nd}$

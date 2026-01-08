@@ -1,5 +1,5 @@
 $\begin{nd}
-  \have[m]{e}{\metav{a}=\metav{b}}
-  \have[n]{a}{\metav{A}(\ldots \metav{a} \ldots \metav{a}\ldots)}
-  \have[\ ]{ea1}{\metav{A}(\ldots \metav{b} \ldots \metav{a}\ldots)} \by{=E}{e,a}
+  \have[m]{e}{\metav{a} = \metav{b}}
+  \have[n]{a}{\metav{A}(\ldots \metav{a} \ldots \metav{a} \ldots)}
+  \have[\ ]{ea1}{\metav{A}(\ldots \metav{b} \ldots \metav{a} \ldots)} \by{=E}{e, a}
 \end{nd}$

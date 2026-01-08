@@ -1,4 +1,4 @@
 $\begin{nd}
-  \have[m]{a}{\forall \metav{x}\ebox\metav{A}}
-  \have[\ ]{c}{\ebox\forall \metav{x}\metav{A}} \by{BF}{a}
+  \have[m]{a}{\forall\metav{x} \ebox\metav{A}}
+  \have[\ ]{c}{\ebox\forall\metav{x} \metav{A}} \by{BF}{a}
 \end{nd}$

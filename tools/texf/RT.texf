@@ -1,4 +1,4 @@
 $\begin{nd}
-  \have[m]{m}{\ebox \metav{A}}
-  \have[\ ]{n}{\metav{A}}\rt{m}
+  \have[m]{m}{\ebox\metav{A}}
+  \have[\ ]{n}{\metav{A}} \rt{m}
 \end{nd}$

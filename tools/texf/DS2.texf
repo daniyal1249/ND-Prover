@@ -1,5 +1,5 @@
 $\begin{nd}
   \have[m]{ab}{\metav{A} \eor \metav{B}}
-  \have[n]{nb}{\enot \metav{B}}
-  \have[\ ]{con}{\metav{A}}\by{DS}{ab, nb}
+  \have[n]{nb}{\enot\metav{B}}
+  \have[\ ]{con}{\metav{A}} \by{DS}{ab, nb}
 \end{nd}$

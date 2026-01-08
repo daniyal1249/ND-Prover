@@ -1,4 +1,4 @@
 $\begin{nd}
-  \have[m]{ab}{\enot (\metav{A} \eand \metav{B})}
-  \have[\ ]{dm}{\enot \metav{A} \eor \enot \metav{B}}\dem{ab}
+  \have[m]{ab}{\enot(\metav{A} \eand \metav{B})}
+  \have[\ ]{dm}{\enot\metav{A} \eor \enot\metav{B}} \dem{ab}
 \end{nd}$

@@ -1,6 +1,6 @@
 $\begin{nd}
   \have[m]{m}{\ebox\metav{A}}
   \open
-	\hypo[\ ]{o}{\ebox}\AS
-	\have[n]{n}{\metav{A}}\boxe{m}
+    \hypo[\ ]{o}{\ebox} \AS
+    \have[n]{n}{\metav{A}} \boxe{m}
 \end{nd}$

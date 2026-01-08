@@ -1,8 +1,8 @@
 $\begin{nd}
-  \have[m]{a}{\exists \metav{x}\,\metav{A}(\ldots \metav{x} \ldots \metav{x}\ldots)}
+  \have[m]{a}{\exists\metav{x}\, \metav{A}(\ldots \metav{x} \ldots \metav{x} \ldots)}
   \open
-	\hypo[i]{b}{\metav{A}(\ldots \metav{c} \ldots \metav{c}\ldots)}\AS
-	\have[j]{c}{\metav{B}}
+    \hypo[i]{b}{\metav{A}(\ldots \metav{c} \ldots \metav{c} \ldots)} \AS
+    \have[j]{c}{\metav{B}}
   \close
-  \have[\ ]{d}{\metav{B}}\Ee{a,b-c}
+  \have[\ ]{d}{\metav{B}} \Ee{a, b-c}
 \end{nd}$

@@ -1,5 +1,5 @@
 $\begin{nd}
-  \have[m]{ab}{\metav{A}\eif\metav{B}}
+  \have[m]{ab}{\metav{A} \eif \metav{B}}
   \have[n]{a}{\enot\metav{B}}
-  \have[\ ]{b}{\enot\metav{A}} \by{MT}{ab,a}
+  \have[\ ]{b}{\enot\metav{A}} \by{MT}{ab, a}
 \end{nd}$

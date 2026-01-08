@@ -1,4 +1,4 @@
 $\begin{nd}
-  \have[m]{ab}{\metav{A}\eand\metav{B}}
+  \have[m]{ab}{\metav{A} \eand \metav{B}}
   \have[\ ]{b}{\metav{B}} \ae{ab}
 \end{nd}$

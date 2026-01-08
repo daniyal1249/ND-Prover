@@ -1,6 +1,6 @@
 $\begin{nd}
-  \have[m]{m}{\enot \ebox\metav{A}}
+  \have[m]{m}{\enot\ebox\metav{A}}
   \open
-	\hypo[\ ]{k}{\ebox}\AS
-	\have[\ ]{n}{\enot\ebox\metav{A}}\rfive{m}
+    \hypo[\ ]{k}{\ebox} \AS
+    \have[\ ]{n}{\enot\ebox\metav{A}} \rfive{m}
 \end{nd}$

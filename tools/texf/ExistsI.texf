@@ -1,4 +1,4 @@
 $\begin{nd}
-  \have[m]{a}{\metav{A}(\ldots \metav{c} \ldots \metav{c}\ldots)}
-  \have[\ ]{c}{\exists \metav{x}\,\metav{A}(\ldots \metav{x} \ldots \metav{c}\ldots)}\Ei{a}
+  \have[m]{a}{\metav{A}(\ldots \metav{c} \ldots \metav{c} \ldots)}
+  \have[\ ]{c}{\exists\metav{x}\, \metav{A}(\ldots \metav{x} \ldots \metav{c} \ldots)} \Ei{a}
 \end{nd}$

@@ -1,7 +1,7 @@
 $\begin{nd}
   \open
-	\hypo[m]{m}{\ebox}\AS
-	\have[n]{n}{\metav{A}}
+    \hypo[m]{m}{\ebox} \AS
+    \have[n]{n}{\metav{A}}
   \close
-  \have[\ ]{o}{\ebox\metav{A}}\boxi{m-n}
+  \have[\ ]{o}{\ebox\metav{A}} \boxi{m-n}
 \end{nd}$

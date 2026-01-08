@@ -1,4 +1,4 @@
 $\begin{nd}
-  \have[m]{ab}{\enot \forall \metav{x}  \metav{A}}
-  \have[\ ]{ac}{\exists \metav{x}\enot \metav{A}}\cq{ab}
+  \have[m]{ab}{\enot\forall\metav{x} \metav{A}}
+  \have[\ ]{ac}{\exists\metav{x} \enot\metav{A}} \cq{ab}
 \end{nd}$
