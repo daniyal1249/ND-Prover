@@ -10,8 +10,8 @@ class Metavar:
     count = 0
 
     def __post_init__(self):
-        type(self).count += 1
-        self.id = type(self).count
+        Metavar.count += 1
+        self.id = Metavar.count
 
     def __str__(self):
         return f"?m{self.id}"

@@ -130,7 +130,7 @@ def perform_edit(problem, edit):
             case 5:
                 problem.delete_line()
 
-        if errors := problem.proof.errors():
+        if errors := problem.errors():
             problem.delete_line()
             error = errors[0].split(": ", 1)[-1]
             raise InferenceError(error)

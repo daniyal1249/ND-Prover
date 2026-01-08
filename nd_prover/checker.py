@@ -505,26 +505,26 @@ class Proof(ProofObject):
     def add_line(self, formula, justification):
         if self.seq and (end := self.seq[-1]).is_subproof():
             return end.add_line(formula, justification)
-        return self._add_line_current(formula, justification)
+        self._add_line_current(formula, justification)
 
     def begin_subproof(self, assumption):
         if self.seq and (end := self.seq[-1]).is_subproof():
             return end.begin_subproof(assumption)
-        return self._begin_subproof_current(assumption)
+        self._begin_subproof_current(assumption)
 
     def end_subproof(self, formula, justification):
         if not (self.seq and (end := self.seq[-1]).is_subproof()):
             raise ProofEditError("No active subproof to close.")
         if end.seq[-1].is_subproof():
             return end.end_subproof(formula, justification)
-        return self._add_line_current(formula, justification)
+        self._add_line_current(formula, justification)
 
     def end_and_begin_subproof(self, assumption):
         if not (self.seq and (end := self.seq[-1]).is_subproof()):
             raise ProofEditError("No active subproof to close.")
         if end.seq[-1].is_subproof():
             return end.end_and_begin_subproof(assumption)
-        return self._begin_subproof_current(assumption)
+        self._begin_subproof_current(assumption)
 
     def delete_line(self):
         if not self.seq:
@@ -674,6 +674,10 @@ class Problem:
 
     def delete_line(self):
         self.proof.delete_line()
+
+    def errors(self):
+        Metavar.count = 0
+        return self.proof.errors()
 
     def verify_formula(self, formula):
         if self.logic is TFL and is_tfl_formula(formula):

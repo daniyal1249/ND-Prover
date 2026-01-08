@@ -219,7 +219,7 @@ def check_proof():
             message = prefix + str(e)
             return _json_error(message)
 
-    if errors := problem.proof.errors():
+    if errors := problem.errors():
         message = "\n".join(errors)
         return _json_error(message)
     is_complete = problem.conclusion_reached()
