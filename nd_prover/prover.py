@@ -161,6 +161,8 @@ class Eliminator:
     @staticmethod
     def elim(prover):
         while True:
+            prover.check_timeout()
+
             if Eliminator.R(prover):
                 return True
             if Eliminator.X(prover):
@@ -1037,8 +1039,7 @@ class Prover:
         self.deadline = deadline
 
     def prove(self):
-        if self.deadline is not None and time.monotonic() > self.deadline:
-            raise TimeoutError()
+        self.check_timeout()
 
         if Eliminator.elim(self):
             return True
@@ -1082,6 +1083,10 @@ class Prover:
             seen,
             self.deadline
         )
+
+    def check_timeout(self):
+        if self.deadline is not None and time.monotonic() > self.deadline:
+            raise TimeoutError()
 
     def enter_state(self):
         proof = self.proof
